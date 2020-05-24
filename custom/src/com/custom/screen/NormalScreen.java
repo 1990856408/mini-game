@@ -22,7 +22,6 @@ import com.custom.member.monster.Duck;
 import com.custom.member.status.ProtagonistStatus;
 import com.custom.screen.stage.NormalScreenStage;
 import com.mini.assist.CustomUserData;
-import com.mini.constant.EnumSound;
 import com.mini.constant.MiniGamePhysicalSetting;
 import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
@@ -238,13 +237,14 @@ public class NormalScreen extends BaseScreen {
 
     @Override
     protected void initCustom() {
+        MiniGame.soundPlayer.playMusic("sounds/init.mp3");
     }
 
     @Override
     protected void initKeyActs() {
         // 尝试发出春丽气功波
         setKeyActJust(Keys.W, () -> {
-            prota.createChunLiQiGongBall();
+            prota.createBomb();
         });
 
         // 下蹲
@@ -272,7 +272,6 @@ public class NormalScreen extends BaseScreen {
         // 尝试跳跃
         setKeyActJust(Keys.K, () -> {
             prota.applyForceToCenter(0, 300f);
-            MiniGame.soundPlayer.playSound(EnumSound.JUMP);
         });
 
         // 尝试变身春丽
@@ -280,22 +279,13 @@ public class NormalScreen extends BaseScreen {
             /*
              * 如果不在春丽状态，则创建春丽，如果成功的创建了春丽，则播放一个春丽横穿屏幕的效果
              */
-//            if (!prota.isChunli) {
-//                prota.createChunLi();
-//                if (prota.isChunli) {
+            prota.cut();
 //                    stage.addActor(new ChunWidget().image_widget);
-//                }
-//            }
         });
 
         // 暴走
         setKeyActJust(Keys.O, () -> {
-//            if (prota.alive_fire) {
-//                prota.alive_fire = false;
-//            } else {
-//                MiniGame.soundPlayer.playSound(EnumSound.BURN);
-//                prota.alive_fire = true;
-//            }
+            debug = !debug;
         });
     }
 
@@ -417,9 +407,14 @@ public class NormalScreen extends BaseScreen {
         stage.draw();
     }
 
+    // TODO
+    boolean debug = false;
+
     @Override
     protected void renderCustom() {
-        box2DRender.render(world, box2DCamera.combined);
+        if (debug) {
+            box2DRender.render(world, box2DCamera.combined);
+        }
 
         world.step(MiniGamePhysicalSetting.TIME_STEP, 6, 2);
     }

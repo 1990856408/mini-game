@@ -21,6 +21,29 @@ public class AnimationAssist {
             regions[i] = new TextureRegion(texture, bounds.get(i).x, bounds.get(i).y, bounds.get(i).w, bounds.get(i).h);
             regions[i].flip((flip & 1) == 1, (flip & 2) == 2);
         }
+
+        Animation animation = new Animation(frameDuration, regions);
+        if (mode != null) {
+            animation.setPlayMode(mode);
+        }
+        return animation;
+    }
+
+    public static Animation createAnimation(Texture texture, int splitW, int splitH, int range, float frameDuration, int flip, Animation.PlayMode mode) {
+        TextureRegion[][] r2v = TextureRegion.split(texture, splitW, splitH);
+        TextureRegion[] regions = new TextureRegion[range];
+        int index = 0;
+        out:
+        for (TextureRegion[] r1v : r2v) {
+            for (TextureRegion region : r1v) {
+                regions[index] = region;
+                regions[index].flip((flip & 1) == 1, (flip & 2) == 2);
+                if (++index == range) {
+                    break out;
+                }
+            }
+        }
+
         Animation animation = new Animation(frameDuration, regions);
         if (mode != null) {
             animation.setPlayMode(mode);

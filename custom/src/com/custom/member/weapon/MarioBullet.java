@@ -32,6 +32,7 @@ public class MarioBullet extends GameSprite {
 
         FixtureDef fixTureDef = new FixtureDef();
         fixTureDef.shape = shape;
+        fixTureDef.restitution = 0.85f;
         fixTureDef.filter.categoryBits = category.bits;
         fixTureDef.filter.maskBits = category.maskBits;
         fixTureDef.isSensor = false;

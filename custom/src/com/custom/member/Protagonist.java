@@ -8,9 +8,11 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.custom.member.constant.MemberFixtureAttribute;
 import com.custom.member.constant.MemberName;
+import com.custom.member.status.ChunLiStatus;
 import com.custom.member.status.ProtagonistStatus;
 import com.custom.member.weapon.MarioBullet;
 import com.mini.assist.CustomUserData;
+import com.mini.constant.EnumSound;
 import com.mini.constant.MiniGamePhysicalSetting;
 import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
@@ -33,6 +35,10 @@ public class Protagonist extends GameSprite {
     private Map<ProtagonistStatus, Map<GameSpriteDirection, Animation>> animationMap = new HashMap<>();
 
     private GameSpriteHolder marioBulletHolder;
+
+    private Protagonist chunLi;
+
+    private Protagonist proxy;
 
     @Override
     protected Body createBody(World world, float initX, float initY) {
@@ -159,11 +165,26 @@ public class Protagonist extends GameSprite {
     }
 
     @Override
+    protected void initCustom() {
+        chunLi = new ChunLi();
+        chunLi.create(world, initPosX * MiniGameScreenSetting.VIEW_RATE, initPosY * MiniGameScreenSetting.VIEW_RATE);
+    }
+
+    @Override
     protected void initStatus() {
         direction = GameSpriteDirection.R;
 
         status = ProtagonistStatus.QUIET;
         statusPre = status;
+    }
+
+    @Override
+    protected void update() {
+        if (proxy != null) {
+            proxy.update();
+            return;
+        }
+        super.update();
     }
 
     @Override
@@ -201,6 +222,7 @@ public class Protagonist extends GameSprite {
         }
 
         status = statusPre;
+
         // 下蹲不做判断
         if (status != ProtagonistStatus.SQUAT) {
             if (velocityX == 0 && velocityY == 0) {
@@ -222,6 +244,11 @@ public class Protagonist extends GameSprite {
 
     @Override
     protected void renderCustom(SpriteBatch batch, float delta) {
+        if (proxy != null) {
+            proxy.renderCustom(batch, delta);
+            return;
+        }
+
         batch.begin();
         batch.draw(getFrameCurrent(delta), getDrawX(), getDrawY(), getDrawW(), getDrawH());
         batch.end();
@@ -229,10 +256,19 @@ public class Protagonist extends GameSprite {
         marioBulletHolder.render(batch, delta);
     }
 
-    public void createChunLiQiGongBall() {
+    public void createBomb() {
+        if (proxy != null) {
+            proxy.createBomb();
+            return;
+        }
     }
 
     public void createMarioBullet() {
+        if (proxy != null) {
+            proxy.createMarioBullet();
+            return;
+        }
+
         marioBulletHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
             @Override
             public GameSprite getGameSprite() {
@@ -246,9 +282,33 @@ public class Protagonist extends GameSprite {
 
             @Override
             public float getInitY() {
-                return getPosY() * MiniGameScreenSetting.VIEW_RATE;
+                return getDrawY() + getDrawH() * 0.75f;
+            }
+
+            @Override
+            public GameSpriteHolder.CreateAction getCreateAction() {
+                return (gameSprite) -> {
+                    gameSprite.applyForceToCenter(640 * (direction == GameSpriteDirection.L ? -1 : 1), -320);
+                };
             }
         });
+        MiniGame.soundPlayer.playSound(EnumSound.BULLET);
+    }
+
+    @Override
+    public float getPosX() {
+        if (proxy != null) {
+            return proxy.getPosX();
+        }
+        return super.getPosX();
+    }
+
+    @Override
+    public float getPosY() {
+        if (proxy != null) {
+            return proxy.getPosY();
+        }
+        return super.getPosY();
     }
 
     @Override
@@ -272,6 +332,15 @@ public class Protagonist extends GameSprite {
     }
 
     @Override
+    public void applyForceToCenter(float forceX, float forceY) {
+        if (proxy != null) {
+            proxy.applyForceToCenter(forceX, forceY);
+            return;
+        }
+        super.applyForceToCenter(forceX, forceY);
+    }
+
+    @Override
     public GameSpriteCategory getGameSpriteCategory() {
         if (category != null) {
             return category;
@@ -279,11 +348,78 @@ public class Protagonist extends GameSprite {
         return GameSpriteCategory.build(MemberFixtureAttribute.PROTA, MemberFixtureAttribute._PROTA, MemberName.PROTA);
     }
 
+    @Override
+    public GameSpriteDirection getDirection() {
+        if (proxy != null) {
+            return proxy.getDirection();
+        }
+        return super.getDirection();
+    }
+
+    @Override
+    public void setDirection(GameSpriteDirection direction) {
+        // 同代理一起变更
+        super.setDirection(direction);
+
+        if (proxy != null) {
+            proxy.setDirection(direction);
+        }
+    }
+
     public ProtagonistStatus getStatus() {
         return status;
     }
 
     public void setStatusPre(ProtagonistStatus statusPre) {
+        // 同代理一起变更
         this.statusPre = statusPre;
+
+        if (proxy != null) {
+            // TODO 优化
+            switch (statusPre) {
+                case QUIET:
+                    if (proxy instanceof ChunLi) {
+                        ((ChunLi) proxy).setStatusPre(ChunLiStatus.QUIET);
+                    }
+                    break;
+                case WALK:
+                    if (proxy instanceof ChunLi) {
+                        ((ChunLi) proxy).setStatusPre(ChunLiStatus.WALK);
+                    }
+                    break;
+                case JUMP:
+                    if (proxy instanceof ChunLi) {
+                        ((ChunLi) proxy).setStatusPre(ChunLiStatus.JUMP);
+                    }
+                    break;
+                case SQUAT:
+                    if (proxy instanceof ChunLi) {
+                        ((ChunLi) proxy).setStatusPre(ChunLiStatus.SQUAT);
+                    }
+                    break;
+            }
+            // 同步当前状态
+            this.status = this.statusPre;
+        }
+    }
+
+    // TODO
+    public void cut() {
+        if (proxy == null) {
+            mintMark(this, chunLi);
+            proxy = chunLi;
+            MiniGame.soundPlayer.stopMusic();
+            MiniGame.soundPlayer.playMusic("sounds/chunli.mp3");
+        } else {
+            mintMark(chunLi, this);
+            proxy = null;
+            MiniGame.soundPlayer.stopMusic();
+            MiniGame.soundPlayer.playMusic("sounds/init.mp3");
+        }
+    }
+
+    public void mintMark(GameSprite source, GameSprite origin) {
+        origin.setPosition(source.getPosX(), source.getPosY());
+        origin.setDirection(source.getDirection());
     }
 }

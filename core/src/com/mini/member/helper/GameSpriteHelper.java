@@ -19,6 +19,8 @@ public class GameSpriteHelper {
 
         private BodyDef.BodyType bodyType;
 
+        private float gravityScale = 1;
+
         private World world;
 
         private CircleShape.Type shapeType;
@@ -43,6 +45,11 @@ public class GameSpriteHelper {
 
         public BodyConfig setBodyType(BodyDef.BodyType bodyType) {
             this.bodyType = bodyType;
+            return this;
+        }
+
+        public BodyConfig setGravityScale(float gravityScale) {
+            this.gravityScale = gravityScale;
             return this;
         }
 
@@ -99,28 +106,24 @@ public class GameSpriteHelper {
         bodyDef.type = config.bodyType;
 
         Body body = config.world.createBody(bodyDef);
+        body.setGravityScale(config.gravityScale);
 
         Shape shape;
         switch (config.shapeType) {
             case Circle:
                 shape = new CircleShape();
-                shape.setRadius(config.drawR * MiniGamePhysicalSetting.VIEW_RATE);
+                shape.setRadius(config.drawR * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
                 break;
             case Polygon:
                 shape = new PolygonShape();
-                ((PolygonShape) shape).setAsBox(config.drawW * MiniGamePhysicalSetting.VIEW_RATE, config.drawH * MiniGamePhysicalSetting.VIEW_RATE);
+                ((PolygonShape) shape).setAsBox(config.drawW * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, config.drawH * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
                 break;
             default:
                 throw new IllegalArgumentException();
         }
 
-        FixtureDef fixTureDef = new FixtureDef();
-        fixTureDef.shape = shape;
-        fixTureDef.filter.categoryBits = config.category.bits;
-        fixTureDef.filter.maskBits = config.category.maskBits;
-        fixTureDef.isSensor = config.isSensor;
-
-        Fixture fixture = body.createFixture(fixTureDef);
+        FixtureDef fixtureDef = createFixtureDef(shape, config.category.bits, config.category.maskBits, config.isSensor);
+        Fixture fixture = body.createFixture(fixtureDef);
 
         CustomUserData data = new CustomUserData();
         data.name = config.category.name;
@@ -132,5 +135,15 @@ public class GameSpriteHelper {
         fixture.setUserData(data);
 
         return body;
+    }
+
+    public FixtureDef createFixtureDef(Shape shape, short bits, short maskBits, boolean isSensor) {
+        FixtureDef fixTureDef = new FixtureDef();
+        fixTureDef.shape = shape;
+        fixTureDef.filter.categoryBits = bits;
+        fixTureDef.filter.maskBits = maskBits;
+        fixTureDef.isSensor = isSensor;
+
+        return fixTureDef;
     }
 }

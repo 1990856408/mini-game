@@ -142,12 +142,12 @@ public abstract class GameSprite implements Runnable {
     }
 
     // 向刚体中心施加一个力
-    public final void applyForceToCenter(float forceX, float forceY) {
+    public void applyForceToCenter(float forceX, float forceY) {
         body.applyForceToCenter(forceX, forceY, true);
     }
 
     // 给刚体一个速度
-    public final void applyVelocity(float velocityX, float velocityY) {
+    public void applyVelocity(float velocityX, float velocityY) {
         body.setLinearVelocity(velocityX, velocityY);
     }
 
@@ -155,22 +155,26 @@ public abstract class GameSprite implements Runnable {
     public abstract GameSpriteCategory getGameSpriteCategory();
 
     // 取物理世界X坐标
-    public final float getPosX() {
+    public float getPosX() {
         return body.getPosition().x;
     }
 
     // 取物理世界Y坐标
-    public final float getPosY() {
+    public float getPosY() {
         return body.getPosition().y;
     }
 
+    public void setPosition(float x, float y) {
+        body.setTransform(x, y, 0);
+    }
+
     // 取物理世界X速度
-    public final float getVelocityX() {
+    public float getVelocityX() {
         return body.getLinearVelocity().x;
     }
 
     // 取物理世界Y速度
-    public final float getVelocityY() {
+    public float getVelocityY() {
         return body.getLinearVelocity().y;
     }
 

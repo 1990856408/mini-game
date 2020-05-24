@@ -12,9 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-
-import com.mini.game.MiniGame;
 import com.custom.screen.NormalScreen;
+import com.mini.game.MiniGame;
 import com.mini.screen.stage.BaseStage;
 
 public class NormalScreenStage extends BaseStage {
@@ -30,7 +29,7 @@ public class NormalScreenStage extends BaseStage {
 
     @Override
     public void create() {
-//        createTouchPad();
+        createTouchPad();
         createButton();
         createProgressBar();
         createLabel();
@@ -173,7 +172,7 @@ public class NormalScreenStage extends BaseStage {
 //        barHP.setValue(normalScreen.prota.currentHP);
 //        barMP.setValue(normalScreen.prota.currentMP);
 
-        labelScoreVolume.setText(normalScreen.curScore + "");
+        labelScoreVolume.setText(String.format("%06d", normalScreen.curScore));
     }
 
     @Override

@@ -1,600 +1,400 @@
 package com.custom.member;
 
-public class ChunLi {
-//    //春丽的宽高
-//    public static final float DRAW_W = 47;
-//    public static final float DRAW_H = DRAW_W * 1.7f;
-//    //春丽的裂脚产生的力
-//    public static final float force_Xleg = 135.0f;
-//    public static final float force_Yleg = 270.0f;
-//    //春丽的最大最小速度
-//    private static final float max_velocity = 2.0f;
-//    private static final float min_velocity = 0.1f;
-//    //春丽释放完气功掌向后产生的冲力
-//    private static final float rush_x_force = 120.0f;
-//    private static final float rush_y_force = 120.0f;
-//    //春丽的生命持续的时间
-//    private static final int lifeTimes = 60000;
-//    //春丽的裂脚攻击时间
-//    private static final int attackTimes = 1500;
-//    private static final float squat_flex = 0.7f;//下蹲夹具的变化率
-//    private static final float attack_flex = 2.0f;//攻击夹具的变化率
-//    private static final float attack_Yflex = 1.4f;//攻击夹具的Y轴变化率
-//    public ChunLiState status;
-//    //春丽是否在气功掌
-//    public boolean isQigong;
-//    public ChunLiQiGongBall qigong;
-//    private Texture texture;
-//    private Animation walk_left, walk_right;
-//    private Animation idel_left, idel_right;
-//    private Animation jump_up, jump_down_left, jump_down_right;
-//    private Animation squat_left, squat_right;
-//    private Animation attack_left, attack_right;
-//    private float delta_qigong_times;//气功开始时到当前的渲染时间
-//    private Animation qigong_left, qigong_right;
-//    //春丽的裂脚攻击持续时间
-//    private Delay attackDelay;
-//    //两个夹具，普通夹具和下蹲夹具
-//    private FixtureDef fixdef_normal, fixdef_squat;
-//    //攻击时的夹具
-//    private FixtureDef fixdef_attack;
-//    //是否已经在攻击，是否已经在蹲下
-//    private boolean hasSquated;
-//    private boolean hasAttacked;
-//    private Vector<ChunLiQiGongBall> qigongs;
-//
-//    public ChunLi(Body body, char direction) {
-//        super(body);
-//
-//        this.draw_x = body.getPosition().x * MemberFixtureAttr.LENGTHRATE - DRAW_W / 2;
-//        this.draw_y = body.getPosition().y * MemberFixtureAttr.LENGTHRATE - DRAW_H / 2;
-//
-//        this.width = DRAW_W;
-//        this.height = DRAW_H;
-//
-//        this.direction = direction;
-//
-//        this.delay_run.setTimes(12);//模拟线程休眠
-//        this.delay_run.setFlag(true);
-//
-//        this.delay_life.setTimes(lifeTimes);
-//        this.delay_life.setFlag(false);//这一句用来保证自定义的模拟睡眠类在线程启动前标记为假，从而得到春丽活着
-//        this.exec.execute(delay_life);
-//
-//        this.attackDelay = new Delay();
-//        this.attackDelay.setTimes(attackTimes);
-//        this.attackDelay.setFlag(true);//确保初始时可以释放百裂脚
-//
-//        this.isAttack = false;
-//        this.delta_qigong_times = 0;
-//
-//        this.qigongs = new Vector<ChunLiQiGongBall>();
-//        this.init();
-//    }
-//
-//    public static Body getCreateBody(float init_x, float init_y, World world) {
-//        BodyDef bodyDef = new BodyDef();
-//        FixtureDef fixTureDef = new FixtureDef();
-//        PolygonShape shape = new PolygonShape();
-//        Body chunbody;
-//        Fixture fixture;
-//
-//        bodyDef.position.set(init_x / MemberFixtureAttr.LENGTHRATE,
-//                init_y / MemberFixtureAttr.LENGTHRATE);
-//        bodyDef.type = BodyType.DynamicBody;
-//
-//        chunbody = world.createBody(bodyDef);
-//
-//        shape.setAsBox(ChunLi.DRAW_W / MemberFixtureAttr.LENGTHRATE / MemberFixtureAttr.SCALE,
-//                ChunLi.DRAW_H / MemberFixtureAttr.LENGTHRATE / MemberFixtureAttr.SCALE);
-//
-//        fixTureDef.shape = shape;
-//        fixTureDef.filter.categoryBits = MemberFixtureAttr.CHUNLI;
-//        fixTureDef.filter.maskBits = MemberFixtureAttr._CHUNLI;
-//        fixTureDef.isSensor = false;//设置为传感器
-//        fixture = chunbody.createFixture(fixTureDef);
-//
-//        CustomUserData data = new CustomUserData();
-//        data.name = MemberName.CHUNLI;
-//        data.body = chunbody;
-//        data.fixture = fixture;
-//        chunbody.setUserData(data);
-//        fixture.setUserData(data);
-//
-//        return chunbody;
-//    }
-//
-//    public void attackLeg() {
-//        //进入攻击状态
-//        this.isAttack = true;
-//        exec.execute(attackDelay);
-//        if (this.direction == 'D') {
-//            this.currentAnimation = attack_right;
-//        } else {
-//            this.currentAnimation = attack_left;
-//        }
-//    }
-//
-//    public void attackQiGong() {
-//        //进入气功攻击状态
-//        this.isQigong = true;
-//        this.delta_qigong_times = 0;
-//        if (this.direction == 'D') {
-//            this.currentAnimation = qigong_right;
-//        } else if (this.direction == 'A') {
-//            this.currentAnimation = qigong_left;
-//        }
-//    }
-//
-//    @Override
-//    public void init() {
-//        this.initAnimation();
-//        this.initState();
-//        this.initFixture();
-//    }
-//
-//    public void initFixture() {
-//        fixdef_normal = new FixtureDef();
-//        fixdef_squat = new FixtureDef();
-//        fixdef_attack = new FixtureDef();
-//
-//        PolygonShape shape = new PolygonShape();
-//        shape.setAsBox(ChunLi.DRAW_W / MemberFixtureAttr.LENGTHRATE / MemberFixtureAttr.SCALE,
-//                ChunLi.DRAW_H / MemberFixtureAttr.LENGTHRATE / MemberFixtureAttr.SCALE);
-//        fixdef_normal.shape = shape;
-//        fixdef_normal.filter.categoryBits = MemberFixtureAttr.CHUNLI;
-//        fixdef_normal.filter.maskBits = MemberFixtureAttr._CHUNLI;
-//        fixdef_normal.isSensor = false;
-//
-//        PolygonShape shape2 = new PolygonShape();
-//
-//        shape2.setAsBox(ChunLi.DRAW_W / MemberFixtureAttr.LENGTHRATE / MemberFixtureAttr.SCALE,
-//                ChunLi.DRAW_H / MemberFixtureAttr.LENGTHRATE / MemberFixtureAttr.SCALE * squat_flex);
-//        fixdef_squat.shape = shape2;
-//        fixdef_squat.filter.categoryBits = MemberFixtureAttr.CHUNLI;
-//        fixdef_squat.filter.maskBits = MemberFixtureAttr._CHUNLI;
-//        fixdef_squat.isSensor = false;
-//
-//        //初始是否已经蹲下，设置为假
-//        this.hasSquated = false;
-//
-//        //攻击时的夹具
-//        PolygonShape shape3 = new PolygonShape();
-//
-//        shape3.setAsBox(ChunLi.DRAW_W / MemberFixtureAttr.LENGTHRATE / MemberFixtureAttr.SCALE * attack_flex,
-//                ChunLi.DRAW_H / MemberFixtureAttr.LENGTHRATE / MemberFixtureAttr.SCALE * attack_Yflex);
-//        fixdef_attack.shape = shape3;
-//        fixdef_attack.filter.categoryBits = MemberFixtureAttr.CHUNLI;
-//        fixdef_attack.filter.maskBits = MemberFixtureAttr._CHUNLI;
-//        fixdef_attack.isSensor = false;
-//        this.hasAttacked = false;
-//    }
-//
-//    private void initState() {
-//        status = ChunLiState.QUIET;
-//    }
-//
-//    private void initAnimation() {
-//        //裂脚攻击的动画
-//        texture = MiniGame.assetManager.get("members/chunli4.png", Texture.class);
-//        TextureRegion[][] region_attacks = TextureRegion.split(texture, texture.getWidth() / 2, texture.getHeight() / 4);
-//        TextureRegion region_attack_right[] = new TextureRegion[8];
-//        TextureRegion region_attack_left[] = new TextureRegion[8];
-//        int m = 0;
-//        for (int i = 0; i < 4; i++)
-//            for (int j = 0; j < 2; j++) {
-//                region_attack_right[m] = region_attacks[i][j];
-//                region_attack_left[m] = new TextureRegion(region_attack_right[m]);
-//                region_attack_left[m].flip(true, false);
-//                m++;
-//            }
-//        attack_right = new Animation(MemberFixtureAttr.DRAWDUR, region_attack_right);
-//        attack_right.setPlayMode(Animation.PlayMode.LOOP);
-//
-//        attack_left = new Animation(MemberFixtureAttr.DRAWDUR, region_attack_left);
-//        attack_left.setPlayMode(Animation.PlayMode.LOOP);
-//
-//
-//        //站立的动画
-//        Texture texture8 = MiniGame.assetManager.get("members/chunli8.png", Texture.class);
-//        TextureRegion[][] region_idels = TextureRegion.split(texture8, texture8.getWidth() / 4, texture8.getHeight() / 3);
-//        TextureRegion[] region_idel_right = new TextureRegion[10];
-//        TextureRegion[] region_idel_left = new TextureRegion[10];
-//        m = 0;
-//        for (int i = 0; i < 3; i++)
-//            for (int j = 0; j < 4; j++) {
-//                if (m >= 10)
-//                    break;
-//                region_idel_right[m] = region_idels[i][j];
-//                region_idel_left[m] = new TextureRegion(region_idel_right[m]);
-//                region_idel_left[m].flip(true, false);
-//                m++;
-//            }
-//        idel_right = new Animation(MemberFixtureAttr.DRAWDUR, region_idel_right);
-//        idel_right.setPlayMode(Animation.PlayMode.LOOP);
-//
-//        idel_left = new Animation(MemberFixtureAttr.DRAWDUR, region_idel_left);
-//        idel_left.setPlayMode(Animation.PlayMode.LOOP);
-//
-//        //走动的动画
-//        Texture texture7 = MiniGame.assetManager.get("members/chunli7.png", Texture.class);
-//        TextureRegion[][] region_walks = TextureRegion.split(texture7, texture7.getWidth() / 4, texture7.getHeight() / 3);
-//        TextureRegion[] region_walk_right = new TextureRegion[10];
-//        TextureRegion[] region_walk_left = new TextureRegion[10];
-//        m = 0;
-//        for (int i = 0; i < 3; i++)
-//            for (int j = 0; j < 3; j++) {
-//                region_walk_right[m] = region_walks[i][j];
-//                region_walk_left[m] = new TextureRegion(region_walk_right[m]);
-//                region_walk_left[m].flip(true, false);
-//                m++;
-//
-//            }
-//        region_walk_right[m] = region_walks[2][3];
-//        region_walk_left[m] = new TextureRegion(region_walk_right[m]);
-//        region_walk_left[m].flip(true, false);
-//        walk_right = new Animation(MemberFixtureAttr.DRAWDUR, region_walk_right);
-//        walk_right.setPlayMode(Animation.PlayMode.LOOP);
-//        walk_left = new Animation(MemberFixtureAttr.DRAWDUR, region_walk_left);
-//        walk_left.setPlayMode(Animation.PlayMode.LOOP);
-//        //跳跃的动画
-//        Texture texture2 = MiniGame.assetManager.get("members/chunli1.png", Texture.class);
-//        TextureRegion[][] region_jumps = TextureRegion.split(texture2, texture2.getWidth() / 4, texture2.getHeight() / 2);
-//        TextureRegion[] region_jump_up = new TextureRegion[8];
-//        m = 0;
-//        for (int i = 0; i < 2; i++)
-//            for (int j = 0; j < 4; j++) {
-//                region_jump_up[m] = region_jumps[i][j];
-//                m++;
-//            }
-//        jump_up = new Animation(MemberFixtureAttr.DRAWDUR, region_jump_up);
-//        jump_up.setPlayMode(Animation.PlayMode.LOOP);
-//
-//        //下降的动画
-//        Texture texture9 = MiniGame.assetManager.get("members/chunli9.png", Texture.class);
-//        TextureRegion[][] region_downs = TextureRegion.split(texture9, texture9.getWidth() / 3, texture9.getHeight() / 3);
-//        TextureRegion[] region_down_left = new TextureRegion[8];
-//        TextureRegion[] region_down_right = new TextureRegion[8];
-//        m = 0;
-//        for (int i = 0; i < 3; i++)
-//            for (int j = 0; j < 3; j++) {
-//                if (m >= 8)
-//                    break;
-//                region_down_left[m] = region_downs[i][j];
-//                region_down_right[m] = new TextureRegion(region_down_left[m]);
-//                region_down_right[m].flip(true, false);
-//                m++;
-//            }
-//        jump_down_left = new Animation(MemberFixtureAttr.DRAWDUR, region_down_left);
-//        jump_down_left.setPlayMode(Animation.PlayMode.LOOP);
-//        jump_down_right = new Animation(MemberFixtureAttr.DRAWDUR, region_down_right);
-//        jump_down_right.setPlayMode(Animation.PlayMode.LOOP);
-//        //下蹲的动画
-//        TextureRegion region_squat_left = new TextureRegion(texture8, 230, 250, 124, 104);
-//        squat_left = new Animation(MemberFixtureAttr.DRAWDUR, region_squat_left);
-//
-//        TextureRegion region_squat_right = new TextureRegion(region_squat_left);
-//        region_squat_right.flip(true, false);
-//        squat_right = new Animation(MemberFixtureAttr.DRAWDUR, region_squat_right);
-//
-//        //气功波，真实费劲儿
-//        Texture texture5 = MiniGame.assetManager.get("members/chunli5.png", Texture.class);
-//        Texture texture6 = MiniGame.assetManager.get("members/chunli6.png", Texture.class);
-//        TextureRegion[][] chunli5 = TextureRegion.split(texture5, texture5.getWidth() / 3, texture5.getHeight() / 5);
-//        TextureRegion[][] chunli6 = TextureRegion.split(texture6, texture6.getWidth() / 3, texture6.getHeight() / 6);
-//        TextureRegion[] region_qigong_right = new TextureRegion[28];
-//        TextureRegion[] region_qigong_left = new TextureRegion[28];
-//        int n = 0;
-//        for (int i = 0; i < 4; i++)
-//            for (int j = 0; j < 3; j++) {
-//                region_qigong_right[n] = chunli6[i][j];
-//                region_qigong_left[n] = new TextureRegion(region_qigong_right[n]);
-//                region_qigong_left[n].flip(true, false);
-//                n++;
-//            }
-//        region_qigong_right[n] = chunli6[4][0];
-//        region_qigong_left[n] = new TextureRegion(region_qigong_right[n]);
-//        region_qigong_left[n].flip(true, false);
-//        n++;
-//        for (int i = 0; i < 5; i++)
-//            for (int j = 0; j < 3; j++) {
-//                region_qigong_right[n] = chunli5[i][j];
-//                region_qigong_left[n] = new TextureRegion(region_qigong_right[n]);
-//                region_qigong_left[n].flip(true, false);
-//                n++;
-//            }
-//        qigong_right = new Animation(MemberFixtureAttr.DRAWDUR, region_qigong_right);
-////		qigong_right.setPlayMode(Animation.PlayMode.LOOP);
-//        qigong_left = new Animation(MemberFixtureAttr.DRAWDUR, region_qigong_left);
-////		qigong_left.setPlayMode(Animation.PlayMode.LOOP);
-//
-//
-//    }
-//
-//    @Override
-//    public void update(float delta) {
-//        this.delta_qigong_times += Gdx.graphics.getDeltaTime();
-//        this.updatePosition();
-//        this.updateChunLiState();
-//        this.updateAnimation();
-//        this.updateLife();
-//        this.updateQiGongLife();
-//        //如果在裂脚状态，则更新裂脚的夹具，如果不在裂脚状态，则更新气功掌的夹具
-//        if (!attackDelay.isFlag())
-//            this.updateAttackFixture(isAttack);
-//        else
-//            this.updateAttackFixture(isQigong);
-//    }
-//
-//    private void updateQiGongLife() {
-//        for (ChunLiQiGongBall qg : qigongs) {
-//            if (!qg.isAlive) {
-//                Body bo = qg.getBody();
-//                if (bo.getFixtureList().size > 0) {
-//                    bo.destroyFixture(bo.getFixtureList().first());
-//                }
-//            }
-//        }
-//        for (int i = 0; i < qigongs.size(); i++) {
-//            ChunLiQiGongBall qg = qigongs.get(i);
-//            Body bo = qg.getBody();
-//            if (bo.getFixtureList().size == 0) {
-//                if (!world.isLocked() && !qg.isRun) {
-//                    world.destroyBody(bo);
-//                    qigongs.remove(i);
-//                }
-//            }
-//        }
-//    }
-//
-//    private void updateLife() {
-//        if (isAlive == false)
-//            return;
-//        if (this.delay_life.isFlag())//生命时间到了，则令其死亡
-//        {
-//            this.isAlive = false;
-//        }
-//    }
-//
-//    private void updatePosition() {
-//        this.pos_x = body.getPosition().x * MemberFixtureAttr.LENGTHRATE;
-//        this.pos_y = body.getPosition().y * MemberFixtureAttr.LENGTHRATE;
-//        this.draw_x = body.getPosition().x * MemberFixtureAttr.LENGTHRATE - DRAW_W / 2;
-//        this.draw_y = body.getPosition().y * MemberFixtureAttr.LENGTHRATE - DRAW_H / 2;
-//    }
-//
-//    public void updateChunLiState() {
-//
-//        if (this.attackDelay.isFlag()) {
-//            //攻击完毕，退出裂脚攻击状态
-//            this.isAttack = false;
-//        }
-//
-//        float x = body.getLinearVelocity().x;
-//        float y = body.getLinearVelocity().y;
-//
-//        //先矫正一下速度
-//        this.adjustSpeed(x, y);
-//
-//        //如果是下蹲状态，则直接判断完成退出
-//        if (y == 0 && status == ChunLiState.SQUAT) {
-//            return;
-//        }
-//
-//        if (x == 0 && y == 0) {
-//            status = ChunLiState.QUIET;
-//        } else if (x != 0 && y == 0) {
-//            status = ChunLiState.WALK;
-//        } else if (x == 0 && y != 0) {
-//            status = ChunLiState.JUMP;
-//        } else if (x != 0 && y != 0) {
-//            status = ChunLiState.JUMP;
-//        }
-//
-//    }
-//
-//    public void updateAnimation() {
-//        //攻击状态下不需要更新动画，保持攻击动画即可
-//        if (this.isAttack || this.isQigong)
-//            return;
-//        switch (status) {
-//            case QUIET:
-//                switch (direction) {
-//                    case 'A':
-//                        currentAnimation = idel_left;
-//                        break;
-//                    case 'D':
-//                        currentAnimation = idel_right;
-//                        break;
-//                }
-//                break;
-//            case WALK:
-//                switch (direction) {
-//                    case 'A':
-//                        currentAnimation = walk_left;
-//                        break;
-//                    case 'D':
-//                        currentAnimation = walk_right;
-//                        break;
-//                }
-//                break;
-//            case JUMP:
-//                if (body.getLinearVelocity().y > 0) {
-//                    currentAnimation = jump_up;
-//                } else {
-//                    switch (direction) {
-//                        case 'A':
-//                            currentAnimation = jump_down_left;
-//                            break;
-//                        case 'D':
-//                            currentAnimation = jump_down_right;
-//                            break;
-//                    }
-//                }
-//                break;
-//            case SQUAT:
-//                switch (direction) {
-//                    case 'A':
-//                        currentAnimation = squat_left;
-//                        break;
-//                    case 'D':
-//                        currentAnimation = squat_right;
-//                        break;
-//                }
-//                break;
-//        }
-//    }
-//
-//    public void adjustSpeed(float x, float y) {
-//        if (x > max_velocity) {
-//            body.setLinearVelocity(max_velocity, y);
-//            return;
-//        }
-//        if (x < -max_velocity) {
-//            body.setLinearVelocity(-max_velocity, y);
-//            return;
-//        }
-//        if (x > 0 && x < min_velocity) {
-//            body.setLinearVelocity(0, y);
-//            return;
-//        }
-//        if (x < 0 && x > -min_velocity) {
-//            body.setLinearVelocity(0, y);
-//            return;
-//        }
-//
-//    }
-//
-//    //下蹲夹具切换
-//    public void updateFixture(boolean isSquat) {
-//        //如果在裂脚攻击或者气功掌状态，则直接退出夹具更新
-//        if (this.isAttack || this.isQigong)
-//            return;
-//        //先获取当前的夹具
-//        Fixture current_fixture = body.getFixtureList().first();
-//        //如果要求蹲下，并且没有蹲下才蹲下，否则保持状态即可
-//
-//        CustomUserData data = new CustomUserData();
-//        data.name = MemberName.CHUNLI;
-//        data.body = body;
-//
-//        if (isSquat) {
-//            if (!hasSquated) {
-//                body.destroyFixture(current_fixture);
-//                Fixture fixture = body.createFixture(fixdef_squat);
-//                data.fixture = fixture;
-//                fixture.setUserData(data);
-//                hasSquated = true;
-//            }
-//        } else {
-//            if (hasSquated) {
-//                body.destroyFixture(current_fixture);
-//                Fixture fixture = body.createFixture(fixdef_normal);
-//                data.fixture = fixture;
-//                fixture.setUserData(data);
-//                hasSquated = false;
-//            }
-//        }
-//    }
-//
-//    //攻击夹具切换
-//    public void updateAttackFixture(boolean attacking) {
-//        //先获取当前的夹具
-//        Fixture current_fixture = body.getFixtureList().first();
-//        //如果要求攻击，并且没有在攻击夹具状态下才更换，否则保持状态即可
-//        CustomUserData data = new CustomUserData();
-//        data.name = MemberName.CHUNLI;
-//        data.body = body;
-//        if (attacking) {
-//            if (!hasAttacked) {
-//                body.destroyFixture(current_fixture);
-//                Fixture fixture = body.createFixture(fixdef_attack);
-//                data.fixture = fixture;
-//                fixture.setUserData(data);
-//                hasAttacked = true;
-//            }
-//        } else {
-//            if (hasAttacked) {
-//                body.destroyFixture(current_fixture);
-//                Fixture fixture = body.createFixture(fixdef_normal);
-//                data.fixture = fixture;
-//                fixture.setUserData(data);
-//                hasAttacked = false;
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void render(SpriteBatch batch, float delta) {
-//        this.update(delta);
-//        batch.begin();
-//
-//        /*
-//         * 如果正在释放气功掌，如果动画没有播放完，则获取当前动画的关键帧
-//         */
-//        if (this.isQigong) {
-//            if (!this.currentAnimation.isAnimationFinished(delta_qigong_times)) {
-//                this.currentFrame = this.currentAnimation.getKeyFrame(delta_qigong_times);
-//            } else {
-//                this.createBall();
-//                this.isQigong = false;
-//                if (this.direction == 'D')
-//                    body.applyForceToCenter(-rush_x_force, rush_y_force, true);
-//                else
-//                    body.applyForceToCenter(rush_x_force, rush_y_force, true);
-//            }
-//        } else//如果不在气功掌状态，则直接获取当前的关键帧
-//        {
-//            this.currentFrame = this.currentAnimation.getKeyFrame(delta);
-//        }
-//
-//        //根据不同的状态，夹具也会发生变化，随之绘制位置也微调使图像处于夹具中
-//        if (this.isAttack || this.isQigong) {
-//            this.draw_x = body.getPosition().x * MemberFixtureAttr.LENGTHRATE - DRAW_W * attack_flex / 2;
-//            this.draw_y = body.getPosition().y * MemberFixtureAttr.LENGTHRATE - DRAW_H * attack_Yflex / 2;
-//            batch.draw(currentFrame, draw_x, draw_y, DRAW_W * attack_flex, DRAW_H * attack_Yflex);
-//        } else if (this.hasSquated) {
-//            this.draw_y = draw_y + DRAW_H * squat_flex / 4;
-//            batch.draw(currentFrame, draw_x, draw_y, DRAW_W, DRAW_H * squat_flex);
-//        } else if (this.status == ChunLiState.QUIET) {
-//            this.draw_y = this.draw_y - 2;
-//            batch.draw(currentFrame, draw_x, draw_y, DRAW_W, DRAW_H);
-//        } else {
-//            batch.draw(currentFrame, draw_x, draw_y, DRAW_W, DRAW_H);
-//        }
-//        batch.end();
-//
-//        for (ChunLiQiGongBall q : qigongs) {
-//            q.render(batch, delta);
-//        }
-//    }
-//
-//    private void createBall() {
-//        if (world.isLocked())
-//            return;
-//
-//        float ball_x = this.pos_x;
-//        float ball_y = this.pos_y + DRAW_H * 0.2f;
-//
-//        this.qigong = new ChunLiQiGongBall(ChunLiQiGongBall.getCreateBody(ball_x, ball_y, world), this.direction == 'D' ? 'D' : 'A');
-//        this.qigongs.add(qigong);
-//    }
-//
-//    @Override
-//    public void dispose() {
-//        if (qigongs != null)
-//            for (ChunLiQiGongBall qg : qigongs)
-//                qg.dispose();
-//    }
-//
-//    @Override
-//    public void xrun() {
-//        if (!delay_run.isFlag() || !isAlive)
-//            return;
-//        exec.execute(delay_run);
-//
-//        isRun = true;
-//
-//        isRun = false;
-//    }
+import com.alibaba.fastjson.JSONObject;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.*;
+import com.custom.member.constant.MemberFixtureAttribute;
+import com.custom.member.constant.MemberName;
+import com.custom.member.status.ChunLiStatus;
+import com.custom.member.weapon.ChunLiQiGongBall;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.mini.assist.AnimationAssist;
+import com.mini.assist.CustomUserData;
+import com.mini.constant.MiniGamePhysicalSetting;
+import com.mini.constant.MiniGameScreenSetting;
+import com.mini.game.MiniGame;
+import com.mini.member.GameSprite;
+import com.mini.member.GameSpriteCategory;
+import com.mini.member.helper.GameSpriteHelper;
+import com.mini.member.helper.GameSpriteHolder;
+import com.mini.member.status.GameSpriteDirection;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class ChunLi extends Protagonist {
+
+    protected ChunLiStatus status, statusPre;
+
+    protected float maximalVelocityX = 2.0f, maximalVelocityY = 0.1f;
+
+    private Map<ChunLiStatus, FixtureDef> fixtureDefMap = new HashMap<>();
+
+    private Set<ChunLiStatus> variableFixtureDefs = Sets.newHashSet(ChunLiStatus.SQUAT, ChunLiStatus.QI_GONG, ChunLiStatus.QI_GONG_BALL);
+
+    private Map<ChunLiStatus, Map<GameSpriteDirection, Animation>> animationMap = new HashMap<>();
+
+    private JSONObject animationTimes = new JSONObject();
+
+    private GameSpriteHolder chunLiQiGongBallHolder;
+
+    @Override
+    protected Body createBody(World world, float initX, float initY) {
+        GameSpriteHelper.BodyConfig config = new GameSpriteHelper.BodyConfig();
+        config.setInitX(initX).setInitY(initY)
+                .setBodyType(BodyDef.BodyType.DynamicBody).setWorld(world)
+                .setShapeType(Shape.Type.Polygon).setDrawW(getDrawW()).setDrawH(getDrawH()).setCategory(category).setIsSensor(false)
+                .setHost(this);
+        return GameSpriteHelper.me.createBody(config);
+    }
+
+    @Override
+    protected void preInit() {
+        chunLiQiGongBallHolder = new GameSpriteHolder(world);
+    }
+
+    @Override
+    protected void initFixtures() {
+        initFixtureBox(ChunLiStatus.QUIET, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        initFixtureBox(ChunLiStatus.WALK, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        initFixtureBox(ChunLiStatus.JUMP, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        initFixtureBox(ChunLiStatus.SQUAT, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE * 0.85f);
+        initFixtureBox(ChunLiStatus.CRACKED_FEET, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        initFixtureBox(ChunLiStatus.QI_GONG, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE * 1.4f, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        initFixtureBox(ChunLiStatus.QI_GONG_BALL, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE * 1.4f, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+    }
+
+    protected void initFixtureBox(ChunLiStatus st, float boxW, float boxH) {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(boxW, boxH);
+        FixtureDef fixtureDef = GameSpriteHelper.me.createFixtureDef(shape, category.bits, category.maskBits, false);
+        fixtureDefMap.put(st, fixtureDef);
+    }
+
+    @Deprecated
+    @Override
+    protected void initStatus() {
+        direction = GameSpriteDirection.R;
+
+        status = ChunLiStatus.QUIET;
+        statusPre = status;
+    }
+
+    @Override
+    protected void initAnimation() {
+        initAnimationQuiet();
+        initAnimationWalk();
+        initAnimationJump();
+        initAnimationLandfall();
+        initAnimationSquat();
+        initAnimationCrackedFeet();
+        initAnimationQiGong();
+        initAnimationQiGongBall();
+    }
+
+    private void initAnimationQuiet() {
+        Texture texture = MiniGame.assetManager.get("members/chunli8.png");
+        insertAnimation(ChunLiStatus.QUIET, GameSpriteDirection.R,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+        insertAnimation(ChunLiStatus.QUIET, GameSpriteDirection.L,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, getFrameDuration(), 1, Animation.PlayMode.LOOP));
+    }
+
+    private void initAnimationWalk() {
+        Texture texture = MiniGame.assetManager.get("members/chunli7.png");
+        int perW = texture.getWidth() / 4;
+        int perH = texture.getHeight() / 3;
+        insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.R, AnimationAssist.createAnimation(texture, Lists.newArrayList(
+                new AnimationAssist.Bound(perW * 0, perH * 0, perW, perH),
+                new AnimationAssist.Bound(perW * 1, perH * 0, perW, perH),
+                new AnimationAssist.Bound(perW * 2, perH * 0, perW, perH),
+                new AnimationAssist.Bound(perW * 0, perH * 1, perW, perH),
+                new AnimationAssist.Bound(perW * 1, perH * 1, perW, perH),
+                new AnimationAssist.Bound(perW * 2, perH * 1, perW, perH),
+                new AnimationAssist.Bound(perW * 0, perH * 2, perW, perH),
+                new AnimationAssist.Bound(perW * 1, perH * 2, perW, perH),
+                new AnimationAssist.Bound(perW * 2, perH * 2, perW, perH),
+                new AnimationAssist.Bound(perW * 3, perH * 2, perW, perH)
+        ), getFrameDuration(), 0, Animation.PlayMode.LOOP));
+        insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.L, AnimationAssist.createAnimation(texture, Lists.newArrayList(
+                new AnimationAssist.Bound(perW * 0, perH * 0, perW, perH),
+                new AnimationAssist.Bound(perW * 1, perH * 0, perW, perH),
+                new AnimationAssist.Bound(perW * 2, perH * 0, perW, perH),
+                new AnimationAssist.Bound(perW * 0, perH * 1, perW, perH),
+                new AnimationAssist.Bound(perW * 1, perH * 1, perW, perH),
+                new AnimationAssist.Bound(perW * 2, perH * 1, perW, perH),
+                new AnimationAssist.Bound(perW * 0, perH * 2, perW, perH),
+                new AnimationAssist.Bound(perW * 1, perH * 2, perW, perH),
+                new AnimationAssist.Bound(perW * 2, perH * 2, perW, perH),
+                new AnimationAssist.Bound(perW * 3, perH * 2, perW, perH)
+        ), getFrameDuration(), 1, Animation.PlayMode.LOOP));
+//        insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.R,
+//                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+//        insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.L,
+//                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, getFrameDuration(), 1, Animation.PlayMode.LOOP));
+    }
+
+    private void initAnimationJump() {
+        Texture texture = MiniGame.assetManager.get("members/chunli1.png");
+        insertAnimation(ChunLiStatus.JUMP, GameSpriteDirection.R,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 2, 8, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+        insertAnimation(ChunLiStatus.JUMP, GameSpriteDirection.L,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 2, 8, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+    }
+
+    private void initAnimationLandfall() {
+        Texture texture = MiniGame.assetManager.get("members/chunli9.png");
+        insertAnimation(ChunLiStatus.LANDFALL, GameSpriteDirection.R,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 3, 8, getFrameDuration(), 1, Animation.PlayMode.LOOP));
+        insertAnimation(ChunLiStatus.LANDFALL, GameSpriteDirection.L,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 3, 8, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+    }
+
+    private void initAnimationSquat() {
+        Texture texture = MiniGame.assetManager.get("members/chunli8.png");
+        insertAnimation(ChunLiStatus.SQUAT, GameSpriteDirection.R,
+                AnimationAssist.createAnimation(texture, Lists.newArrayList(new AnimationAssist.Bound(230, 250, 124, 104)), getFrameDuration(), 1, Animation.PlayMode.LOOP));
+        insertAnimation(ChunLiStatus.SQUAT, GameSpriteDirection.L,
+                AnimationAssist.createAnimation(texture, Lists.newArrayList(new AnimationAssist.Bound(230, 250, 124, 104)), getFrameDuration(), 0, Animation.PlayMode.LOOP));
+    }
+
+    private void initAnimationCrackedFeet() {
+        Texture texture = MiniGame.assetManager.get("members/chunli4.png");
+        insertAnimation(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.R,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, getFrameDuration(), 0, null));
+        insertAnimation(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.L,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, getFrameDuration(), 1, null));
+    }
+
+    private void initAnimationQiGong() {
+        Texture texture = MiniGame.assetManager.get("members/chunli6.png");
+        insertAnimation(ChunLiStatus.QI_GONG, GameSpriteDirection.R,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 6, 13, getFrameDuration(), 0, null));
+        insertAnimation(ChunLiStatus.QI_GONG, GameSpriteDirection.L,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 6, 13, getFrameDuration(), 1, null));
+    }
+
+    private void initAnimationQiGongBall() {
+        Texture texture = MiniGame.assetManager.get("members/chunli5.png");
+        insertAnimation(ChunLiStatus.QI_GONG_BALL, GameSpriteDirection.R,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 5, 15, getFrameDuration(), 0, null));
+        insertAnimation(ChunLiStatus.QI_GONG_BALL, GameSpriteDirection.L,
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 5, 15, getFrameDuration(), 1, null));
+    }
+
+    private void insertAnimation(ChunLiStatus chunLiStatus, GameSpriteDirection gameSpriteDirection, Animation animation) {
+        Map<GameSpriteDirection, Animation> directionMap = animationMap.get(chunLiStatus);
+        if (directionMap == null) {
+            directionMap = new HashMap<>();
+        }
+        directionMap.put(gameSpriteDirection, animation);
+
+        animationMap.put(chunLiStatus, directionMap);
+    }
+
+    @Override
+    protected void initCustom() {
+
+    }
+
+    @Override
+    protected void update() {
+        if (!needUpdate()) {
+            return;
+        }
+
+        updateFixtures();
+        updateStatus();
+        updateAnimation();
+        updateCustom();
+    }
+
+    @Override
+    public void updateFixtures() {
+        if (status != statusPre) {
+            if (variableFixtureDefs.contains(status) || variableFixtureDefs.contains(statusPre)) {
+                Fixture fixture = body.getFixtureList().first();
+                body.destroyFixture(fixture);
+                fixture = body.createFixture(fixtureDefMap.get(statusPre));
+
+                CustomUserData data = new CustomUserData();
+                data.name = category.name;
+                data.body = body;
+                data.fixture = fixture;
+                data.mine = this;
+
+                fixture.setUserData(data);
+            }
+        }
+    }
+
+    @Override
+    protected void updateStatus() {
+        // 生命值更新
+        if (isAlive && body.getFixtureList().size == 0) {
+            isAlive = false;
+        }
+
+        // 矫正速度
+        float velocityX = getVelocityX();
+        float velocityY = getVelocityY();
+        if (velocityX > maximalVelocityX) {
+            body.setLinearVelocity(maximalVelocityX, velocityY);
+            velocityX = getVelocityX();
+        }
+        if (velocityX < -maximalVelocityX) {
+            body.setLinearVelocity(-maximalVelocityX, velocityY);
+            velocityX = getVelocityX();
+        }
+
+        if (status == ChunLiStatus.CRACKED_FEET || status == ChunLiStatus.QI_GONG || status == ChunLiStatus.QI_GONG_BALL) {
+            Float animationTime = animationTimes.getFloat(status.name());
+            animationTime = animationTime == null ? Gdx.graphics.getDeltaTime() : Gdx.graphics.getDeltaTime() + animationTime;
+            if (currentAnimation.isAnimationFinished(animationTime)) {
+                if (status == ChunLiStatus.CRACKED_FEET) {
+                    statusPre = ChunLiStatus.QUIET;
+                    action = 0;
+                }
+                if (status == ChunLiStatus.QI_GONG) {
+                    statusPre = ChunLiStatus.QI_GONG_BALL;
+                }
+                if (status == ChunLiStatus.QI_GONG_BALL) {
+                    statusPre = ChunLiStatus.QUIET;
+                    action = 0;
+                    chunLiQiGongBallHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
+
+                        private GameSprite gameSprite;
+
+                        @Override
+                        public GameSprite getGameSprite() {
+                            gameSprite = new ChunLiQiGongBall();
+                            return gameSprite;
+                        }
+
+                        @Override
+                        public float getInitX() {
+                            if (direction == GameSpriteDirection.L) {
+                                return getDrawX() - gameSprite.getDrawR();
+                            }
+                            return getDrawX() + getDrawW() + gameSprite.getDrawR();
+                        }
+
+                        @Override
+                        public float getInitY() {
+                            return getDrawY() + gameSprite.getDrawR() * 0.5f;
+                        }
+
+                        @Override
+                        public GameSpriteHolder.CreateAction getCreateAction() {
+                            return (gameSprite -> {
+                                gameSprite.applyForceToCenter(360 * (direction == GameSpriteDirection.L ? -1 : 1), 0);
+                            });
+                        }
+                    });
+                }
+                animationTime = 0f;
+            }
+            animationTimes.put(status.name(), animationTime);
+        }
+
+        status = statusPre;
+
+        // 纠正状态
+        if (action == 0 && status != ChunLiStatus.SQUAT) {
+            if (velocityX == 0 && velocityY == 0) {
+                status = ChunLiStatus.QUIET;
+            } else if (velocityY == 0) {
+                status = ChunLiStatus.WALK;
+            } else {
+                if (velocityY > 0) {
+                    status = ChunLiStatus.JUMP;
+                }
+                if (velocityY < 0) {
+                    status = ChunLiStatus.LANDFALL;
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void updateAnimation() {
+        currentAnimation = animationMap.get(status).get(direction);
+    }
+
+    @Override
+    protected void renderCustom(SpriteBatch batch, float delta) {
+        batch.begin();
+        Float animationTime = animationTimes.getFloat(status.name());
+        if (animationTime == null || animationTime == 0) {
+            animationTime = delta;
+        }
+        batch.draw(getFrameCurrent(animationTime), getDrawX(), getDrawY(), getDrawW(), getDrawH());
+        batch.end();
+
+        chunLiQiGongBallHolder.render(batch, delta);
+    }
+
+    @Override
+    public void createBomb() {
+        statusPre = ChunLiStatus.QI_GONG;
+        action = 1L << 1;
+    }
+
+    @Override
+    public void createMarioBullet() {
+        statusPre = ChunLiStatus.CRACKED_FEET;
+        action = 1L << 0;
+    }
+
+    @Override
+    public float getPosX() {
+        return body.getPosition().x;
+    }
+
+    @Override
+    public float getPosY() {
+        return body.getPosition().y;
+    }
+
+    @Override
+    public float getDrawX() {
+        return getPosX() * MiniGameScreenSetting.VIEW_RATE - getDrawW() / 2;
+    }
+
+    @Override
+    public float getDrawY() {
+        return getPosY() * MiniGameScreenSetting.VIEW_RATE - getDrawH() / 2;
+    }
+
+    @Override
+    public float getDrawW() {
+        return 47;
+    }
+
+    @Override
+    public float getDrawH() {
+        return getDrawW() * 1.7f;
+    }
+
+    @Override
+    public void applyForceToCenter(float forceX, float forceY) {
+        body.applyForceToCenter(forceX, forceY, true);
+    }
+
+    @Override
+    public GameSpriteCategory getGameSpriteCategory() {
+        if (category != null) {
+            return category;
+        }
+        return GameSpriteCategory.build(MemberFixtureAttribute.CHUNLI, MemberFixtureAttribute._CHUNLI, MemberName.CHUNLI);
+    }
+
+    public void setStatusPre(ChunLiStatus statusPre) {
+        this.statusPre = statusPre;
+    }
 }

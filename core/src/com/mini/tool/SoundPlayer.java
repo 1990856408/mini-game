@@ -16,13 +16,9 @@ public class SoundPlayer {
 
     // 播放音乐
     public void playMusic(String path) {
-        if (music != null) {
-            music.dispose();
-        }
-
         music = MiniGame.assetManager.get(path);
         music.setLooping(true);
-        music.setVolume(0.2f);
+        music.setVolume(0.4f);
         music.play();
     }
 
@@ -35,10 +31,6 @@ public class SoundPlayer {
 
     // 播放音效（短暂的）
     public void playSound(EnumSound enumSound) {
-        if (sound != null) {
-            sound.dispose();
-        }
-
         sound = MiniGame.assetManager.get(EnumSound.path(enumSound), Sound.class);
         sound.play(0.04f);
     }

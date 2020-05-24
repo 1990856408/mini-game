@@ -25,7 +25,7 @@ public class MiniGameConfig {
 
     public static int getScreenSettingViewH() {
         if (jsonObject == null || jsonObject.get(ScreenSettingViewH) == null) {
-            return MiniGameScreenSetting.VIEW_W;
+            return MiniGameScreenSetting.VIEW_H;
         }
         return jsonObject.getInteger(ScreenSettingViewH);
     }
