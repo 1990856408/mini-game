@@ -1,0 +1,200 @@
+package com.mini.members;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.mini.assist.CustomUserData;
+import com.mini.constant.ConstantMembers;
+import com.mini.constant.ConstantNames;
+import com.mini.game.MiniGame;
+import com.mini.screen.NormalScreen;
+
+/*
+ * 第一个武器
+ */
+public class Flame extends GameSprite {
+
+    //火焰的绘制宽高
+    public static final float Width = 70;
+    public static final float Height = Width * 0.35f;
+
+    //垂直作用力为重力的7倍
+    private static final float flameYforce = NormalScreen.WORLD_GRAVITY * 7;
+    private static final float pos_x_range = 470;
+    private static final float pos_y_range = 45;
+    //初始作用力
+    private static final float init_force = 7.0f;
+    private Texture texture;
+    private Animation fly_left, fly_right;
+
+
+    public Flame(Body body, char direction) {
+        super(body);
+
+        this.draw_x = body.getPosition().x * ConstantMembers.LENGTHRATE - Width / 2;
+        this.draw_y = body.getPosition().y * ConstantMembers.LENGTHRATE - Height / 2;
+        this.width = Width;
+        this.height = Height;
+
+        this.direction = direction;
+
+        this.delay_run.setTimes(12);
+        this.init();
+    }
+
+    public static Body getCreateBody(float init_x, float init_y, World world) {
+        //刚体定义，夹具定义，图形创建，家具创建
+        BodyDef bodyDef = new BodyDef();
+        FixtureDef fixTureDef = new FixtureDef();
+        PolygonShape shape = new PolygonShape();
+        Body body;
+        Fixture fixture;
+
+        bodyDef.position.set(init_x / ConstantMembers.LENGTHRATE,
+                init_y / ConstantMembers.LENGTHRATE);
+        bodyDef.type = BodyType.DynamicBody;
+
+        body = world.createBody(bodyDef);
+
+        shape.setAsBox(Flame.Width / ConstantMembers.LENGTHRATE / ConstantMembers.SCALE,
+                Flame.Height / ConstantMembers.LENGTHRATE / ConstantMembers.SCALE);
+
+        fixTureDef.shape = shape;
+        fixTureDef.filter.categoryBits = ConstantMembers.FLAME;
+        fixTureDef.filter.maskBits = ConstantMembers._FLAME;
+        fixTureDef.isSensor = true;//设置为传感器
+        fixture = body.createFixture(fixTureDef);
+
+        CustomUserData data = new CustomUserData();
+        data.name = ConstantNames.FLAME;
+        data.body = body;
+        data.fixture = fixture;
+        body.setUserData(data);
+        fixture.setUserData(data);
+
+        return body;
+    }
+
+    @Override
+    public void init() {
+        this.initAnimation();
+        if (this.direction == 'D') {
+            this.currentAnimation = fly_right;
+        } else if (this.direction == 'A') {
+            this.currentAnimation = fly_left;
+        }
+    }
+
+    protected void initAnimation() {
+        texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
+
+        TextureRegion region_fly_left[] = new TextureRegion[4];
+        region_fly_left[0] = new TextureRegion(texture, 201, 407, 28, 16);
+        region_fly_left[1] = new TextureRegion(texture, 243, 407, 28, 16);
+        region_fly_left[2] = new TextureRegion(texture, 282, 407, 28, 16);
+        region_fly_left[3] = new TextureRegion(texture, 326, 407, 28, 16);
+        fly_left = new Animation(ConstantMembers.DRAWDUR, region_fly_left);
+        fly_left.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion region_fly_right[] = new TextureRegion[4];
+        for (int i = 0; i < 4; i++) {
+            region_fly_right[i] = new TextureRegion();
+            region_fly_right[i].setRegion(region_fly_left[i]);
+            region_fly_right[i].flip(true, false);
+        }
+        fly_right = new Animation(ConstantMembers.DRAWDUR, region_fly_right);
+        fly_right.setPlayMode(Animation.PlayMode.LOOP);
+    }
+
+    @Override
+    public void update(float delta) {
+        this.updatePosition();
+        this.updateLife();
+        this.runZ();
+    }
+
+    //移出指定范围则令其死亡
+    private void updateLife() {
+        if (isAlive == false)
+            return;
+
+        if (this.body.getFixtureList().size == 0) {
+            this.isAlive = false;
+            return;
+        }
+
+        if (direction == 'D') {
+            if (pos_x >= (init_pos_x + pos_x_range)) {
+                this.isAlive = false;
+            }
+        } else if (direction == 'A') {
+            if (pos_x <= (init_pos_x - pos_x_range)) {
+                this.isAlive = false;
+            }
+        }
+
+
+    }
+
+    private void updatePosition() {
+        this.pos_x = body.getPosition().x * ConstantMembers.LENGTHRATE;
+        this.pos_y = body.getPosition().y * ConstantMembers.LENGTHRATE;
+        this.draw_x = body.getPosition().x * ConstantMembers.LENGTHRATE - Width / 2;
+        this.draw_y = body.getPosition().y * ConstantMembers.LENGTHRATE - Height / 2;
+
+        this.judgeRunRange();
+    }
+
+    //判断活动范围，只需要判断垂直的活动范围即可
+    private void judgeRunRange() {
+        if (!this.isAlive)
+            return;
+
+        if (pos_y <= (init_pos_y - pos_y_range)) {
+            pos_y = init_pos_y - pos_y_range;
+            body.applyForceToCenter(0, flameYforce, true);
+        }
+
+    }
+
+    @Override
+    public void renderX(SpriteBatch batch, float delta) {
+        batch.begin();
+
+        this.currentFrame = this.currentAnimation.getKeyFrame(delta);
+        batch.draw(currentFrame, draw_x, draw_y, Width, Height);
+
+        batch.end();
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public void runZ() {
+        if (!delay_run.isFlag() || !isAlive)
+            return;
+        exec.execute(delay_run);
+
+        isRun = true;
+
+        if (this.direction == 'D') {
+            this.body.applyForceToCenter(init_force, 0, true);
+        } else if (this.direction == 'A') {
+            this.body.applyForceToCenter(-init_force, 0, true);
+        }
+
+        isRun = false;
+    }
+
+    @Override
+    public void runX() {
+
+    }
+
+}

@@ -1,0 +1,170 @@
+package com.mini.members;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.mini.assist.CustomUserData;
+import com.mini.constant.ConstantMembers;
+import com.mini.constant.ConstantNames;
+import com.mini.game.MiniGame;
+
+public class RobotBall extends GameSprite {
+    private static final float Radius = 42;
+    private static final float init_Xforce = 150.0f;
+    private static final float init_Yforce = 300.0f;
+    private Texture texture;
+    private Animation fly_left, fly_right;
+
+    public RobotBall(Body body, char direction) {
+        super(body);
+        this.draw_x = body.getPosition().x * ConstantMembers.LENGTHRATE - Radius / 2;
+        this.draw_y = body.getPosition().y * ConstantMembers.LENGTHRATE - Radius / 2;
+
+        this.width = Radius;
+        this.height = Radius;
+
+        this.direction = direction;
+
+        this.delay_run.setTimes(12);
+        this.init();
+    }
+
+    public static Body getCreateBody(float init_x, float init_y, World world) {
+        //刚体定义，夹具定义，图形创建，家具创建
+        BodyDef bodyDef = new BodyDef();
+        FixtureDef fixTureDef = new FixtureDef();
+        CircleShape shape = new CircleShape();
+        Body body;
+        Fixture fixture;
+
+        bodyDef.position.set(init_x / ConstantMembers.LENGTHRATE,
+                init_y / ConstantMembers.LENGTHRATE);
+        bodyDef.type = BodyType.DynamicBody;
+
+        body = world.createBody(bodyDef);
+
+        shape.setRadius(RobotBall.Radius / ConstantMembers.LENGTHRATE / ConstantMembers.SCALE);
+
+        fixTureDef.shape = shape;
+        fixTureDef.filter.categoryBits = ConstantMembers.ROBOTBALL;
+        fixTureDef.filter.maskBits = ConstantMembers._ROBOTBALL;
+        fixTureDef.isSensor = true;//设置为传感器
+        fixture = body.createFixture(fixTureDef);
+
+        CustomUserData data = new CustomUserData();
+        data.name = ConstantNames.ROBOTBALL;
+        data.body = body;
+        data.fixture = fixture;
+        body.setUserData(data);
+        fixture.setUserData(data);
+
+        return body;
+    }
+
+    @Override
+    public void init() {
+        this.initAnimation();
+        this.initState();
+    }
+
+    /*
+     * 根据方向设置动画，根据方向给一个力
+     */
+    public void initState() {
+        if (this.direction == 'D') {
+            this.currentAnimation = fly_right;
+            body.applyForceToCenter(init_Xforce, init_Yforce, true);
+        } else if (this.direction == 'A') {
+            this.currentAnimation = fly_left;
+            body.applyForceToCenter(-init_Xforce, init_Yforce, true);
+        }
+
+    }
+
+    //初始化动作
+    protected void initAnimation() {
+        texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
+        TextureRegion[] region_fly_left = new TextureRegion[3];
+        region_fly_left[0] = new TextureRegion(texture, 409, 319, 16, 16);
+        region_fly_left[1] = new TextureRegion(texture, 409, 348, 16, 16);
+        region_fly_left[2] = new TextureRegion(texture, 409, 376, 16, 16);
+        fly_left = new Animation(ConstantMembers.DRAWDUR, region_fly_left);
+        fly_left.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion[] region_fly_right = new TextureRegion[3];
+        for (int i = 0; i < 3; i++) {
+            region_fly_right[i] = new TextureRegion(region_fly_left[i]);
+            region_fly_right[i].flip(true, false);
+        }
+        fly_right = new Animation(ConstantMembers.DRAWDUR, region_fly_right);
+        fly_right.setPlayMode(Animation.PlayMode.LOOP);
+    }
+
+    /*
+     * 更新位置，更新生命值，启动虚拟线程run方法
+     */
+    public void update(float delta) {
+        this.updatePosition();
+        this.updateLife();
+    }
+
+    private void updatePosition() {
+        this.pos_x = body.getPosition().x * ConstantMembers.LENGTHRATE;
+        this.pos_y = body.getPosition().y * ConstantMembers.LENGTHRATE;
+        this.draw_x = body.getPosition().x * ConstantMembers.LENGTHRATE - Radius / 2;
+        this.draw_y = body.getPosition().y * ConstantMembers.LENGTHRATE - Radius / 2;
+    }
+
+    private void updateLife() {
+        if (isAlive == false)
+            return;
+        //夹具的处理在场景中，可根据是否有夹具来判断是否存活
+        if (this.body.getFixtureList().size == 0) {
+            this.isAlive = false;
+            return;
+        }
+        //或者当y坐标小于0，那么此时它已经掉出屏幕，则销毁夹具并令其死亡
+        if (this.pos_y < 0 && this.body.getPosition().y < 0) {
+            if (body.getFixtureList().size > 0) {
+                body.destroyFixture(body.getFixtureList().first());
+            }
+            this.isAlive = false;
+            return;
+        }
+    }
+
+    public void runZ() {
+        if (!delay_run.isFlag() || !isAlive)
+            return;
+        exec.execute(delay_run);
+
+        isRun = true;
+
+        isRun = false;
+    }
+
+    @Override
+    public void renderX(SpriteBatch batch, float delta) {
+
+        batch.begin();
+
+        this.currentFrame = this.currentAnimation.getKeyFrame(delta);
+        batch.draw(currentFrame, draw_x, draw_y, Radius, Radius);
+
+        batch.end();
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public void runX() {
+
+    }
+}
+

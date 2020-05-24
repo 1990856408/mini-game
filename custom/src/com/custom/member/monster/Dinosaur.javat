@@ -1,0 +1,385 @@
+package com.mini.monsters;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.mini.assist.Delay;
+import com.mini.assist.CustomUserData;
+import com.mini.constant.*;
+import com.mini.game.MiniGame;
+import com.mini.members.Flame;
+import com.mini.members.GameSprite;
+import com.mini.screen.NormalScreen;
+
+import java.util.Vector;
+
+/*
+ * 第一个具有攻击力的怪物，智商为4
+ */
+public class Dinosaur extends GameSprite {
+    //恐龙绘制的宽高比
+    public static final float Width = 60.5f;
+    public static final float Height = Width * 1.4f;
+    //恐龙移动的最大最小速度
+    private static final float max_velocity = 2.0f;
+    private static final float min_velocity = 0.1f;
+    //恐龙移动的X轴Y轴受到的力
+    private static final float dinXforce = 7f;
+    private static final float dinYforce = NormalScreen.WORLD_GRAVITY * 2.5f;
+    //恐龙的活动范围
+    private static final float pos_x_range = 150;
+    private static final float pos_y_range = 40;
+    private static final int de_attack_time = 700;//冷却时间
+    //做随机数用的分子和分母
+    private static final int randMother = 1000;
+    private static final int randSonAttack = 10;//攻击随机数
+    private static final int randSonYForce = 300;//跳跃随机数
+    //第一个具有血量的怪物
+    public static float max_hp = 100;
+    //恐龙的当前状态
+    public DinosaurState state;
+    //火焰，这个是技能
+    public Flame flame;
+    public Vector<Flame> flames;
+    //恐龙纹理的资源
+    private Texture texture;
+    //恐龙的各个动作
+    private Animation walk_left, walk_right;
+    private Animation attack_left, attack_right;
+    //攻击冷却
+    private Delay de_attack;
+
+    public Dinosaur(Body body) {
+        super(body);
+
+        this.flames = new Vector<Flame>();
+
+        this.draw_x = body.getPosition().x * ConstantMembers.LENGTHRATE - Width / 2;
+        this.draw_y = body.getPosition().y * ConstantMembers.LENGTHRATE - Height / 2;
+
+        this.width = Width;
+        this.height = Height;
+
+        this.de_attack = new Delay();
+        this.de_attack.setTimes(de_attack_time);
+
+        this.delay_run.setTimes(5);
+
+        this.init();
+    }
+
+    public static Body getCreateBody(float init_x, float init_y, World world) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.DynamicBody;
+
+        FixtureDef fixTureDef = new FixtureDef();
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(Dinosaur.Width / ConstantMembers.LENGTHRATE / ConstantMembers.SCALE,
+                Dinosaur.Height / ConstantMembers.LENGTHRATE / ConstantMembers.SCALE);
+
+        fixTureDef.shape = shape;
+        fixTureDef.filter.categoryBits = ConstantMembers.DINO;
+        fixTureDef.filter.maskBits = ConstantMembers._DINO;
+        fixTureDef.isSensor = false;
+
+        bodyDef.position.set(init_x / ConstantMembers.LENGTHRATE,
+                init_y / ConstantMembers.LENGTHRATE);
+
+        Body body = world.createBody(bodyDef);
+        Fixture fixture = body.createFixture(fixTureDef);
+
+        CustomUserData data = new CustomUserData();
+        data.name = ConstantNames.DINO;
+        data.body = body;
+        data.fixture = fixture;
+        body.setUserData(data);
+        fixture.setUserData(data);
+        return body;
+    }
+
+    @Override
+    public void init() {
+        this.initLife();
+        this.initState();
+        this.initAnimation();
+    }
+
+    protected void initAnimation() {
+        texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
+        //左右行走的动作
+        TextureRegion region_walk_left[] = new TextureRegion[3];
+        region_walk_left[0] = new TextureRegion(texture, 0, 395, 33, 37);
+        region_walk_left[1] = new TextureRegion(texture, 39, 395, 33, 37);
+        region_walk_left[2] = new TextureRegion(texture, 79, 395, 33, 37);
+        walk_left = new Animation(ConstantMembers.DRAWDUR, region_walk_left);
+        walk_left.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion region_walk_right[] = new TextureRegion[3];
+        for (int i = 0; i < 3; i++) {
+            region_walk_right[i] = new TextureRegion();
+            region_walk_right[i].setRegion(region_walk_left[i]);
+            region_walk_right[i].flip(true, false);
+        }
+        walk_right = new Animation(ConstantMembers.DRAWDUR, region_walk_right);
+        walk_right.setPlayMode(Animation.PlayMode.LOOP);
+
+        /*
+         * 左右攻击的动作
+         */
+        TextureRegion region_attack_left[] = new TextureRegion[2];
+        region_attack_left[0] = new TextureRegion(texture, 120, 395, 33, 37);
+        region_attack_left[1] = new TextureRegion(texture, 160, 395, 33, 37);
+        attack_left = new Animation(ConstantMembers.DRAWDUR, region_attack_left);
+        attack_left.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion region_attack_right[] = new TextureRegion[2];
+        for (int i = 0; i < 2; i++) {
+            region_attack_right[i] = new TextureRegion();
+            region_attack_right[i].setRegion(region_attack_left[i]);
+            region_attack_right[i].flip(true, false);
+        }
+        attack_right = new Animation(ConstantMembers.DRAWDUR, region_attack_right);
+        attack_right.setPlayMode(Animation.PlayMode.LOOP);
+    }
+
+    private void initLife() {
+        this.currentHP = max_hp;
+    }
+
+    private void initState() {
+        if (random.nextInt(2) == 1)
+            this.direction = 'D';
+        else
+            this.direction = 'A';
+        this.state = DinosaurState.WALK;
+    }
+
+    @Override
+    public void update(float delta) {
+        this.updatePosition();
+        this.updateDinosaurState();
+        this.updateAnimation();
+        this.updateLife();
+        this.updateFlamesLife();
+        this.runZ();
+    }
+
+    private void updateFlamesLife() {
+        for (Flame fla : flames) {
+            if (!fla.isAlive) {
+                Body bo = fla.getBody();
+                if (bo.getFixtureList().size > 0) {
+                    bo.destroyFixture(bo.getFixtureList().first());
+                }
+            }
+        }
+        for (int i = 0; i < flames.size(); i++) {
+            Flame fla = flames.get(i);
+            Body bo = fla.getBody();
+            if (bo.getFixtureList().size == 0) {
+                if (!world.isLocked() && !fla.isRun) {
+                    world.destroyBody(bo);
+                    flames.remove(i);
+                }
+            }
+        }
+
+    }
+
+    private void updateLife() {
+        if (isAlive == false) {
+            return;
+        }
+        if (currentHP <= 0) {
+            isAlive = false;
+            currentHP = 0;
+        }
+    }
+
+    private void updateAnimation() {
+        switch (state) {
+            case ATTACK:
+                switch (direction) {
+                    case 'A':
+                        currentAnimation = attack_left;
+                        break;
+                    case 'D':
+                        currentAnimation = attack_right;
+                        break;
+                }
+                break;
+            case WALK:
+                switch (direction) {
+                    case 'A':
+                        currentAnimation = walk_left;
+                        break;
+                    case 'D':
+                        currentAnimation = walk_right;
+                        break;
+                }
+                break;
+        }
+    }
+
+    private void updateDinosaurState() {
+        float x = body.getLinearVelocity().x;
+        float y = body.getLinearVelocity().y;
+
+        //先矫正一下速度
+        this.adjustSpeed(x, y);
+    }
+
+    //与主角的矫正速度函数一样
+    private void adjustSpeed(float x, float y) {
+        if (x > max_velocity) {
+            body.setLinearVelocity(max_velocity, y);
+            return;
+        }
+        if (x < -max_velocity) {
+            body.setLinearVelocity(-max_velocity, y);
+            return;
+        }
+        if (x > 0 && x < min_velocity) {
+            body.setLinearVelocity(0, y);
+            return;
+        }
+        if (x < 0 && x > -min_velocity) {
+            body.setLinearVelocity(0, y);
+            return;
+        }
+    }
+
+    private void updatePosition() {
+        this.pos_x = body.getPosition().x * ConstantMembers.LENGTHRATE;
+        this.pos_y = body.getPosition().y * ConstantMembers.LENGTHRATE;
+        this.draw_x = body.getPosition().x * ConstantMembers.LENGTHRATE - Width / 2;
+        this.draw_y = body.getPosition().y * ConstantMembers.LENGTHRATE - Height / 2;
+    }
+
+    @Override
+    public void renderX(SpriteBatch batch, float delta) {
+        batch.begin();
+        this.currentFrame = this.currentAnimation.getKeyFrame(delta);
+        batch.draw(currentFrame, draw_x, draw_y, Width, Height);
+        batch.end();
+
+        for (Flame f : flames) {
+            f.render(batch, delta);
+        }
+
+    }
+
+    public void runZ() {
+        if (!delay_run.isFlag() || !isAlive)
+            return;
+        exec.execute(delay_run);
+
+        isRun = true;
+
+        this.randomRun();
+
+        isRun = false;
+    }
+
+    public void runX() {
+
+    }
+
+    //随机活动函数，用来给怪物智能的函数
+    private void randomRun() {
+        //判断活动范围，顺便活动
+        this.giveForce();
+        this.judgeRunRange();
+        this.judgeAttack();
+    }
+
+    private void giveForce() {
+        //根据方向给刚体一个力
+        if (direction == 'D') {
+            this.body.applyForceToCenter(new Vector2(dinXforce, 0), true);
+        } else if (direction == 'A') {
+            this.body.applyForceToCenter(new Vector2(-dinXforce, 0), true);
+        }
+        //随机给予刚体一个向上的力
+        if (random.nextInt(randMother) < randSonYForce) {
+            this.body.applyForceToCenter(new Vector2(0, dinYforce), true);
+        }
+
+    }
+
+    private void judgeAttack() {
+        //随机攻击
+        if (random.nextInt(randMother) < randSonAttack) {
+            //如果冷却完毕就可以攻击
+            if (this.de_attack.isFlag()) {
+                //动作切换为攻击状态
+                this.state = DinosaurState.ATTACK;
+                exec.execute(de_attack);
+                //创建火焰
+                this.createFlame();
+            }
+        } else if (this.de_attack.isFlag()) {
+            this.state = DinosaurState.WALK;
+        }
+
+
+    }
+
+    //创建火焰的函数
+    private void createFlame() {
+        if (world.isLocked())
+            return;
+
+        float flame_x = this.pos_x;
+        float flame_y = this.pos_y + Height * 0.2f;
+
+        //实例化主角
+        flame = new Flame(Flame.getCreateBody(flame_x, flame_y, world), this.direction);
+        flames.add(flame);
+        //播放效果
+        if (pos_x > NormalScreen.camera_pos_x && pos_x < (NormalScreen.camera_pos_x + MiniGameScreenSetting.VIEW_W)) {
+            if (pos_y > NormalScreen.camera_pos_y && pos_y < (NormalScreen.camera_pos_y + MiniGameScreenSetting.VIEW_H)) {
+                NormalScreen.soundPlayer.playSound(EnumSound.FLAME);
+            }
+        }
+    }
+
+    public void judgeRunRange() {
+        //获取水平与垂直的速度
+        float speedx = body.getLinearVelocity().x;
+        float speedy = body.getLinearVelocity().y;
+
+        if (direction == 'D') {
+            //移除指定范围，那么让它水平速度为0，并调整方向
+            if (pos_x >= (init_pos_x + pos_x_range)) {
+                this.body.setLinearVelocity(0, speedy);
+                this.direction = 'A';
+            }
+        } else if (direction == 'A') {
+            if (pos_x <= (init_pos_x - pos_x_range)) {
+                this.body.setLinearVelocity(0, speedy);
+                this.direction = 'D';
+            }
+        }
+
+        this.contactConvertDirection();
+
+        if (pos_y > (init_pos_y + pos_y_range)) {
+            body.setLinearVelocity(speedx, 0);
+        } else if (pos_y < (init_pos_y - pos_y_range)) {
+            this.body.applyForceToCenter(new Vector2(0, dinYforce), true);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        for (Flame f : flames) {
+            f.dispose();
+        }
+    }
+}

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="32" tilewidth="32" tileheight="32" nextobjectid="53">
+ <tileset firstgid="1" name="map" tilewidth="32" tileheight="32">
+  <image source="map.png" width="1024" height="1024"/>
+ </tileset>
+ <layer name="map" width="200" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt281qwkAUxfFJQaHd1ArtvgWFdqMV7Hv240VafUDPvgYnmdz5uP5/cLiEQFYyJ5mYEAAAAAAAAAAAsR6VpzMTQAh75ePMBADAwq1yF3F+yISNT+VL+VZ+MhwjhFflLeL8kAkbv8qfclCOGY6v2aXeAGpmvR91qTeAmlntR9EbQD96A/iP3mgDe0hl0BttqG0PqcSecIn/gnjqj5kyT5gxOuVmwtmqEnvCJf4L4qk/Vso6YcZ4Vl4mnKibh/4Ysv7nuA788NAfQ9b/HNeBHzn7Y+p7d6v1vpUeYU/LXs7+mPre3Wq9b6VHatvT8sjD84eV2nqEvsjPw/OHldp6xEtf3OsGeaE8KMsu/djSmO84xs5Wpb5X6ZvX+t3FRr/prfKu7Lr0Y0tjvuMYO1uV+l6lb/LdBQAAAACghBO0QXRx
+  </data>
+ </layer>
+ <objectgroup name="mario">
+  <object id="1" name="mario" x="168" y="552">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="robot"/>
+ <objectgroup name="dino">
+  <object id="47" name="dino" x="6264" y="592">
+   <ellipse/>
+  </object>
+  <object id="48" name="dino" x="6040" y="584">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="duck">
+  <object id="50" name="duck" x="5232" y="528">
+   <ellipse/>
+  </object>
+  <object id="51" name="duck" x="4384" y="432">
+   <ellipse/>
+  </object>
+  <object id="52" name="duck" x="2128" y="272">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="hedge"/>
+ <objectgroup name="egg">
+  <object id="2" name="egg" x="400" y="640">
+   <ellipse/>
+  </object>
+  <object id="3" name="egg" x="496" y="640">
+   <ellipse/>
+  </object>
+  <object id="4" name="egg" x="624" y="600">
+   <ellipse/>
+  </object>
+  <object id="5" name="egg" x="752" y="552">
+   <ellipse/>
+  </object>
+  <object id="6" name="egg" x="872" y="536">
+   <ellipse/>
+  </object>
+  <object id="7" name="egg" x="976" y="536">
+   <ellipse/>
+  </object>
+  <object id="8" name="egg" x="1120" y="536">
+   <ellipse/>
+  </object>
+  <object id="9" name="egg" x="1232" y="536">
+   <ellipse/>
+  </object>
+  <object id="10" name="egg" x="1392" y="632">
+   <ellipse/>
+  </object>
+  <object id="11" name="egg" x="1472" y="712">
+   <ellipse/>
+  </object>
+  <object id="12" name="egg" x="1560" y="768">
+   <ellipse/>
+  </object>
+  <object id="13" name="egg" x="1720" y="768">
+   <ellipse/>
+  </object>
+  <object id="14" name="egg" x="1952" y="768">
+   <ellipse/>
+  </object>
+  <object id="15" name="egg" x="2128" y="768">
+   <ellipse/>
+  </object>
+  <object id="16" name="egg" x="2296" y="776">
+   <ellipse/>
+  </object>
+  <object id="17" name="egg" x="2456" y="768">
+   <ellipse/>
+  </object>
+  <object id="18" name="egg" x="2584" y="744">
+   <ellipse/>
+  </object>
+  <object id="19" name="egg" x="2752" y="680">
+   <ellipse/>
+  </object>
+  <object id="20" name="egg" x="2832" y="552">
+   <ellipse/>
+  </object>
+  <object id="21" name="egg" x="2624" y="488">
+   <ellipse/>
+  </object>
+  <object id="22" name="egg" x="2656" y="368">
+   <ellipse/>
+  </object>
+  <object id="23" name="egg" x="2744" y="280">
+   <ellipse/>
+  </object>
+  <object id="24" name="egg" x="2864" y="264">
+   <ellipse/>
+  </object>
+  <object id="25" name="egg" x="3000" y="272">
+   <ellipse/>
+  </object>
+  <object id="26" name="egg" x="3072" y="272">
+   <ellipse/>
+  </object>
+  <object id="27" name="egg" x="3152" y="272">
+   <ellipse/>
+  </object>
+  <object id="28" name="egg" x="3264" y="272">
+   <ellipse/>
+  </object>
+  <object id="29" name="egg" x="3400" y="272">
+   <ellipse/>
+  </object>
+  <object id="30" name="egg" x="3496" y="272">
+   <ellipse/>
+  </object>
+  <object id="32" name="egg" x="3712" y="416">
+   <ellipse/>
+  </object>
+  <object id="33" name="egg" x="3824" y="496">
+   <ellipse/>
+  </object>
+  <object id="34" name="egg" x="4040" y="512">
+   <ellipse/>
+  </object>
+  <object id="35" name="egg" x="4184" y="696">
+   <ellipse/>
+  </object>
+  <object id="36" name="egg" x="4328" y="752">
+   <ellipse/>
+  </object>
+  <object id="37" name="egg" x="4456" y="752">
+   <ellipse/>
+  </object>
+  <object id="38" name="egg" x="4600" y="752">
+   <ellipse/>
+  </object>
+  <object id="39" name="egg" x="4744" y="752">
+   <ellipse/>
+  </object>
+  <object id="40" name="egg" x="4752" y="504">
+   <ellipse/>
+  </object>
+  <object id="41" name="egg" x="4984" y="352">
+   <ellipse/>
+  </object>
+  <object id="42" name="egg" x="5160" y="240">
+   <ellipse/>
+  </object>
+  <object id="43" name="egg" x="5344" y="168">
+   <ellipse/>
+  </object>
+  <object id="44" name="egg" x="5680" y="272">
+   <ellipse/>
+  </object>
+  <object id="45" name="egg" x="6128" y="248">
+   <ellipse/>
+  </object>
+  <object id="46" name="egg" x="6264" y="248">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

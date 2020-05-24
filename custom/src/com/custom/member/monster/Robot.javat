@@ -1,0 +1,284 @@
+package com.mini.monsters;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.mini.assist.Delay;
+import com.mini.assist.CustomUserData;
+import com.mini.constant.ConstantMembers;
+import com.mini.constant.ConstantNames;
+import com.mini.constant.RobotState;
+import com.mini.game.MiniGame;
+import com.mini.members.GameSprite;
+import com.mini.members.RobotBall;
+import com.mini.screen.NormalScreen;
+
+import java.util.Vector;
+
+/*
+ * 第二个具有攻击力的怪物，智商为10
+ */
+public class Robot extends GameSprite {
+    public static final float Radius = 60.5f;
+
+    private static final float max_speed = 2.0f;
+    private static final float force_X = 35.0f;
+    private static final float force_Y = 35.0f;
+    private static final float force_keep = NormalScreen.WORLD_GRAVITY;
+    private static final float max_hp = 300;
+    private static final int attack_times = 300;
+    private static final int move_times = 750;
+    private static final int ball_size = 7;
+    public RobotState state;
+    private Texture texture;
+    private Delay de_attack;
+    private Delay de_moveX;
+    private Delay de_moveY;
+    private Animation move, attack;
+    private SmallRobot smallRobot;
+    private Vector<SmallRobot> smallRobots;
+    private Vector<RobotBall> balls;
+    private RobotBall ball;
+
+    public Robot(Body body) {
+        super(body);
+        this.smallRobots = new Vector<SmallRobot>();
+        this.draw_x = body.getPosition().x * ConstantMembers.LENGTHRATE - Radius / 2;
+        this.draw_y = body.getPosition().y * ConstantMembers.LENGTHRATE - Radius / 2;
+
+        this.width = Radius;
+        this.height = Radius;
+
+        this.de_attack = new Delay();
+        this.de_attack.setTimes(attack_times);
+
+        this.de_moveX = new Delay();
+        this.de_moveX.setTimes(move_times);
+        this.de_moveY = new Delay();
+        this.de_moveY.setTimes(move_times);
+
+        this.isAttack = false;
+        this.balls = new Vector<RobotBall>();
+
+        this.delay_run.setTimes(5);
+        this.init();
+    }
+
+    public static Body getCreateBody(float init_x, float init_y, World world) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.DynamicBody;
+
+        FixtureDef fixTureDef = new FixtureDef();
+
+        CircleShape shape = new CircleShape();
+        shape.setRadius(Robot.Radius / ConstantMembers.LENGTHRATE / ConstantMembers.SCALE);
+
+        fixTureDef.shape = shape;
+        fixTureDef.filter.categoryBits = ConstantMembers.ROBOT;
+        fixTureDef.filter.maskBits = ConstantMembers._ROBOT;
+        fixTureDef.isSensor = false;
+
+        bodyDef.position.set(init_x / ConstantMembers.LENGTHRATE,
+                init_y / ConstantMembers.LENGTHRATE);
+
+        Body body = world.createBody(bodyDef);
+        Fixture fixture = body.createFixture(fixTureDef);
+
+        CustomUserData data = new CustomUserData();
+        data.name = ConstantNames.ROBOT;
+        data.body = body;
+        data.fixture = fixture;
+        body.setUserData(data);
+        fixture.setUserData(data);
+
+        return body;
+    }
+
+    @Override
+    public void renderX(SpriteBatch batch, float delta) {
+        batch.begin();
+        this.currentFrame = this.currentAnimation.getKeyFrame(delta);
+        batch.draw(currentFrame, draw_x, draw_y, Radius, Radius);
+        batch.end();
+
+        for (RobotBall rb : balls) {
+            rb.render(batch, delta);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        for (RobotBall rb : balls) {
+            rb.dispose();
+        }
+    }
+
+    @Override
+    public void runX() {
+
+    }
+
+    @Override
+    public void runZ() {
+        if (!delay_run.isFlag() || !isAlive)
+            return;
+        exec.execute(delay_run);
+
+        isRun = true;
+
+        this.randomRun();
+
+        isRun = false;
+    }
+
+    private void randomRun() {
+        if (!this.isAlive)
+            return;
+        this.randMove();
+        this.randAttack();
+        this.startAttack();
+    }
+
+    private void randAttack() {
+        if (random.nextInt(3000) < 30) {
+            if (de_attack.isFlag()) {
+                exec.execute(de_attack);
+                this.state = RobotState.ATTACK;
+                this.currentAnimation = attack;
+                this.isAttack = true;
+            }
+        } else if (!this.isAttack) {
+            this.state = RobotState.MOVE;
+            this.currentAnimation = move;
+        }
+    }
+
+    private void startAttack() {
+        if (this.isAttack && random.nextBoolean()) {
+            this.createBalls();
+        }
+    }
+
+    private void randMove() {
+        float y = body.getLinearVelocity().y;
+        if (de_moveX.isFlag()) {
+            body.setLinearVelocity(0, y);
+            exec.execute(de_moveX);
+            if (random.nextInt(2) != 0)
+                body.applyForceToCenter(force_X, 0, true);
+            else
+                body.applyForceToCenter(-force_X, 0, true);
+        }
+
+        float x = body.getLinearVelocity().x;
+        if (de_moveY.isFlag()) {
+            body.setLinearVelocity(x, 0);
+            exec.execute(de_moveY);
+            if (random.nextInt(10) % 2 != 0) {
+                body.applyForceToCenter(0, force_Y, true);
+            } else {
+                body.applyForceToCenter(0, -force_Y, true);
+            }
+        }
+
+    }
+
+    private void controlSpeed() {
+        if (!this.isAlive)
+            return;
+        body.applyForceToCenter(0, force_keep, true);
+
+        float x = body.getLinearVelocity().x;
+        float y = body.getLinearVelocity().y;
+        if (x > max_speed) {
+            body.setLinearVelocity(max_speed, y);
+        }
+        if (y > max_speed) {
+            body.setLinearVelocity(x < max_speed ? x : max_speed, max_speed);
+        }
+        x = body.getLinearVelocity().x;
+        y = body.getLinearVelocity().y;
+    }
+
+    @Override
+    public void init() {
+        this.currentHP = max_hp;
+        this.state = RobotState.MOVE;
+        this.initAnimation();
+    }
+
+    protected void initAnimation() {
+        texture = MiniGame.assetManager.get("monsters/monster1.png", Texture.class);
+        TextureRegion[] region_move = new TextureRegion[2];
+        region_move[0] = new TextureRegion(texture, 48, 64, 63, 63);
+        region_move[1] = new TextureRegion(texture, 120, 64, 63, 63);
+        move = new Animation(ConstantMembers.DRAWDUR, region_move);
+        move.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion[] region_attack = new TextureRegion[3];
+        region_attack[0] = new TextureRegion(texture, 192, 65, 63, 63);
+        region_attack[1] = new TextureRegion(texture, 264, 64, 63, 63);
+        region_attack[2] = new TextureRegion(texture, 336, 66, 63, 63);
+        attack = new Animation(ConstantMembers.DRAWDUR, region_attack);
+        attack.setPlayMode(Animation.PlayMode.LOOP);
+
+    }
+
+    @Override
+    public void update(float delta) {
+        this.updatePosition();
+        this.updateLife();
+        this.updateState();
+        this.controlSpeed();
+        this.updateBallsLife();
+        this.runZ();
+    }
+
+    private void updateState() {
+        if (de_attack.isFlag())
+            this.isAttack = false;
+    }
+
+    private void updateLife() {
+        if (isAlive == false) {
+            return;
+        }
+        if (currentHP <= 0) {
+            isAlive = false;
+            currentHP = 0;
+        }
+    }
+
+    private void createBalls() {
+        if (balls.size() >= ball_size)
+            return;
+        float ball_x = pos_x;
+        float ball_y = pos_y;
+        ball = new RobotBall(RobotBall.getCreateBody(ball_x, ball_y, world), random.nextInt(100) % 2 == 0 ? 'A' : 'D');
+        balls.add(ball);
+    }
+
+    private void updateBallsLife() {
+        for (int i = 0; i < balls.size(); i++) {
+            RobotBall rb = balls.get(i);
+            Body bo = rb.getBody();
+            if (bo.getFixtureList().size == 0) {
+                if (!world.isLocked() && !rb.isRun) {
+                    world.destroyBody(bo);
+                    balls.remove(i);
+                }
+            }
+        }
+    }
+
+    private void updatePosition() {
+        this.pos_x = body.getPosition().x * ConstantMembers.LENGTHRATE;
+        this.pos_y = body.getPosition().y * ConstantMembers.LENGTHRATE;
+        this.draw_x = body.getPosition().x * ConstantMembers.LENGTHRATE - Radius / 2;
+        this.draw_y = body.getPosition().y * ConstantMembers.LENGTHRATE - Radius / 2;
+    }
+
+}
