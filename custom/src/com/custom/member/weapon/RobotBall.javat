@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.mini.assist.CustomUserData;
+import com.mini.member.MiniUserData;
 import com.mini.constant.ConstantMembers;
 import com.mini.constant.ConstantNames;
 import com.mini.game.MiniGame;
@@ -54,7 +54,7 @@ public class RobotBall extends GameSprite {
         fixTureDef.isSensor = true;//设置为传感器
         fixture = body.createFixture(fixTureDef);
 
-        CustomUserData data = new CustomUserData();
+        MiniUserData data = new MiniUserData();
         data.name = ConstantNames.ROBOTBALL;
         data.body = body;
         data.fixture = fixture;

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.custom.constant.CustomGameAttributeNames;
-import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
 import com.mini.screen.BaseScreen;
 

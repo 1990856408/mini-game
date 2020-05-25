@@ -1,7 +1,7 @@
 package com.mini.constant;
 
 /**
- * 视图配置
+ * 视图世界配置
  */
 public interface MiniGameScreenSetting {
 

@@ -13,10 +13,9 @@ import com.custom.member.weapon.ChunLiQiGongBall;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mini.assist.AnimationAssist;
-import com.mini.assist.CustomUserData;
-import com.mini.constant.MiniGamePhysicalSetting;
-import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
+import com.mini.game.MiniGameConfig;
+import com.mini.member.MiniUserData;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.helper.GameSpriteHelper;
@@ -60,13 +59,13 @@ public class ChunLi extends Protagonist {
 
     @Override
     protected void initFixtures() {
-        initFixtureBox(ChunLiStatus.QUIET, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-        initFixtureBox(ChunLiStatus.WALK, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-        initFixtureBox(ChunLiStatus.JUMP, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-        initFixtureBox(ChunLiStatus.SQUAT, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE * 0.85f);
-        initFixtureBox(ChunLiStatus.CRACKED_FEET, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-        initFixtureBox(ChunLiStatus.QI_GONG, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE * 1.4f, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-        initFixtureBox(ChunLiStatus.QI_GONG_BALL, getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE * 1.4f, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        initFixtureBox(ChunLiStatus.QUIET, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
+        initFixtureBox(ChunLiStatus.WALK, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
+        initFixtureBox(ChunLiStatus.JUMP, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
+        initFixtureBox(ChunLiStatus.SQUAT, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 0.85f);
+        initFixtureBox(ChunLiStatus.CRACKED_FEET, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
+        initFixtureBox(ChunLiStatus.QI_GONG, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 1.4f, getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
+        initFixtureBox(ChunLiStatus.QI_GONG_BALL, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 1.4f, getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
     }
 
     protected void initFixtureBox(ChunLiStatus st, float boxW, float boxH) {
@@ -100,9 +99,9 @@ public class ChunLi extends Protagonist {
     private void initAnimationQuiet() {
         Texture texture = MiniGame.assetManager.get("members/chunli8.png");
         insertAnimation(ChunLiStatus.QUIET, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
         insertAnimation(ChunLiStatus.QUIET, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, getFrameDuration(), 1, Animation.PlayMode.LOOP));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
     }
 
     private void initAnimationWalk() {
@@ -120,7 +119,7 @@ public class ChunLi extends Protagonist {
                 new AnimationAssist.Bound(perW * 1, perH * 2, perW, perH),
                 new AnimationAssist.Bound(perW * 2, perH * 2, perW, perH),
                 new AnimationAssist.Bound(perW * 3, perH * 2, perW, perH)
-        ), getFrameDuration(), 0, Animation.PlayMode.LOOP));
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
         insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.L, AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(perW * 0, perH * 0, perW, perH),
                 new AnimationAssist.Bound(perW * 1, perH * 0, perW, perH),
@@ -132,59 +131,59 @@ public class ChunLi extends Protagonist {
                 new AnimationAssist.Bound(perW * 1, perH * 2, perW, perH),
                 new AnimationAssist.Bound(perW * 2, perH * 2, perW, perH),
                 new AnimationAssist.Bound(perW * 3, perH * 2, perW, perH)
-        ), getFrameDuration(), 1, Animation.PlayMode.LOOP));
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
 //        insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.R,
-//                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+//                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
 //        insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.L,
-//                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, getFrameDuration(), 1, Animation.PlayMode.LOOP));
+//                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
     }
 
     private void initAnimationJump() {
         Texture texture = MiniGame.assetManager.get("members/chunli1.png");
         insertAnimation(ChunLiStatus.JUMP, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 2, 8, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 2, 8, MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
         insertAnimation(ChunLiStatus.JUMP, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 2, 8, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 2, 8, MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
     }
 
     private void initAnimationLandfall() {
         Texture texture = MiniGame.assetManager.get("members/chunli9.png");
         insertAnimation(ChunLiStatus.LANDFALL, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 3, 8, getFrameDuration(), 1, Animation.PlayMode.LOOP));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 3, 8, MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
         insertAnimation(ChunLiStatus.LANDFALL, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 3, 8, getFrameDuration(), 0, Animation.PlayMode.LOOP));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 3, 8, MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
     }
 
     private void initAnimationSquat() {
         Texture texture = MiniGame.assetManager.get("members/chunli8.png");
         insertAnimation(ChunLiStatus.SQUAT, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, Lists.newArrayList(new AnimationAssist.Bound(230, 250, 124, 104)), getFrameDuration(), 1, Animation.PlayMode.LOOP));
+                AnimationAssist.createAnimation(texture, Lists.newArrayList(new AnimationAssist.Bound(230, 250, 124, 104)), MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
         insertAnimation(ChunLiStatus.SQUAT, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, Lists.newArrayList(new AnimationAssist.Bound(230, 250, 124, 104)), getFrameDuration(), 0, Animation.PlayMode.LOOP));
+                AnimationAssist.createAnimation(texture, Lists.newArrayList(new AnimationAssist.Bound(230, 250, 124, 104)), MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
     }
 
     private void initAnimationCrackedFeet() {
         Texture texture = MiniGame.assetManager.get("members/chunli4.png");
         insertAnimation(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, getFrameDuration(), 0, null));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, MiniGameConfig.getScreenSettingFrameDuration(), 0, null));
         insertAnimation(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, getFrameDuration(), 1, null));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, MiniGameConfig.getScreenSettingFrameDuration(), 1, null));
     }
 
     private void initAnimationQiGong() {
         Texture texture = MiniGame.assetManager.get("members/chunli6.png");
         insertAnimation(ChunLiStatus.QI_GONG, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 6, 13, getFrameDuration(), 0, null));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 6, 13, MiniGameConfig.getScreenSettingFrameDuration(), 0, null));
         insertAnimation(ChunLiStatus.QI_GONG, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 6, 13, getFrameDuration(), 1, null));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 6, 13, MiniGameConfig.getScreenSettingFrameDuration(), 1, null));
     }
 
     private void initAnimationQiGongBall() {
         Texture texture = MiniGame.assetManager.get("members/chunli5.png");
         insertAnimation(ChunLiStatus.QI_GONG_BALL, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 5, 15, getFrameDuration(), 0, null));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 5, 15, MiniGameConfig.getScreenSettingFrameDuration(), 0, null));
         insertAnimation(ChunLiStatus.QI_GONG_BALL, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 5, 15, getFrameDuration(), 1, null));
+                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 5, 15, MiniGameConfig.getScreenSettingFrameDuration(), 1, null));
     }
 
     private void insertAnimation(ChunLiStatus chunLiStatus, GameSpriteDirection gameSpriteDirection, Animation animation) {
@@ -222,7 +221,7 @@ public class ChunLi extends Protagonist {
                 body.destroyFixture(fixture);
                 fixture = body.createFixture(fixtureDefMap.get(statusPre));
 
-                CustomUserData data = new CustomUserData();
+                MiniUserData data = new MiniUserData();
                 data.name = category.name;
                 data.body = body;
                 data.fixture = fixture;
@@ -342,7 +341,7 @@ public class ChunLi extends Protagonist {
     @Override
     public void createBomb() {
         statusPre = ChunLiStatus.QI_GONG;
-        action = 1L << 1;
+        action = 1L << 0;
     }
 
     @Override
@@ -363,12 +362,12 @@ public class ChunLi extends Protagonist {
 
     @Override
     public float getDrawX() {
-        return getPosX() * MiniGameScreenSetting.VIEW_RATE - getDrawW() / 2;
+        return getPosX() * MiniGameConfig.getScreenSettingViewRate() - getDrawW() / 2;
     }
 
     @Override
     public float getDrawY() {
-        return getPosY() * MiniGameScreenSetting.VIEW_RATE - getDrawH() / 2;
+        return getPosY() * MiniGameConfig.getScreenSettingViewRate() - getDrawH() / 2;
     }
 
     @Override

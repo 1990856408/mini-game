@@ -10,12 +10,11 @@ import com.custom.member.constant.MemberName;
 import com.custom.member.status.DuckStatus;
 import com.google.common.collect.Lists;
 import com.mini.assist.AnimationAssist;
-import com.mini.assist.CustomUserData;
-import com.mini.constant.MiniGamePhysicalSetting;
-import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
+import com.mini.game.MiniGameConfig;
+import com.mini.member.MiniUserData;
 import com.mini.member.GameSpriteCategory;
-import com.mini.member.helper.ApplyVelocityStrategy;
+import com.mini.member.strategy.ApplyVelocityStrategy;
 import com.mini.member.monster.MonsterSprite;
 import com.mini.member.status.GameSpriteDirection;
 
@@ -33,14 +32,14 @@ public class Duck extends MonsterSprite {
     @Override
     protected Body createBody(World world, float initX, float initY) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(initX * MiniGamePhysicalSetting.VIEW_RATE, initY * MiniGamePhysicalSetting.VIEW_RATE);
+        bodyDef.position.set(initX * MiniGameConfig.getPhysicalSettingViewRate(), initY * MiniGameConfig.getPhysicalSettingViewRate());
         bodyDef.type = BodyType.DynamicBody;
 
         Body body = world.createBody(bodyDef);
         body.setGravityScale(0);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(getDrawR() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        shape.setRadius(getDrawR() * MiniGameConfig.getPhysicalSettingMemberViewRate());
 
         FixtureDef fixTureDef = new FixtureDef();
         fixTureDef.shape = shape;
@@ -50,7 +49,7 @@ public class Duck extends MonsterSprite {
 
         Fixture fixture = body.createFixture(fixTureDef);
 
-        CustomUserData data = new CustomUserData();
+        MiniUserData data = new MiniUserData();
         data.name = category.name;
         data.body = body;
         data.fixture = fixture;
@@ -64,8 +63,8 @@ public class Duck extends MonsterSprite {
 
     @Override
     protected void preInit() {
-        ruleReverseDirection.setMinScopeX(initPosX+getDrawR() * MiniGamePhysicalSetting.VIEW_RATE * -3);
-        ruleReverseDirection.setMaxScopeX(initPosX+getDrawR() * MiniGamePhysicalSetting.VIEW_RATE * +3);
+        ruleReverseDirection.setMinScopeX(initPosX + getDrawR() * MiniGameConfig.getPhysicalSettingViewRate() * -3);
+        ruleReverseDirection.setMaxScopeX(initPosX + getDrawR() * MiniGameConfig.getPhysicalSettingViewRate() * +3);
 
         applyVelocityStrategy = new ApplyVelocityStrategy(this);
         applyVelocityStrategy.setVelocity(1.0f, 0f);
@@ -77,25 +76,25 @@ public class Duck extends MonsterSprite {
 
         insertAnimation(DuckStatus.QUIET, GameSpriteDirection.L, AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(207, 243, 17, 23)
-        ), MiniGameScreenSetting.FRAME_DURATION, 0, Animation.PlayMode.LOOP));
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
 
         insertAnimation(DuckStatus.QUIET, GameSpriteDirection.R, AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(207, 243, 17, 23)
-        ), MiniGameScreenSetting.FRAME_DURATION, 1, Animation.PlayMode.LOOP));
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
 
         insertAnimation(DuckStatus.FLY, GameSpriteDirection.L, AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(127, 243, 17, 23),
                 new AnimationAssist.Bound(167, 243, 17, 23),
                 new AnimationAssist.Bound(207, 243, 17, 23),
                 new AnimationAssist.Bound(247, 243, 17, 23)
-        ), MiniGameScreenSetting.FRAME_DURATION, 0, Animation.PlayMode.LOOP));
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
 
         insertAnimation(DuckStatus.FLY, GameSpriteDirection.R, AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(127, 243, 17, 23),
                 new AnimationAssist.Bound(167, 243, 17, 23),
                 new AnimationAssist.Bound(207, 243, 17, 23),
                 new AnimationAssist.Bound(247, 243, 17, 23)
-        ), MiniGameScreenSetting.FRAME_DURATION, 1, Animation.PlayMode.LOOP));
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
     }
 
     private void insertAnimation(DuckStatus duckStatus, GameSpriteDirection gameSpriteDirection, Animation animation) {
@@ -117,7 +116,7 @@ public class Duck extends MonsterSprite {
 
     @Override
     public void autoExecute() {
-        ruleReverseDirection.react();
+        ruleReverseDirection.react(this);
 
         applyVelocityStrategy.execute();
     }
@@ -144,12 +143,12 @@ public class Duck extends MonsterSprite {
 
     @Override
     public float getDrawX() {
-        return getPosX() * MiniGameScreenSetting.VIEW_RATE - getDrawR() / 2;
+        return getPosX() * MiniGameConfig.getScreenSettingViewRate() - getDrawR() / 2;
     }
 
     @Override
     public float getDrawY() {
-        return getPosY() * MiniGameScreenSetting.VIEW_RATE - getDrawR() / 2;
+        return getPosY() * MiniGameConfig.getScreenSettingViewRate() - getDrawR() / 2;
     }
 
     @Override

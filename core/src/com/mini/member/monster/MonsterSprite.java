@@ -2,7 +2,7 @@ package com.mini.member.monster;
 
 import com.mini.member.AutomaticAct;
 import com.mini.member.GameSprite;
-import com.mini.member.helper.ReverseDirectionRule;
+import com.mini.member.rule.ReverseDirectionRule;
 
 /**
  * 怪物精灵
@@ -13,12 +13,7 @@ public abstract class MonsterSprite extends GameSprite implements AutomaticAct {
 
     @Override
     protected void init() {
-        ruleReverseDirection = new ReverseDirectionRule() {
-            @Override
-            public GameSprite getGameSprite() {
-                return MonsterSprite.this;
-            }
-        };
+        ruleReverseDirection = new ReverseDirectionRule();
 
         super.init();
     }

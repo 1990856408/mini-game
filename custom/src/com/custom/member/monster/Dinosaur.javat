@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mini.assist.Delay;
-import com.mini.assist.CustomUserData;
+import com.mini.member.MiniUserData;
 import com.mini.constant.*;
 import com.mini.game.MiniGame;
 import com.mini.members.Flame;
@@ -93,7 +93,7 @@ public class Dinosaur extends GameSprite {
         Body body = world.createBody(bodyDef);
         Fixture fixture = body.createFixture(fixTureDef);
 
-        CustomUserData data = new CustomUserData();
+        MiniUserData data = new MiniUserData();
         data.name = ConstantNames.DINO;
         data.body = body;
         data.fixture = fixture;
@@ -342,8 +342,8 @@ public class Dinosaur extends GameSprite {
         flame = new Flame(Flame.getCreateBody(flame_x, flame_y, world), this.direction);
         flames.add(flame);
         //播放效果
-        if (pos_x > NormalScreen.camera_pos_x && pos_x < (NormalScreen.camera_pos_x + MiniGameScreenSetting.VIEW_W)) {
-            if (pos_y > NormalScreen.camera_pos_y && pos_y < (NormalScreen.camera_pos_y + MiniGameScreenSetting.VIEW_H)) {
+        if (pos_x > NormalScreen.camera_pos_x && pos_x < (NormalScreen.camera_pos_x + MiniGameConfig.getScreenSettingViewW())) {
+            if (pos_y > NormalScreen.camera_pos_y && pos_y < (NormalScreen.camera_pos_y + MiniGameConfig.getScreenSettingViewH())) {
                 NormalScreen.soundPlayer.playSound(EnumSound.FLAME);
             }
         }

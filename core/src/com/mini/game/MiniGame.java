@@ -9,9 +9,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.common.collect.Lists;
-import com.mini.assist.CustomThreadFactory;
 import com.mini.constant.MiniGameSourcePath;
 import com.mini.screen.BaseScreen;
+import com.mini.tool.CustomThreadFactory;
 import com.mini.tool.SoundPlayer;
 
 import java.io.File;
@@ -44,6 +44,38 @@ public abstract class MiniGame extends Game {
     private OrthographicCamera camera;
 
     private BaseScreen initScreen;
+
+    public static void setAttribute(String name, Object value) {
+        attributes.put(name, value);
+    }
+
+    public static byte getAttributeByte(String name) {
+        return attributes.getByte(name);
+    }
+
+    public static short getAttributeShort(String name) {
+        return attributes.getShort(name);
+    }
+
+    public static int getAttributeInt(String name) {
+        return attributes.getInteger(name);
+    }
+
+    public static float getAttributeFloat(String name) {
+        return attributes.getFloat(name);
+    }
+
+    public static double getAttributeDouble(String name) {
+        return attributes.getDouble(name);
+    }
+
+    public static String getAttributeString(String name) {
+        return attributes.getString(name);
+    }
+
+    public static Object getAttribute(String name) {
+        return attributes.get(name);
+    }
 
     @Override
     public final void create() {
@@ -132,7 +164,7 @@ public abstract class MiniGame extends Game {
     public final void resetScreen(BaseScreen screen, MiniGameResetScreenFunction function) {
         setScreen(screen);
         if (function != null) {
-            function.exec();
+            function.execute();
         }
     }
 
@@ -145,45 +177,13 @@ public abstract class MiniGame extends Game {
 
         initScreen.dispose();
 
-        customDispose();
+        disposeCustom();
     }
 
     /**
      * Override@自定义销毁
      */
-    protected void customDispose() {
-    }
-
-    public static void setAttribute(String name, Object value) {
-        attributes.put(name, value);
-    }
-
-    public static byte getAttributeByte(String name) {
-        return attributes.getByte(name);
-    }
-
-    public static short getAttributeShort(String name) {
-        return attributes.getShort(name);
-    }
-
-    public static int getAttributeInt(String name) {
-        return attributes.getInteger(name);
-    }
-
-    public static float getAttributeFloat(String name) {
-        return attributes.getFloat(name);
-    }
-
-    public static double getAttributeDouble(String name) {
-        return attributes.getDouble(name);
-    }
-
-    public static String getAttributeString(String name) {
-        return attributes.getString(name);
-    }
-
-    public static Object getAttribute(String name) {
-        return attributes.get(name);
+    protected void disposeCustom() {
     }
 
     public final SpriteBatch getBatch() {

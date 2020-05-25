@@ -5,5 +5,5 @@ package com.mini.game;
  */
 public interface MiniGameResetScreenFunction {
 
-    void exec();
+    void execute();
 }

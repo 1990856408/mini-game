@@ -1,8 +1,11 @@
-package com.mini.member.helper;
+package com.mini.member.strategy;
 
 import com.mini.member.AutomaticActStrategy;
 import com.mini.member.GameSprite;
 
+/**
+ * 速度策略
+ */
 public class ApplyVelocityStrategy implements AutomaticActStrategy {
 
     private GameSprite gameSprite;
@@ -16,6 +19,12 @@ public class ApplyVelocityStrategy implements AutomaticActStrategy {
     @Override
     public void execute() {
         switch (gameSprite.getDirection()) {
+            case U:
+                gameSprite.applyVelocity(gameSprite.getVelocityX(), velocityY);
+                break;
+            case D:
+                gameSprite.applyVelocity(gameSprite.getVelocityX(), -velocityY);
+                break;
             case L:
                 gameSprite.applyVelocity(-velocityX, gameSprite.getVelocityY());
                 break;

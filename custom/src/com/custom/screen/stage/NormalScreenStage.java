@@ -21,6 +21,9 @@ public class NormalScreenStage extends BaseStage {
     private NormalScreen normalScreen;
 
     private ActorGestureListener buttonListener;
+    private ProgressBar barHP, barMP;
+    private Label labelScoreVolume;
+
 
     public NormalScreenStage(NormalScreen normalScreen) {
         super(new StretchViewport(normalScreen.getViewW(), normalScreen.getViewH()), normalScreen.getBatch());
@@ -34,7 +37,6 @@ public class NormalScreenStage extends BaseStage {
         createProgressBar();
         createLabel();
     }
-
 
     private void createTouchPad() {
         Texture texture = MiniGame.assetManager.get("menus/control.png", Texture.class);
@@ -113,8 +115,6 @@ public class NormalScreenStage extends BaseStage {
         };
     }
 
-    private ProgressBar barHP, barMP;
-
     private void createProgressBar() {
 //        Texture texture = MiniGame.assetManager.get("menus/status.png", Texture.class);
 //        ProgressBar.ProgressBarStyle styleHP = new ProgressBar.ProgressBarStyle();
@@ -139,8 +139,6 @@ public class NormalScreenStage extends BaseStage {
 //        barMP.setValue(barHP.getValue());
 //        addActor(barMP);
     }
-
-    private Label labelScoreVolume;
 
     private void createLabel() {
         BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal("scripts/inf.fnt"));

@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
+import com.mini.game.MiniGameConfig;
 
 // TODO
 public class ChunWidget {
@@ -26,7 +26,7 @@ public class ChunWidget {
         textureRegion = new TextureRegion(texture);
 
         image_widget = new Image(textureRegion);
-        MoveToAction imageMoveto = Actions.moveTo(MiniGameScreenSetting.VIEW_W, 0, 3.0f);
+        MoveToAction imageMoveto = Actions.moveTo(MiniGameConfig.getScreenSettingViewW(), 0, 3.0f);
         Action imageEnd = Actions.run(new Runnable() {
 
             @Override

@@ -21,10 +21,9 @@ import com.custom.member.monster.Diamond;
 import com.custom.member.monster.Duck;
 import com.custom.member.status.ProtagonistStatus;
 import com.custom.screen.stage.NormalScreenStage;
-import com.mini.assist.CustomUserData;
-import com.mini.constant.MiniGamePhysicalSetting;
-import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
+import com.mini.game.MiniGameConfig;
+import com.mini.member.MiniUserData;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.status.GameSpriteDirection;
@@ -36,17 +35,18 @@ import java.util.Vector;
 
 public class NormalScreen extends BaseScreen {
 
+    public int maxScore = MiniGame.getAttributeInt(CustomGameAttributeNames.CURRENT_LEVEL) * 64;
+    public int curScore = 0;
+    // 游戏主角
+    public Protagonist prota;
+    // TODO
+    boolean debug = false;
     /*
      * 图形相机此时的左下角视距的位置与显示的范围,在updateCamera()中更新，
      * 这个用来决定某些音效何时播放，用来决定某个角色是否渲染也非常有效，
      * 可以很好的降低时间复杂度
      */
     private float cameraPosX, cameraPosY;
-
-    public int maxScore = MiniGame.getAttributeInt(CustomGameAttributeNames.CURRENT_LEVEL) * 64;
-
-    public int curScore = 0;
-
     // 物理世界
     private World world;
     // 物理世界渲染器
@@ -55,7 +55,6 @@ public class NormalScreen extends BaseScreen {
     private OrthographicCamera box2DCamera;
     // 自定义的物理世界监听器
     private NormalScreenContactListener contactListener;
-
     // 地图
     private TiledMap tileMap;
     // 地图单元大小
@@ -64,22 +63,18 @@ public class NormalScreen extends BaseScreen {
     private float mapCountW, mapCountH;
     // 地图渲染器，正交投影渲染器
     private OrthogonalTiledMapRenderer mapRender;
-
-    // 游戏主角
-    public Protagonist prota;
     // 钻石,怪鸭
     private Vector<GameSprite> diamonds, ducks;
-
     // 舞台
     private NormalScreenStage stage;
 
     public NormalScreen(MiniGame miniGame) {
         super(miniGame);
 
-        world = new World(new Vector2(0f, -MiniGamePhysicalSetting.GRAVITY), false);
+        world = new World(new Vector2(0f, -MiniGameConfig.getPhysicalSettingGravity()), false);
         box2DRender = new Box2DDebugRenderer();
         box2DCamera = new OrthographicCamera();
-        box2DCamera.setToOrtho(false, MiniGamePhysicalSetting.VIEW_W, MiniGamePhysicalSetting.VIEW_H);
+        box2DCamera.setToOrtho(false, MiniGameConfig.getPhysicalSettingViewW(), MiniGameConfig.getPhysicalSettingViewH());
         contactListener = new NormalScreenContactListener();
         world.setContactListener(contactListener);
     }
@@ -109,28 +104,28 @@ public class NormalScreen extends BaseScreen {
                     continue;
                 }
                 BodyDef bodyDef = new BodyDef();
-                bodyDef.position.set((col + 0.5f) * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE, (row + 0.5f) * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE);
+                bodyDef.position.set((col + 0.5f) * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate(), (row + 0.5f) * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate());
                 bodyDef.type = BodyType.StaticBody;
 
                 Body body = world.createBody(bodyDef);
 
                 ChainShape shape = new ChainShape();
                 Vector2[] v = new Vector2[3];
-                v[0] = new Vector2(-tileMapUnitSize * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, -tileMapUnitSize * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-                v[1] = new Vector2(-tileMapUnitSize * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, tileMapUnitSize * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-                v[2] = new Vector2(tileMapUnitSize * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, tileMapUnitSize * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+                v[0] = new Vector2(-tileMapUnitSize * MiniGameConfig.getPhysicalSettingMemberViewRate(), -tileMapUnitSize * MiniGameConfig.getPhysicalSettingMemberViewRate());
+                v[1] = new Vector2(-tileMapUnitSize * MiniGameConfig.getPhysicalSettingMemberViewRate(), tileMapUnitSize * MiniGameConfig.getPhysicalSettingMemberViewRate());
+                v[2] = new Vector2(tileMapUnitSize * MiniGameConfig.getPhysicalSettingMemberViewRate(), tileMapUnitSize * MiniGameConfig.getPhysicalSettingMemberViewRate());
                 shape.createChain(v);
 
                 FixtureDef fixTureDef = new FixtureDef();
                 fixTureDef.shape = shape;
-                fixTureDef.friction = MiniGamePhysicalSetting.FLOOR_FRICTION;
+                fixTureDef.friction = 0.4f;
                 fixTureDef.filter.categoryBits = category.bits;
                 fixTureDef.filter.maskBits = category.maskBits;
                 fixTureDef.isSensor = false;
 
                 Fixture fixture = body.createFixture(fixTureDef);
 
-                CustomUserData data = new CustomUserData();
+                MiniUserData data = new MiniUserData();
                 data.name = category.name;
                 data.body = body;
                 data.fixture = fixture;
@@ -143,10 +138,10 @@ public class NormalScreen extends BaseScreen {
 
     // 创建地图边界
     private void createMapMargin() {
-        createMapMargin(0, 0, 0, 0, mapCountW * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE, 0);
-        createMapMargin(mapCountW * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE, 0, 0, 0, 0, mapCountH * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE);
-        createMapMargin(mapCountW * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE, mapCountH * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE, 0, 0, -mapCountW * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE, 0);
-        createMapMargin(0, mapCountH * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE, 0, 0, 0, -mapCountH * tileMapUnitSize * MiniGamePhysicalSetting.VIEW_RATE);
+        createMapMargin(0, 0, 0, 0, mapCountW * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate(), 0);
+        createMapMargin(mapCountW * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate(), 0, 0, 0, 0, mapCountH * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate());
+        createMapMargin(mapCountW * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate(), mapCountH * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate(), 0, 0, -mapCountW * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate(), 0);
+        createMapMargin(0, mapCountH * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate(), 0, 0, 0, -mapCountH * tileMapUnitSize * MiniGameConfig.getPhysicalSettingViewRate());
     }
 
     private void createMapMargin(float bodyX, float bodyY, float shapeX1, float shapeY1, float shapeX2, float shapeY2) {
@@ -169,7 +164,7 @@ public class NormalScreen extends BaseScreen {
 
         Fixture fixture = body.createFixture(fixTureDef);
 
-        CustomUserData data = new CustomUserData();
+        MiniUserData data = new MiniUserData();
         data.name = category.name;
         data.body = body;
         data.fixture = fixture;
@@ -309,7 +304,7 @@ public class NormalScreen extends BaseScreen {
 //                if (gameSprite.isAlive) {
 //                    continue;
 //                }
-//                if (((CustomUserData) (gameSprite.getBody().getUserData())).name.equals(ConstantNames.DIAMOND)) {
+//                if (((MiniUserData) (gameSprite.getBody().getUserData())).name.equals(ConstantNames.DIAMOND)) {
 //                    if (gameSprite.getDrawY() < 0 && gameSprite.getPosY() < 0) {
 //                        if (!world.isLocked() && !gameSprite.isRun) {
 //                            world.destroyBody(gameSprite.getBody());
@@ -317,7 +312,7 @@ public class NormalScreen extends BaseScreen {
 //                        }
 //                    }
 //                }
-//                if (((CustomUserData) (gameSprite.getBody().getUserData())).name.equals(ConstantNames.DUCK)) {
+//                if (((MiniUserData) (gameSprite.getBody().getUserData())).name.equals(ConstantNames.DUCK)) {
 //                    if (!world.isLocked() && !gameSprite.isRun) {
 //                        world.destroyBody(gameSprite.getBody());
 //                        iterator.remove();
@@ -330,7 +325,7 @@ public class NormalScreen extends BaseScreen {
     @Override
     protected void updateCamera() {
         // 设置相机位置
-        getCamera().position.set(prota.getPosX() * MiniGameScreenSetting.VIEW_RATE + getViewW() / 4.0f, prota.getPosY() * MiniGameScreenSetting.VIEW_RATE + getViewH() / 8.0f, 0);
+        getCamera().position.set(prota.getPosX() * MiniGameConfig.getScreenSettingViewRate() + getViewW() / 4.0f, prota.getPosY() * MiniGameConfig.getScreenSettingViewRate() + getViewH() / 8.0f, 0);
 
         // 矫正相机位置
         if (getCamera().position.x < getCamera().viewportWidth / 2) {
@@ -358,7 +353,7 @@ public class NormalScreen extends BaseScreen {
 
     // 更新物理相机
     protected void updateBox2DCamera() {
-        box2DCamera.position.set(getCamera().position.x * MiniGamePhysicalSetting.VIEW_RATE, getCamera().position.y * MiniGamePhysicalSetting.VIEW_RATE, 0);
+        box2DCamera.position.set(getCamera().position.x * MiniGameConfig.getPhysicalSettingViewRate(), getCamera().position.y * MiniGameConfig.getPhysicalSettingViewRate(), 0);
         box2DCamera.update();
     }
 
@@ -407,16 +402,13 @@ public class NormalScreen extends BaseScreen {
         stage.draw();
     }
 
-    // TODO
-    boolean debug = false;
-
     @Override
     protected void renderCustom() {
         if (debug) {
             box2DRender.render(world, box2DCamera.combined);
         }
 
-        world.step(MiniGamePhysicalSetting.TIME_STEP, 6, 2);
+        world.step(MiniGameConfig.getPhysicalSettingTimeStep(), 6, 2);
     }
 
     @Override

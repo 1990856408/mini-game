@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 整个游戏的资源路径
+ * 资源加载路径
  */
 public interface MiniGameSourcePath {
 

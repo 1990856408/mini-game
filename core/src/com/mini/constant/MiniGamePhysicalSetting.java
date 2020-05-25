@@ -1,7 +1,7 @@
 package com.mini.constant;
 
 /**
- * 物理配置
+ * 物理世界配置
  */
 public interface MiniGamePhysicalSetting {
 
@@ -16,8 +16,6 @@ public interface MiniGamePhysicalSetting {
 
     // 重力
     float GRAVITY = 9.8f;
-    // 地板摩擦力
-    float FLOOR_FRICTION = 0.4f;
 
     // 时间步
     float TIME_STEP = 1.0f / 60.0f;

@@ -5,7 +5,5 @@ package com.mini.member;
  */
 public interface AutomaticActRule {
 
-    GameSprite getGameSprite();
-
-    void react();
+    void react(GameSprite gameSprite);
 }

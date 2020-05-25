@@ -1,8 +1,8 @@
 package com.mini.member.helper;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.mini.assist.CustomUserData;
-import com.mini.constant.MiniGamePhysicalSetting;
+import com.mini.game.MiniGameConfig;
+import com.mini.member.MiniUserData;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 
@@ -11,6 +11,68 @@ public class GameSpriteHelper {
     public static final GameSpriteHelper me = new GameSpriteHelper();
 
     private GameSpriteHelper() {
+    }
+
+    /**
+     * 创建物理世界的刚体
+     *
+     * @param config 参数配置
+     * @return 创建的刚体
+     */
+    public Body createBody(BodyConfig config) {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(config.initX * MiniGameConfig.getPhysicalSettingViewRate(), config.initY);
+        bodyDef.type = config.bodyType;
+
+        Body body = config.world.createBody(bodyDef);
+        body.setGravityScale(config.gravityScale);
+
+        Shape shape;
+        switch (config.shapeType) {
+            case Circle:
+                shape = new CircleShape();
+                shape.setRadius(config.drawR * MiniGameConfig.getPhysicalSettingMemberViewRate());
+                break;
+            case Polygon:
+                shape = new PolygonShape();
+                ((PolygonShape) shape).setAsBox(config.drawW * MiniGameConfig.getPhysicalSettingMemberViewRate(), config.drawH * MiniGameConfig.getPhysicalSettingMemberViewRate());
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        FixtureDef fixtureDef = createFixtureDef(shape, config.category.bits, config.category.maskBits, config.isSensor);
+        Fixture fixture = body.createFixture(fixtureDef);
+
+        MiniUserData data = new MiniUserData();
+        data.name = config.category.name;
+        data.body = body;
+        data.fixture = fixture;
+        data.mine = config.host;
+
+        body.setUserData(data);
+        fixture.setUserData(data);
+
+        return body;
+    }
+
+    /**
+     * 创建夹具
+     *
+     * @param shape    夹具图形
+     * @param bits     定义码
+     * @param maskBits 碰撞码
+     * @param isSensor 是否为传感器
+     * @return
+     */
+    public FixtureDef createFixtureDef(Shape shape, short bits, short maskBits, boolean isSensor) {
+        FixtureDef fixTureDef = new FixtureDef();
+        fixTureDef.shape = shape;
+        fixTureDef.filter.categoryBits = bits;
+        fixTureDef.filter.maskBits = maskBits;
+        fixTureDef.isSensor = isSensor;
+
+        return fixTureDef;
     }
 
     public static class BodyConfig {
@@ -92,58 +154,5 @@ public class GameSpriteHelper {
             this.host = host;
             return this;
         }
-    }
-
-    /**
-     * 创建物理世界的刚体
-     *
-     * @param config 参数配置
-     * @return 创建的刚体
-     */
-    public Body createBody(BodyConfig config) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(config.initX * MiniGamePhysicalSetting.VIEW_RATE, config.initY * MiniGamePhysicalSetting.VIEW_RATE);
-        bodyDef.type = config.bodyType;
-
-        Body body = config.world.createBody(bodyDef);
-        body.setGravityScale(config.gravityScale);
-
-        Shape shape;
-        switch (config.shapeType) {
-            case Circle:
-                shape = new CircleShape();
-                shape.setRadius(config.drawR * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-                break;
-            case Polygon:
-                shape = new PolygonShape();
-                ((PolygonShape) shape).setAsBox(config.drawW * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, config.drawH * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-
-        FixtureDef fixtureDef = createFixtureDef(shape, config.category.bits, config.category.maskBits, config.isSensor);
-        Fixture fixture = body.createFixture(fixtureDef);
-
-        CustomUserData data = new CustomUserData();
-        data.name = config.category.name;
-        data.body = body;
-        data.fixture = fixture;
-        data.mine = config.host;
-
-        body.setUserData(data);
-        fixture.setUserData(data);
-
-        return body;
-    }
-
-    public FixtureDef createFixtureDef(Shape shape, short bits, short maskBits, boolean isSensor) {
-        FixtureDef fixTureDef = new FixtureDef();
-        fixTureDef.shape = shape;
-        fixTureDef.filter.categoryBits = bits;
-        fixTureDef.filter.maskBits = maskBits;
-        fixTureDef.isSensor = isSensor;
-
-        return fixTureDef;
     }
 }

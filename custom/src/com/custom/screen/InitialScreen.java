@@ -1,8 +1,8 @@
 package com.custom.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.custom.screen.stage.InitialScreenStage;
 import com.custom.constant.CustomGameAttributeNames;
+import com.custom.screen.stage.InitialScreenStage;
 import com.mini.game.MiniGame;
 import com.mini.screen.BaseScreen;
 

@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.custom.member.constant.MemberFixtureAttribute;
 import com.custom.member.constant.MemberName;
-import com.mini.constant.MiniGameScreenSetting;
+import com.mini.game.MiniGameConfig;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.helper.GameSpriteHelper;
@@ -53,12 +53,12 @@ public class ChunLiQiGongBall extends GameSprite {
 
     @Override
     public float getDrawX() {
-        return getPosX() * MiniGameScreenSetting.VIEW_RATE;
+        return getPosX() * MiniGameConfig.getScreenSettingViewRate();
     }
 
     @Override
     public float getDrawY() {
-        return getPosY() * MiniGameScreenSetting.VIEW_RATE;
+        return getPosY() * MiniGameConfig.getScreenSettingViewRate();
     }
 
     @Override

@@ -11,13 +11,14 @@ import com.custom.member.constant.MemberName;
 import com.custom.member.status.ChunLiStatus;
 import com.custom.member.status.ProtagonistStatus;
 import com.custom.member.weapon.MarioBullet;
-import com.mini.assist.CustomUserData;
-import com.mini.constant.EnumSound;
-import com.mini.constant.MiniGamePhysicalSetting;
-import com.mini.constant.MiniGameScreenSetting;
+import com.mini.animation.MiniAnimation;
+import com.mini.animation.MiniAnimationChain;
+import com.mini.animation.helper.MiniAnimationHolder;
 import com.mini.game.MiniGame;
+import com.mini.game.MiniGameConfig;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
+import com.mini.member.MiniUserData;
 import com.mini.member.helper.GameSpriteHolder;
 import com.mini.member.status.GameSpriteDirection;
 
@@ -44,7 +45,7 @@ public class Protagonist extends GameSprite {
     protected Body createBody(World world, float initX, float initY) {
         // 定义刚体
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(initX * MiniGamePhysicalSetting.VIEW_RATE, initY * MiniGamePhysicalSetting.VIEW_RATE);
+        bodyDef.position.set(initX * MiniGameConfig.getPhysicalSettingViewRate(), initY * MiniGameConfig.getPhysicalSettingViewRate());
         bodyDef.type = BodyType.DynamicBody;
 
         // 创建刚体
@@ -52,7 +53,7 @@ public class Protagonist extends GameSprite {
 
         // 定义图形
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        shape.setAsBox(getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
 
         // 定义夹具
         FixtureDef fixTureDef = new FixtureDef();
@@ -69,7 +70,7 @@ public class Protagonist extends GameSprite {
         Fixture fixture = body.createFixture(fixTureDef);
 
         // 配置属性
-        CustomUserData data = new CustomUserData();
+        MiniUserData data = new MiniUserData();
         data.name = category.name;
         data.body = body;
         data.fixture = fixture;
@@ -89,7 +90,7 @@ public class Protagonist extends GameSprite {
     @Override
     protected void initFixtures() {
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(getDrawW() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE, getDrawH() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE * 0.7f);
+        shape.setAsBox(getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 0.7f);
 
         FixtureDef fixTureDef = new FixtureDef();
         fixTureDef.shape = shape;
@@ -109,7 +110,7 @@ public class Protagonist extends GameSprite {
         regions[0] = new TextureRegion(texture, 8, 80, 15, 30);
         regions[1] = new TextureRegion(texture, 48, 80, 15, 30);
         regions[2] = new TextureRegion(texture, 88, 80, 15, 30);
-        Animation animation = new Animation(getFrameDuration(), regions);
+        Animation animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), regions);
         animation.setPlayMode(Animation.PlayMode.LOOP);
         insertAnimation(ProtagonistStatus.WALK, GameSpriteDirection.R, animation);
         // 初始化左走动画
@@ -119,38 +120,38 @@ public class Protagonist extends GameSprite {
             regions2[i].setRegion(regions[i]);
             regions2[i].flip(true, false);
         }
-        animation = new Animation(getFrameDuration(), regions2);
+        animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), regions2);
         animation.setPlayMode(Animation.PlayMode.LOOP);
         insertAnimation(ProtagonistStatus.WALK, GameSpriteDirection.L, animation);
 
         // 右站立
-        animation = new Animation(getFrameDuration(), regions[0]);
+        animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), regions[0]);
         insertAnimation(ProtagonistStatus.QUIET, GameSpriteDirection.R, animation);
         // 左站立
-        animation = new Animation(getFrameDuration(), regions2[0]);
+        animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), regions2[0]);
         insertAnimation(ProtagonistStatus.QUIET, GameSpriteDirection.L, animation);
 
         // 右跳，左跳
         TextureRegion region = new TextureRegion(texture, 130, 80, 15, 30);
-        animation = new Animation(getFrameDuration(), region);
+        animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), region);
         insertAnimation(ProtagonistStatus.JUMP, GameSpriteDirection.R, animation);
         region = new TextureRegion(region);
         region.flip(true, false);
-        animation = new Animation(getFrameDuration(), region);
+        animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), region);
         insertAnimation(ProtagonistStatus.JUMP, GameSpriteDirection.L, animation);
 
         // 右蹲，左蹲
         region = new TextureRegion(texture, 130, 120, 15, 30);
-        animation = new Animation(getFrameDuration(), region);
+        animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), region);
         insertAnimation(ProtagonistStatus.SQUAT, GameSpriteDirection.R, animation);
         region = new TextureRegion(region);
         region.flip(true, false);
-        animation = new Animation(getFrameDuration(), region);
+        animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), region);
         insertAnimation(ProtagonistStatus.SQUAT, GameSpriteDirection.L, animation);
 
         // 打坐
         region = new TextureRegion(texture, 88, 120, 15, 30);
-        animation = new Animation(getFrameDuration(), region);
+        animation = new Animation(MiniGameConfig.getScreenSettingFrameDuration(), region);
         insertAnimation(ProtagonistStatus.SIT, GameSpriteDirection.F, animation);
     }
 
@@ -167,7 +168,7 @@ public class Protagonist extends GameSprite {
     @Override
     protected void initCustom() {
         chunLi = new ChunLi();
-        chunLi.create(world, initPosX * MiniGameScreenSetting.VIEW_RATE, initPosY * MiniGameScreenSetting.VIEW_RATE);
+        chunLi.create(world, initPosX * MiniGameConfig.getScreenSettingViewRate(), initPosY * MiniGameConfig.getScreenSettingViewRate());
     }
 
     @Override
@@ -195,7 +196,7 @@ public class Protagonist extends GameSprite {
                 body.destroyFixture(fixture);
                 fixture = body.createFixture(fixtureDefMap.get(statusPre));
 
-                CustomUserData data = new CustomUserData();
+                MiniUserData data = new MiniUserData();
                 data.name = category.name;
                 data.body = body;
                 data.fixture = fixture;
@@ -242,6 +243,8 @@ public class Protagonist extends GameSprite {
         currentAnimation = animationMap.get(status).get(direction);
     }
 
+    private MiniAnimationHolder miniAnimationHolder = new MiniAnimationHolder();
+
     @Override
     protected void renderCustom(SpriteBatch batch, float delta) {
         if (proxy != null) {
@@ -249,9 +252,14 @@ public class Protagonist extends GameSprite {
             return;
         }
 
-        batch.begin();
-        batch.draw(getFrameCurrent(delta), getDrawX(), getDrawY(), getDrawW(), getDrawH());
-        batch.end();
+        MiniAnimationChain miniAnimationChain = new MiniAnimationChain();
+        MiniAnimation miniAnimation = new MiniAnimation(currentAnimation, getDrawW(), getDrawH());
+        miniAnimationChain.putMiniAnimation(miniAnimation);
+        miniAnimationHolder.draw(batch, delta, miniAnimationChain, getDrawX(), getDrawY());
+
+//        batch.begin();
+//        batch.draw(getFrameCurrent(delta), getDrawX(), getDrawY(), getDrawW(), getDrawH());
+//        batch.end();
 
         marioBulletHolder.render(batch, delta);
     }
@@ -277,7 +285,7 @@ public class Protagonist extends GameSprite {
 
             @Override
             public float getInitX() {
-                return getPosX() * MiniGameScreenSetting.VIEW_RATE;
+                return getPosX() * MiniGameConfig.getScreenSettingViewRate();
             }
 
             @Override
@@ -292,7 +300,6 @@ public class Protagonist extends GameSprite {
                 };
             }
         });
-        MiniGame.soundPlayer.playSound(EnumSound.BULLET);
     }
 
     @Override
@@ -313,12 +320,12 @@ public class Protagonist extends GameSprite {
 
     @Override
     public float getDrawX() {
-        return getPosX() * MiniGameScreenSetting.VIEW_RATE - getDrawW() / 2;
+        return getPosX() * MiniGameConfig.getScreenSettingViewRate() - getDrawW() / 2;
     }
 
     @Override
     public float getDrawY() {
-        return getPosY() * MiniGameScreenSetting.VIEW_RATE - getDrawH() / 2;
+        return getPosY() * MiniGameConfig.getScreenSettingViewRate() - getDrawH() / 2;
     }
 
     @Override

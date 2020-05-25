@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public abstract class BaseStage extends Stage implements Runnable{
+public abstract class BaseStage extends Stage implements Runnable {
 
     public BaseStage(Viewport viewport, Batch batch) {
         super(viewport, batch);
@@ -24,7 +24,7 @@ public abstract class BaseStage extends Stage implements Runnable{
     /**
      * Override@更新
      */
-    protected void update(){
+    protected void update() {
     }
 
     @Override

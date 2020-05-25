@@ -1,18 +1,17 @@
-package com.mini.member.helper;
+package com.mini.member.rule;
 
 import com.mini.member.AutomaticActRule;
 import com.mini.member.GameSprite;
 import com.mini.member.status.GameSpriteDirection;
 
-public abstract class ReverseDirectionRule implements AutomaticActRule {
+public class ReverseDirectionRule implements AutomaticActRule {
 
     private Float minScopeX, maxScopeX, minScopeY, maxScopeY;
 
     private Float minVelocityX, maxVelocityX, minVelocityY, maxVelocityY;
 
     @Override
-    public void react() {
-        GameSprite gameSprite = getGameSprite();
+    public void react(GameSprite gameSprite) {
         if (minScopeX != null) {
             if (gameSprite.getPosX() <= minScopeX) {
                 gameSprite.setDirection(GameSpriteDirection.R);

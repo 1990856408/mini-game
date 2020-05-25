@@ -9,10 +9,9 @@ import com.custom.member.constant.MemberFixtureAttribute;
 import com.custom.member.constant.MemberName;
 import com.google.common.collect.Lists;
 import com.mini.assist.AnimationAssist;
-import com.mini.assist.CustomUserData;
-import com.mini.constant.MiniGamePhysicalSetting;
-import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
+import com.mini.game.MiniGameConfig;
+import com.mini.member.MiniUserData;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 
@@ -21,25 +20,25 @@ public class MarioBullet extends GameSprite {
     @Override
     protected Body createBody(World world, float initX, float initY) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(initX * MiniGamePhysicalSetting.VIEW_RATE, initY * MiniGamePhysicalSetting.VIEW_RATE);
+        bodyDef.position.set(initX * MiniGameConfig.getPhysicalSettingViewRate(), initY * MiniGameConfig.getPhysicalSettingViewRate());
         bodyDef.type = BodyType.DynamicBody;
 
         Body body = world.createBody(bodyDef);
         body.setGravityScale(0);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(getDrawR() * MiniGamePhysicalSetting.MEMBER_VIEW_RATE);
+        shape.setRadius(getDrawR() * MiniGameConfig.getPhysicalSettingMemberViewRate());
 
         FixtureDef fixTureDef = new FixtureDef();
         fixTureDef.shape = shape;
-        fixTureDef.restitution = 0.85f;
+        fixTureDef.restitution = 1.0f;
         fixTureDef.filter.categoryBits = category.bits;
         fixTureDef.filter.maskBits = category.maskBits;
         fixTureDef.isSensor = false;
 
         Fixture fixture = body.createFixture(fixTureDef);
 
-        CustomUserData data = new CustomUserData();
+        MiniUserData data = new MiniUserData();
         data.name = category.name;
         data.body = body;
         data.fixture = fixture;
@@ -56,7 +55,7 @@ public class MarioBullet extends GameSprite {
         Texture texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
         currentAnimation = AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(287, 287, 18, 15)
-        ), getFrameDuration(), 0, Animation.PlayMode.LOOP);
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP);
     }
 
     @Override
@@ -76,12 +75,12 @@ public class MarioBullet extends GameSprite {
 
     @Override
     public float getDrawX() {
-        return getPosX() * MiniGameScreenSetting.VIEW_RATE - getDrawR() / 2;
+        return getPosX() * MiniGameConfig.getScreenSettingViewRate() - getDrawR() / 2;
     }
 
     @Override
     public float getDrawY() {
-        return getPosY() * MiniGameScreenSetting.VIEW_RATE - getDrawR() / 2;
+        return getPosY() * MiniGameConfig.getScreenSettingViewRate() - getDrawR() / 2;
     }
 
     @Override

@@ -9,12 +9,22 @@ import java.util.List;
 /**
  * 动画辅助器
  */
-public class AnimationAssist {
+public final class AnimationAssist {
 
     public static Animation createAnimation(Texture texture, List<Bound> bounds, float frameDuration) {
         return createAnimation(texture, bounds, frameDuration, 0, null);
     }
 
+    /**
+     * 创建动画，按照自定义的多个边框
+     *
+     * @param texture       纹理
+     * @param bounds        边框集合
+     * @param frameDuration 帧间隔
+     * @param flip          是否翻转 01:x翻转 10:y翻转 11:xy翻转
+     * @param mode          播放模式
+     * @return
+     */
     public static Animation createAnimation(Texture texture, List<Bound> bounds, float frameDuration, int flip, Animation.PlayMode mode) {
         TextureRegion[] regions = new TextureRegion[bounds.size()];
         for (int i = 0; i < regions.length; i++) {
@@ -29,6 +39,18 @@ public class AnimationAssist {
         return animation;
     }
 
+    /**
+     * 创建动画，按照横纵切割
+     *
+     * @param texture
+     * @param splitW        切割宽度
+     * @param splitH        切割高度
+     * @param range         取切割个数，xy顺序
+     * @param frameDuration
+     * @param flip
+     * @param mode
+     * @return
+     */
     public static Animation createAnimation(Texture texture, int splitW, int splitH, int range, float frameDuration, int flip, Animation.PlayMode mode) {
         TextureRegion[][] r2v = TextureRegion.split(texture, splitW, splitH);
         TextureRegion[] regions = new TextureRegion[range];
@@ -52,7 +74,7 @@ public class AnimationAssist {
     }
 
     /**
-     * 裁剪边界
+     * 裁剪边框
      */
     public static class Bound {
 

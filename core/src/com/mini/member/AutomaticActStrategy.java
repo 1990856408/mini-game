@@ -5,5 +5,8 @@ package com.mini.member;
  */
 public interface AutomaticActStrategy {
 
+    /**
+     * 策略实现，在{@link AutomaticAct#autoExecute()}中调用
+     */
     void execute();
 }

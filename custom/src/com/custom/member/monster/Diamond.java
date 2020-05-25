@@ -11,8 +11,8 @@ import com.custom.member.constant.MemberFixtureAttribute;
 import com.custom.member.constant.MemberName;
 import com.google.common.collect.Lists;
 import com.mini.assist.AnimationAssist;
-import com.mini.constant.MiniGameScreenSetting;
 import com.mini.game.MiniGame;
+import com.mini.game.MiniGameConfig;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.helper.GameSpriteHelper;
 import com.mini.member.monster.MonsterSprite;
@@ -38,7 +38,7 @@ public class Diamond extends MonsterSprite {
                 new AnimationAssist.Bound(266, 111, 30, 32),
                 new AnimationAssist.Bound(194, 144, 30, 32),
                 new AnimationAssist.Bound(229, 144, 30, 32)
-        ), getFrameDuration(), 0, Animation.PlayMode.LOOP);
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP);
     }
 
     @Override
@@ -58,12 +58,12 @@ public class Diamond extends MonsterSprite {
 
     @Override
     public float getDrawX() {
-        return getPosX() * MiniGameScreenSetting.VIEW_RATE - getDrawR() / 2;
+        return getPosX() * MiniGameConfig.getScreenSettingViewRate() - getDrawR() / 2;
     }
 
     @Override
     public float getDrawY() {
-        return getPosY() * MiniGameScreenSetting.VIEW_RATE - getDrawR() / 2;
+        return getPosY() * MiniGameConfig.getScreenSettingViewRate() - getDrawR() / 2;
     }
 
     @Override

@@ -2,13 +2,12 @@ package com.mini.tool;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.mini.constant.EnumSound;
 import com.mini.game.MiniGame;
 
 /**
  * 音效播放器
  */
-public class SoundPlayer {
+public final class SoundPlayer {
 
     private Music music;
 
@@ -30,8 +29,8 @@ public class SoundPlayer {
     }
 
     // 播放音效（短暂的）
-    public void playSound(EnumSound enumSound) {
-        sound = MiniGame.assetManager.get(EnumSound.path(enumSound), Sound.class);
+    public void playSound(String path) {
+        sound = MiniGame.assetManager.get(path, Sound.class);
         sound.play(0.04f);
     }
 

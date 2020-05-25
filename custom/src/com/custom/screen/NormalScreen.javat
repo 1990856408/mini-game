@@ -18,7 +18,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.mini.assist.CustomUserData;
+import com.mini.member.MiniUserData;
 import com.mini.constant.*;
 import com.mini.game.MiniGame;
 import com.mini.handle.GameScreenContactListener;
@@ -96,8 +96,8 @@ public class NormalScreen extends BaseScreen {
         this.world.setContactListener(conListener);
         this.box2DRender = new Box2DDebugRenderer();
         this.box2DCamera = new OrthographicCamera();
-        this.box2DCamera.setToOrtho(false, MiniGameScreenSetting.VIEW_W / ConstantMembers.LENGTHRATE,
-                MiniGameScreenSetting.VIEW_H / ConstantMembers.LENGTHRATE);
+        this.box2DCamera.setToOrtho(false, MiniGameConfig.getScreenSettingViewW() / ConstantMembers.LENGTHRATE,
+                MiniGameConfig.getScreenSettingViewH() / ConstantMembers.LENGTHRATE);
         this.Box2DDebug = true;
 
         this.deltaTime = 0;
@@ -135,7 +135,7 @@ public class NormalScreen extends BaseScreen {
 
     //创建地图的边界
     private void createMapBound() {
-        CustomUserData data = new CustomUserData();
+        MiniUserData data = new MiniUserData();
         data.name = ConstantNames.EDGE;
 
         BodyDef bodyDef = new BodyDef();
@@ -230,7 +230,7 @@ public class NormalScreen extends BaseScreen {
                 Body body = this.world.createBody(bodyDef);
                 Fixture fixture = body.createFixture(fixTureDef);
 
-                CustomUserData data = new CustomUserData();
+                MiniUserData data = new MiniUserData();
                 data.name = ConstantNames.FOOT;
                 data.body = body;
                 data.fixture = fixture;
@@ -250,9 +250,9 @@ public class NormalScreen extends BaseScreen {
 
         //实例化主角
 //        prota = new Protagonist(Protagonist.getCreateBody(init_x, init_y, world));
-        CustomUserData data = (CustomUserData) prota.getBody().getUserData();
+        MiniUserData data = (MiniUserData) prota.getBody().getUserData();
         data.mine = prota;
-        data = (CustomUserData) data.fixture.getUserData();
+        data = (MiniUserData) data.fixture.getUserData();
         data.mine = prota;
     }
 
@@ -272,9 +272,9 @@ public class NormalScreen extends BaseScreen {
                 //将鸭子添加到鸭子集合中
                 hedges.add(hedge);
 
-                CustomUserData data = (CustomUserData) hedge.getBody().getUserData();
+                MiniUserData data = (MiniUserData) hedge.getBody().getUserData();
                 data.mine = hedge;
-                data = (CustomUserData) data.fixture.getUserData();
+                data = (MiniUserData) data.fixture.getUserData();
                 data.mine = hedge;
             }
         }
@@ -296,9 +296,9 @@ public class NormalScreen extends BaseScreen {
 //                egg = new Diamond(Diamond.getCreateBody(init_x, init_y, world));
                 eggs.add(egg);
 
-                CustomUserData data = (CustomUserData) egg.getBody().getUserData();
+                MiniUserData data = (MiniUserData) egg.getBody().getUserData();
                 data.mine = egg;
-                data = (CustomUserData) data.fixture.getUserData();
+                data = (MiniUserData) data.fixture.getUserData();
                 data.mine = egg;
             }
         }
@@ -324,9 +324,9 @@ public class NormalScreen extends BaseScreen {
                 //将鸭子添加到鸭子集合中
                 ducks.add(pduck);
 
-                CustomUserData data = (CustomUserData) pduck.getBody().getUserData();
+                MiniUserData data = (MiniUserData) pduck.getBody().getUserData();
                 data.mine = pduck;
-                data = (CustomUserData) data.fixture.getUserData();
+                data = (MiniUserData) data.fixture.getUserData();
                 data.mine = pduck;
             }
         }
@@ -350,9 +350,9 @@ public class NormalScreen extends BaseScreen {
                 //将恐龙添加到集合中
                 dinos.add(pDino);
 
-                CustomUserData data = (CustomUserData) pDino.getBody().getUserData();
+                MiniUserData data = (MiniUserData) pDino.getBody().getUserData();
                 data.mine = pDino;
-                data = (CustomUserData) data.fixture.getUserData();
+                data = (MiniUserData) data.fixture.getUserData();
                 data.mine = pDino;
             }
         }
@@ -372,9 +372,9 @@ public class NormalScreen extends BaseScreen {
                 robot = new Robot(Robot.getCreateBody(init_x, init_y, world));
                 robots.add(robot);
 
-                CustomUserData data = (CustomUserData) robot.getBody().getUserData();
+                MiniUserData data = (MiniUserData) robot.getBody().getUserData();
                 data.mine = robot;
-                data = (CustomUserData) data.fixture.getUserData();
+                data = (MiniUserData) data.fixture.getUserData();
                 data.mine = robot;
             }
         }
@@ -826,9 +826,9 @@ public class NormalScreen extends BaseScreen {
             Body bo = removeBodys.get(i);
             if (bo.getFixtureList().size > 0) {
                 bo.destroyFixture(bo.getFixtureList().first());
-                if (((CustomUserData) (bo.getUserData())).name.equals("duck"))
+                if (((MiniUserData) (bo.getUserData())).name.equals("duck"))
                     this.currentScore += ConstantValue.DUCK;
-                if (((CustomUserData) (bo.getUserData())).name.equals("egg"))
+                if (((MiniUserData) (bo.getUserData())).name.equals("egg"))
                     this.currentScore += ConstantValue.EGG;
             }
         }
@@ -870,22 +870,22 @@ public class NormalScreen extends BaseScreen {
 
     //更新图形相机的位置
     private void updateCamera() {
-        camera.position.set(prota.getPos_x() + MiniGameScreenSetting.VIEW_W / 4, prota.getPox_y() + MiniGameScreenSetting.VIEW_H / 8, 0);
+        camera.position.set(prota.getPos_x() + MiniGameConfig.getScreenSettingViewW() / 4, prota.getPox_y() + MiniGameConfig.getScreenSettingViewH() / 8, 0);
         //矫正相机位置
         this.adjustCamera();
         camera.update();
 
         //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-        camera_pos_x = camera.position.x - MiniGameScreenSetting.VIEW_W / 2;
-        camera_pos_y = camera.position.y - MiniGameScreenSetting.VIEW_H * 3 / 8;
+        camera_pos_x = camera.position.x - MiniGameConfig.getScreenSettingViewW() / 2;
+        camera_pos_y = camera.position.y - MiniGameConfig.getScreenSettingViewH() * 3 / 8;
         //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     }
 
     //更新物理相机的位置
     private void updateBox2DCamera() {
         if (Box2DDebug) {
-            box2DCamera.position.set(prota.getPos_x() / ConstantMembers.LENGTHRATE + MiniGameScreenSetting.VIEW_W / ConstantMembers.LENGTHRATE / 4.0f,
-                    prota.getPox_y() / ConstantMembers.LENGTHRATE + MiniGameScreenSetting.VIEW_H / ConstantMembers.LENGTHRATE / 8.0f, 0);
+            box2DCamera.position.set(prota.getPos_x() / ConstantMembers.LENGTHRATE + MiniGameConfig.getScreenSettingViewW() / ConstantMembers.LENGTHRATE / 4.0f,
+                    prota.getPox_y() / ConstantMembers.LENGTHRATE + MiniGameConfig.getScreenSettingViewH() / ConstantMembers.LENGTHRATE / 8.0f, 0);
             //矫正物理世界相机的位置
             this.adjustBox2DCamera();
             box2DCamera.update();

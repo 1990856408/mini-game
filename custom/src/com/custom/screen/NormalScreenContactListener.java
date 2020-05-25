@@ -1,7 +1,7 @@
 package com.custom.screen;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.mini.assist.CustomUserData;
+import com.mini.member.MiniUserData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +34,8 @@ public class NormalScreenContactListener implements ContactListener {
 //        Fixture fixtureB = contact.getFixtureB();
 //
 //        if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
-//            CustomUserData dataA = (CustomUserData) fixtureA.getUserData();
-//            CustomUserData dataB = (CustomUserData) fixtureB.getUserData();
+//            MiniUserData dataA = (MiniUserData) fixtureA.getUserData();
+//            MiniUserData dataB = (MiniUserData) fixtureB.getUserData();
 //            //判断是否着地
 //            this.judgeOnFoot(dataA, dataB);
 //            //判断主角与鸭子的碰撞
@@ -60,7 +60,7 @@ public class NormalScreenContactListener implements ContactListener {
     }
 
 //    //处理那些与主角碰撞后会对主角造成伤害且自己不会消失的敌人
-//    private void judgeProtaContactHarmA(CustomUserData dataA, CustomUserData dataB, String harmName) {
+//    private void judgeProtaContactHarmA(MiniUserData dataA, MiniUserData dataB, String harmName) {
 //        if (!dataA.name.equals(ConstantNames.MARIO) && !dataB.name.equals(ConstantNames.MARIO))
 //            return;
 //        if (dataA.name.equals(harmName) && dataB.name.equals(ConstantNames.MARIO)) {
@@ -71,7 +71,7 @@ public class NormalScreenContactListener implements ContactListener {
 //        }
 //    }
 //
-//    private void judgeRobotBall(CustomUserData dataA, CustomUserData dataB) {
+//    private void judgeRobotBall(MiniUserData dataA, MiniUserData dataB) {
 //        if (dataA.name.equals(ConstantNames.ROBOTBALL) && dataB.name.equals(ConstantNames.MARIO)) {
 //            this.removeBodies.add(dataA.body);
 //            this.protaSufferHarm(ConstantNames.ROBOTBALL);
@@ -82,7 +82,7 @@ public class NormalScreenContactListener implements ContactListener {
 //        }
 //    }
 //
-//    private void judgeBall(CustomUserData dataA, CustomUserData dataB) {
+//    private void judgeBall(MiniUserData dataA, MiniUserData dataB) {
 //        if (!dataA.name.equals(ConstantNames.BALL) && !dataB.name.equals(ConstantNames.BALL))
 //            return;
 //        if (conValues.ball.contains(dataA.name))
@@ -94,7 +94,7 @@ public class NormalScreenContactListener implements ContactListener {
 //    /*
 //     * 与地面接触、离开函数
 //     */
-//    public void judgeOnFoot(CustomUserData dataA, CustomUserData dataB) {
+//    public void judgeOnFoot(MiniUserData dataA, MiniUserData dataB) {
 //        if (!dataA.name.equals(ConstantNames.FOOT) && !dataB.name.equals(ConstantNames.FOOT))
 //            return;
 //
@@ -107,7 +107,7 @@ public class NormalScreenContactListener implements ContactListener {
 //     * 与鸭子接触，鸭子就会死亡，将鸭子的刚体添加到移除刚体集合中，并使主角的当前跳跃次数
 //     * 达到最大，这样就会使鸭子充当一个跳板的作用
 //     */
-//    public void judgeDuck(CustomUserData dataA, CustomUserData dataB) {
+//    public void judgeDuck(MiniUserData dataA, MiniUserData dataB) {
 //        if (!dataA.name.equals(ConstantNames.DUCK) && !dataB.name.equals(ConstantNames.DUCK))
 //            return;
 //        if (conValues.duck.contains(dataB.name)) {
@@ -120,7 +120,7 @@ public class NormalScreenContactListener implements ContactListener {
 //        }
 //    }
 //
-//    public void judgeBullet(CustomUserData dataA, CustomUserData dataB) {
+//    public void judgeBullet(MiniUserData dataA, MiniUserData dataB) {
 //        if (dataA.name.equals(ConstantNames.BULLET)) {
 //            removeBodies.add(dataA.body);
 //            if (conValues.bullet.contains(dataB.name)) {    //再将恐龙的刚体加进伤害刚体集合中
@@ -135,7 +135,7 @@ public class NormalScreenContactListener implements ContactListener {
 //        }
 //    }
 //
-//    private void judgeChunLi(CustomUserData dataA, CustomUserData dataB) {
+//    private void judgeChunLi(MiniUserData dataA, MiniUserData dataB) {
 //        if (!dataA.name.equals(ConstantNames.CHUNLI) && !dataB.name.equals(ConstantNames.CHUNLI))
 //            return;
 //        if (conValues.chunli.contains(dataA.name))
@@ -144,7 +144,7 @@ public class NormalScreenContactListener implements ContactListener {
 //            chunliHarmBodys.add(dataB.body);
 //    }
 //
-//    private void judgeEgg(CustomUserData dataA, CustomUserData dataB) {
+//    private void judgeEgg(MiniUserData dataA, MiniUserData dataB) {
 //        if (!dataA.name.equals(ConstantNames.EGG) && !dataB.name.equals(ConstantNames.EGG))
 //            return;
 //
@@ -164,14 +164,14 @@ public class NormalScreenContactListener implements ContactListener {
         Fixture fixtureB = contact.getFixtureB();
 
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
-            CustomUserData dataA = (CustomUserData) fixtureA.getUserData();
-            CustomUserData dataB = (CustomUserData) fixtureB.getUserData();
+            MiniUserData dataA = (MiniUserData) fixtureA.getUserData();
+            MiniUserData dataB = (MiniUserData) fixtureB.getUserData();
 //            this.endOnFoot(dataA, dataB);
         }
 
     }
 
-//    public void endOnFoot(CustomUserData dataA, CustomUserData dataB) {
+//    public void endOnFoot(MiniUserData dataA, MiniUserData dataB) {
 //        if ((dataA.name.equals("mario") || dataA.name.equals("chunli")) && dataB.name.equals("foot")) {
 //            if (onFoot)
 //                onFoot = false;
@@ -234,9 +234,9 @@ public class NormalScreenContactListener implements ContactListener {
 //            Body bo = removeBodies.get(i);
 //            if (bo.getFixtureList().size > 0) {
 //                bo.destroyFixture(bo.getFixtureList().first());
-//                if (((CustomUserData) (bo.getUserData())).name.equals("duck"))
+//                if (((MiniUserData) (bo.getUserData())).name.equals("duck"))
 //                    screen.curScore += ConstantValue.DUCK;
-//                if (((CustomUserData) (bo.getUserData())).name.equals("egg"))
+//                if (((MiniUserData) (bo.getUserData())).name.equals("egg"))
 //                    screen.curScore += ConstantValue.EGG;
 //            }
 //        }

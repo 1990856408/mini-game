@@ -4,7 +4,6 @@ import com.custom.constant.CustomGameAttributeNames;
 import com.custom.screen.NormalScreen;
 import com.mini.game.MiniGame;
 import com.mini.screen.BaseScreen;
-import com.custom.screen.InitialScreen;
 
 public class CustomGame extends MiniGame {
 

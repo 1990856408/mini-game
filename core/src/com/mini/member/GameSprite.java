@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mini.constant.MiniGameScreenSetting;
 import com.mini.member.status.GameSpriteDirection;
 
 /**
@@ -13,14 +12,14 @@ import com.mini.member.status.GameSpriteDirection;
  */
 public abstract class GameSprite implements Runnable {
 
+    // 成员是否存活（默认存活）
+    public boolean isAlive = true;
     // 精灵属性
     protected GameSpriteCategory category;
-
     // 成员的世界
     protected World world;
     // 成员的刚体
     protected Body body;
-
     // 成员的初始位置
     protected float initPosX, initPosY;
     // 成员的朝向
@@ -29,9 +28,6 @@ public abstract class GameSprite implements Runnable {
     protected long action;
     // 成员的增益
     protected long buff;
-    // 成员是否存活（默认存活）
-    public boolean isAlive = true;
-
     // 当前动画
     protected Animation currentAnimation;
 
@@ -171,6 +167,7 @@ public abstract class GameSprite implements Runnable {
         return body.getPosition().y;
     }
 
+    // 设置物理世界坐标
     public void setPosition(float x, float y) {
         body.setTransform(x, y, 0);
     }
@@ -204,11 +201,6 @@ public abstract class GameSprite implements Runnable {
     // 取图形世界绘制半径
     public float getDrawR() {
         return 0;
-    }
-
-    // 取图形世界渲染帧间隔（每秒帧数）
-    public float getFrameDuration() {
-        return MiniGameScreenSetting.FRAME_DURATION;
     }
 
     // 取图形世界当前帧

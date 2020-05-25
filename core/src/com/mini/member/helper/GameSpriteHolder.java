@@ -35,8 +35,12 @@ public final class GameSpriteHolder {
         this.world = world;
     }
 
-    public void pushCreateTask(CreateTask createTask) {
-        createTasks.addLast(createTask);
+    public void pushCreateTask(CreateTask task) {
+        createTasks.addLast(task);
+    }
+
+    public void pushDestroyBodyTask(DestroyBodyTask destroyBodyTask) {
+
     }
 
     private void create() {
@@ -97,6 +101,7 @@ public final class GameSpriteHolder {
     public void render(SpriteBatch batch, float delta) {
         create();
         gameSprites.forEach(gameSprite -> gameSprite.render(batch, delta));
+        destroyBody();
     }
 
     /**
