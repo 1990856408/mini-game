@@ -58,6 +58,13 @@ public abstract class GameSprite implements Runnable {
     // 创建刚体
     protected abstract Body createBody(World world, float initX, float initY);
 
+    // 销毁刚体
+    public final void destroyBody() {
+        if (world != null && body != null) {
+            world.destroyBody(body);
+        }
+    }
+
     // 初始化
     protected void init() {
         preInit();

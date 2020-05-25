@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 游戏精灵持有者
  * <p>
- * 为了解决在渲染期间创建物理世界刚体线程不安全的问题
+ * 为了解决在渲染期间创建物理世界刚体线程不安全的问题，但本身不维护线程安全
  */
 public final class GameSpriteHolder {
 
@@ -21,8 +21,12 @@ public final class GameSpriteHolder {
     // 创建任务
     private LinkedList<CreateTask> createTasks = new LinkedList<>();
 
+    private LinkedList<DestroyBodyTask> destroyBodyTasks = new LinkedList<>();
+
     // 每次可创建时的最大创建数，避免创建任务大量堆积时的游戏卡顿问题
     private int maxCreateCount = 2;
+
+    private int maxDestroyBodyCount = 2;
 
     // 当前已创建的游戏精灵
     private List<GameSprite> gameSprites = Lists.newArrayList();
@@ -31,11 +35,11 @@ public final class GameSpriteHolder {
         this.world = world;
     }
 
-    public synchronized void pushCreateTask(CreateTask createTask) {
+    public void pushCreateTask(CreateTask createTask) {
         createTasks.addLast(createTask);
     }
 
-    private synchronized void create() {
+    private void create() {
         if (world.isLocked()) {
             return;
         }
@@ -57,6 +61,29 @@ public final class GameSpriteHolder {
             gameSprites.add(gameSprite);
 
             createCount++;
+        }
+    }
+
+    private void destroyBody() {
+        if (world.isLocked()) {
+            return;
+        }
+
+        int destroyBodyCount = 0;
+        while (destroyBodyCount < maxDestroyBodyCount) {
+            DestroyBodyTask destroyBodyTask = destroyBodyTasks.pollFirst();
+            if (destroyBodyTask == null) {
+                break;
+            }
+
+            GameSprite gameSprite = destroyBodyTask.getGameSprite();
+            gameSprite.destroyBody();
+            DestroyBodyAction destroyBodyAction = destroyBodyTask.getDestroyBodyAction();
+            if (destroyBodyAction != null) {
+                destroyBodyAction.execute(gameSprite);
+            }
+
+            destroyBodyCount++;
         }
     }
 
@@ -83,7 +110,17 @@ public final class GameSpriteHolder {
 
         float getInitY();
 
+        // 回调函数
         default CreateAction getCreateAction() {
+            return null;
+        }
+    }
+
+    public interface DestroyBodyTask {
+
+        GameSprite getGameSprite();
+
+        default DestroyBodyAction getDestroyBodyAction() {
             return null;
         }
     }
@@ -92,6 +129,10 @@ public final class GameSpriteHolder {
      * 创建动作，在创建完成后执行
      */
     public interface CreateAction {
+        void execute(GameSprite gameSprite);
+    }
+
+    public interface DestroyBodyAction {
         void execute(GameSprite gameSprite);
     }
 }
