@@ -2,6 +2,7 @@ package com.mini.game;
 
 import com.alibaba.fastjson.JSONObject;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -43,39 +44,7 @@ public abstract class MiniGame extends Game {
     // 图形相机
     private OrthographicCamera camera;
 
-    private BaseScreen initScreen;
-
-    public static void setAttribute(String name, Object value) {
-        attributes.put(name, value);
-    }
-
-    public static byte getAttributeByte(String name) {
-        return attributes.getByte(name);
-    }
-
-    public static short getAttributeShort(String name) {
-        return attributes.getShort(name);
-    }
-
-    public static int getAttributeInt(String name) {
-        return attributes.getInteger(name);
-    }
-
-    public static float getAttributeFloat(String name) {
-        return attributes.getFloat(name);
-    }
-
-    public static double getAttributeDouble(String name) {
-        return attributes.getDouble(name);
-    }
-
-    public static String getAttributeString(String name) {
-        return attributes.getString(name);
-    }
-
-    public static Object getAttribute(String name) {
-        return attributes.get(name);
-    }
+    private Screen initScreen, currScreen;
 
     @Override
     public final void create() {
@@ -84,7 +53,7 @@ public abstract class MiniGame extends Game {
         initCustom();
 
         initScreen = getInitScreen();
-        setScreen(initScreen);
+        resetScreen(initScreen);
     }
 
     /**
@@ -98,6 +67,9 @@ public abstract class MiniGame extends Game {
      * 初始化资源
      */
     private void initAssets() {
+        // 加载配置文件
+        MiniGameConfig.load();
+
         assetManager = new AssetManager();
 
         // 初始化图片资源
@@ -146,13 +118,12 @@ public abstract class MiniGame extends Game {
 
     }
 
-    /**
-     * 重置屏幕
-     *
-     * @param screen
-     */
-    public final void resetScreen(BaseScreen screen) {
-        resetScreen(screen, null);
+    public final void resetScreen(Screen screen) {
+        resetScreen(screen, null, true);
+    }
+
+    public final void resetScreen(Screen screen, MiniGameResetScreenFunction function) {
+        resetScreen(screen, function, true);
     }
 
     /**
@@ -161,11 +132,15 @@ public abstract class MiniGame extends Game {
      * @param screen
      * @param function
      */
-    public final void resetScreen(BaseScreen screen, MiniGameResetScreenFunction function) {
+    public final void resetScreen(Screen screen, MiniGameResetScreenFunction function, boolean disposeCurrScreen) {
+        if (disposeCurrScreen && currScreen != null) {
+            currScreen.dispose();
+        }
         setScreen(screen);
         if (function != null) {
             function.execute();
         }
+        currScreen = screen;
     }
 
     @Override
@@ -214,5 +189,37 @@ public abstract class MiniGame extends Game {
      */
     public List<String> getSoundPaths() {
         return Lists.newArrayList();
+    }
+
+    public static void setAttribute(String name, Object value) {
+        attributes.put(name, value);
+    }
+
+    public static byte getAttributeByte(String name) {
+        return attributes.getByte(name);
+    }
+
+    public static short getAttributeShort(String name) {
+        return attributes.getShort(name);
+    }
+
+    public static int getAttributeInt(String name) {
+        return attributes.getInteger(name);
+    }
+
+    public static float getAttributeFloat(String name) {
+        return attributes.getFloat(name);
+    }
+
+    public static double getAttributeDouble(String name) {
+        return attributes.getDouble(name);
+    }
+
+    public static String getAttributeString(String name) {
+        return attributes.getString(name);
+    }
+
+    public static Object getAttribute(String name) {
+        return attributes.get(name);
     }
 }

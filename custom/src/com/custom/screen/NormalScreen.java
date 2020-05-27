@@ -23,9 +23,9 @@ import com.custom.member.status.ProtagonistStatus;
 import com.custom.screen.stage.NormalScreenStage;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
-import com.mini.member.MiniUserData;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
+import com.mini.member.MiniUserData;
 import com.mini.member.status.GameSpriteDirection;
 import com.mini.screen.BaseScreen;
 
@@ -388,11 +388,16 @@ public class NormalScreen extends BaseScreen {
 
     @Override
     protected void renderMembers() {
+        long now = System.currentTimeMillis();
         prota.render(getBatch(), getDelta());
 
         List<Vector<GameSprite>> gameSpritesArray = Arrays.asList(ducks, diamonds);
         for (Vector<GameSprite> gameSprites : gameSpritesArray) {
             gameSprites.forEach(gameSprite -> gameSprite.render(getBatch(), getDelta()));
+        }
+
+        if(debug){
+            System.out.println(String.format("render members's consume = %d ",System.currentTimeMillis()- now));
         }
     }
 
@@ -406,6 +411,7 @@ public class NormalScreen extends BaseScreen {
     protected void renderCustom() {
         if (debug) {
             box2DRender.render(world, box2DCamera.combined);
+            System.out.println(String.format("world count = %05d", world.getBodyCount()));
         }
 
         world.step(MiniGameConfig.getPhysicalSettingTimeStep(), 6, 2);

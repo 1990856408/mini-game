@@ -1,8 +1,14 @@
 package com.mini.game;
 
 import com.alibaba.fastjson.JSONObject;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.google.common.io.Files;
 import com.mini.constant.MiniGamePhysicalSetting;
 import com.mini.constant.MiniGameScreenSetting;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 游戏配置 TODO
@@ -27,6 +33,18 @@ public final class MiniGameConfig {
     private static JSONObject physicalSetting;
 
     public static void load() {
+        FileHandle handle = Gdx.files.internal("miniGameConfig.json");
+        if (!handle.exists()) {
+            return;
+        }
+
+        try {
+            jsonObject = JSONObject.parseObject(String.join("", Files.readLines(handle.file(), StandardCharsets.UTF_8)));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         screenSetting = jsonObject.getJSONObject(ScreenSetting);
         physicalSetting = jsonObject.getJSONObject(PhysicalSetting);
     }
