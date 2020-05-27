@@ -1,4 +1,6 @@
 package com.mini.animation;
 
-public class MiniAnimationHolderDrawStrategy {
+public interface MiniAnimationHolderDrawStrategy {
+
+    void doFinishAct(MiniAnimationHolder holder);
 }

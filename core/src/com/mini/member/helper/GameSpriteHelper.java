@@ -2,9 +2,9 @@ package com.mini.member.helper;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.mini.game.MiniGameConfig;
-import com.mini.member.MiniUserData;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
+import com.mini.member.MiniUserData;
 
 public class GameSpriteHelper {
 
@@ -21,7 +21,7 @@ public class GameSpriteHelper {
      */
     public Body createBody(BodyConfig config) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(config.initX * MiniGameConfig.getPhysicalSettingViewRate(), config.initY);
+        bodyDef.position.set(config.initX * MiniGameConfig.getPhysicalSettingViewRate(), config.initY * MiniGameConfig.getPhysicalSettingViewRate());
         bodyDef.type = config.bodyType;
 
         Body body = config.world.createBody(bodyDef);

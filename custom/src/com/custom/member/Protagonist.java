@@ -243,8 +243,6 @@ public class Protagonist extends GameSprite {
         currentAnimation = animationMap.get(status).get(direction);
     }
 
-    private MiniAnimationHelper miniAnimationChainHolder = new MiniAnimationHelper();
-
     @Override
     protected void renderCustom(SpriteBatch batch, float delta) {
         if (proxy != null) {
@@ -252,14 +250,9 @@ public class Protagonist extends GameSprite {
             return;
         }
 
-        MiniAnimationHolder miniAnimationChain = new MiniAnimationHolder();
-        MiniAnimation miniAnimation = new MiniAnimation(currentAnimation, getDrawW(), getDrawH());
-        miniAnimationChain.putMiniAnimation(miniAnimation);
-        miniAnimationChainHolder.draw(batch, delta, miniAnimationChain, getDrawX(), getDrawY());
-
-//        batch.begin();
-//        batch.draw(getFrameCurrent(delta), getDrawX(), getDrawY(), getDrawW(), getDrawH());
-//        batch.end();
+        batch.begin();
+        batch.draw(getFrameCurrent(delta), getDrawX(), getDrawY(), getDrawW(), getDrawH());
+        batch.end();
 
         marioBulletHolder.render(batch, delta);
     }

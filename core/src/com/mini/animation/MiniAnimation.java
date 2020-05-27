@@ -8,7 +8,7 @@ public class MiniAnimation {
 
     private float w, h;
 
-    private MiniAnimationAction miniAnimationAction;
+    private MiniAnimationAction action;
 
     public MiniAnimation(Animation animation, float w, float h) {
         this.animation = animation;
@@ -28,11 +28,11 @@ public class MiniAnimation {
         return h;
     }
 
-    public MiniAnimationAction getMiniAnimationAction() {
-        return miniAnimationAction;
+    public MiniAnimationAction getAction() {
+        return action;
     }
 
-    public void setMiniAnimationAction(MiniAnimationAction miniAnimationAction) {
-        this.miniAnimationAction = miniAnimationAction;
+    public void setAction(MiniAnimationAction action) {
+        this.action = action;
     }
 }
