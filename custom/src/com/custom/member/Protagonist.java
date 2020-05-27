@@ -12,8 +12,8 @@ import com.custom.member.status.ChunLiStatus;
 import com.custom.member.status.ProtagonistStatus;
 import com.custom.member.weapon.MarioBullet;
 import com.mini.animation.MiniAnimation;
-import com.mini.animation.MiniAnimationChain;
-import com.mini.animation.helper.MiniAnimationHolder;
+import com.mini.animation.MiniAnimationHolder;
+import com.mini.animation.MiniAnimationHelper;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
 import com.mini.member.GameSprite;
@@ -243,7 +243,7 @@ public class Protagonist extends GameSprite {
         currentAnimation = animationMap.get(status).get(direction);
     }
 
-    private MiniAnimationHolder miniAnimationHolder = new MiniAnimationHolder();
+    private MiniAnimationHelper miniAnimationChainHolder = new MiniAnimationHelper();
 
     @Override
     protected void renderCustom(SpriteBatch batch, float delta) {
@@ -252,10 +252,10 @@ public class Protagonist extends GameSprite {
             return;
         }
 
-        MiniAnimationChain miniAnimationChain = new MiniAnimationChain();
+        MiniAnimationHolder miniAnimationChain = new MiniAnimationHolder();
         MiniAnimation miniAnimation = new MiniAnimation(currentAnimation, getDrawW(), getDrawH());
         miniAnimationChain.putMiniAnimation(miniAnimation);
-        miniAnimationHolder.draw(batch, delta, miniAnimationChain, getDrawX(), getDrawY());
+        miniAnimationChainHolder.draw(batch, delta, miniAnimationChain, getDrawX(), getDrawY());
 
 //        batch.begin();
 //        batch.draw(getFrameCurrent(delta), getDrawX(), getDrawY(), getDrawW(), getDrawH());

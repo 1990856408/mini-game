@@ -1,23 +1,30 @@
-package com.mini.animation.helper;
+package com.mini.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.mini.animation.MiniAnimation;
-import com.mini.animation.MiniAnimationChain;
 
-public class MiniAnimationHolder {
+public class MiniAnimationHelper {
 
-    public void draw(Batch batch, float delta, MiniAnimationChain miniAnimationChain, float x, float y) {
-        MiniAnimation miniAnimation = miniAnimationChain.getMiniAnimations().peek();
-        if (miniAnimation == null) {
-            return;
+    private MiniAnimationHolder currHolder;
+
+    public void draw(Batch batch, float delta, MiniAnimationHolder holder, float x, float y) {
+        if (currHolder == null || currHolder.equals(holder)) {
+            currHolder = holder;
+        } else if (currHolder.isCanOverride()) {
+            if (currHolder.getMiniAnimationHolderAction() != null) {
+                currHolder.getMiniAnimationHolderAction().doOverrideAct();
+            }
+            currHolder = holder;
         }
 
         batch.begin();
+
+        MiniAnimation miniAnimation = holder.getMiniAnimation();
         Animation animation = miniAnimation.getAnimation();
         switch (animation.getPlayMode()) {
             case NORMAL:
             case REVERSED:
+
                 batch.draw(animation.getKeyFrame(delta), x, y, miniAnimation.getW(), miniAnimation.getH());
                 break;
             case LOOP:
