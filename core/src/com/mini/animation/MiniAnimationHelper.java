@@ -16,9 +16,12 @@ public class MiniAnimationHelper {
             currHolder = holder;
         } else if (currHolder.isCanOverride()) {
             if (currHolder.getAction() != null) {
-                currHolder.getAction().doOverrideAct();
+                currHolder.getAction().beOverrideAct();
             }
             currHolder = holder;
+            if (currHolder.getAction() != null) {
+                currHolder.getAction().doOverrideAct();
+            }
         }
 
         batch.begin();

@@ -2,7 +2,12 @@ package com.mini.animation;
 
 public interface MiniAnimationHolderAction {
 
-    void doOverrideAct();
+    default void beOverrideAct() {
+    }
 
-    void doFinishAct();
+    default void doOverrideAct() {
+    }
+
+    default void doFinishAct() {
+    }
 }

@@ -42,7 +42,7 @@ public class MiniAnimationHolder {
         this.mode = mode;
         action = new MiniAnimationHolderAction() {
             @Override
-            public void doOverrideAct() {
+            public void beOverrideAct() {
                 resetStatus();
             }
 

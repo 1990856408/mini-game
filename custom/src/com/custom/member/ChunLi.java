@@ -40,8 +40,6 @@ public class ChunLi extends Protagonist {
 
     private Set<ChunLiStatus> variableFixtureDefs = Sets.newHashSet(ChunLiStatus.SQUAT, ChunLiStatus.QI_GONG, ChunLiStatus.QI_GONG_BALL);
 
-//    private Map<ChunLiStatus, Map<GameSpriteDirection, Animation>> animationMap = new HashMap<>();
-
     private Map<ChunLiStatus, Map<GameSpriteDirection, MiniAnimationHolder>> miniAnimationHolderMap = new HashMap<>();
 
     private MiniAnimationHolder currentMiniAnimationHolder;
@@ -143,10 +141,6 @@ public class ChunLi extends Protagonist {
                 new AnimationAssist.Bound(perW * 2, perH * 2, perW, perH),
                 new AnimationAssist.Bound(perW * 3, perH * 2, perW, perH)
         ), MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
-//        insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.R,
-//                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
-//        insertAnimation(ChunLiStatus.WALK, GameSpriteDirection.L,
-//                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
     }
 
     private void initAnimationJump() {
@@ -198,14 +192,6 @@ public class ChunLi extends Protagonist {
     }
 
     private void insertAnimation(ChunLiStatus chunLiStatus, GameSpriteDirection gameSpriteDirection, Animation animation) {
-//        Map<GameSpriteDirection, Animation> directionMap = animationMap.get(chunLiStatus);
-//        if (directionMap == null) {
-//            directionMap = new HashMap<>();
-//        }
-//        directionMap.put(gameSpriteDirection, animation);
-//
-//        animationMap.put(chunLiStatus, directionMap);
-
         insertMiniAnimationHolder(chunLiStatus, gameSpriteDirection, MiniAnimationHolderAssist.createMiniAnimationHolder(new MiniAnimation(animation, getDrawW(), getDrawH())));
     }
 
@@ -277,7 +263,6 @@ public class ChunLi extends Protagonist {
         if (status == ChunLiStatus.CRACKED_FEET || status == ChunLiStatus.QI_GONG || status == ChunLiStatus.QI_GONG_BALL) {
             Float animationTime = animationTimes.getFloat(status.name());
             animationTime = animationTime == null ? Gdx.graphics.getDeltaTime() : Gdx.graphics.getDeltaTime() + animationTime;
-//            if (currentAnimation.isAnimationFinished(animationTime)) {
             if (currentMiniAnimationHolder.getMiniAnimation().getAnimation().isAnimationFinished(animationTime)) {
                 if (status == ChunLiStatus.CRACKED_FEET) {
                     statusPre = ChunLiStatus.QUIET;
@@ -346,22 +331,13 @@ public class ChunLi extends Protagonist {
 
     @Override
     protected void updateAnimation() {
-//        currentAnimation = animationMap.get(status).get(direction);
         currentMiniAnimationHolder = miniAnimationHolderMap.get(status).get(direction);
     }
 
     @Override
     protected void renderCustom(SpriteBatch batch, float delta) {
-//        batch.begin();
-        Float animationTime = animationTimes.getFloat(status.name());
-        if (animationTime == null || animationTime == 0) {
-            animationTime = delta;
-        }
         miniAnimationHelper.draw(batch, delta, currentMiniAnimationHolder, getDrawX(), getDrawY());
-//        batch.draw(getFrameCurrent(animationTime), getDrawX(), getDrawY(), getDrawW(), getDrawH());
-//        batch.end();
 
-//        System.out.println("render");
         chunLiQiGongBallHolder.render(batch, delta);
     }
 
