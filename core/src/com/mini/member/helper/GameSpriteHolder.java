@@ -56,8 +56,8 @@ public final class GameSpriteHolder {
             }
 
             GameSprite gameSprite = createTask.getGameSprite();
-            gameSprite.create(world, createTask.getInitX(), createTask.getInitY());
-            CreateAction createAction = createTask.getCreateAction();
+            gameSprite.create(world, createTask.getInitX(gameSprite), createTask.getInitY(gameSprite));
+            CreateAction createAction = createTask.getCreateAction(gameSprite);
             if (createAction != null) {
                 createAction.execute(gameSprite);
             }
@@ -111,12 +111,12 @@ public final class GameSpriteHolder {
 
         GameSprite getGameSprite();
 
-        float getInitX();
+        float getInitX(GameSprite gameSprite);
 
-        float getInitY();
+        float getInitY(GameSprite gameSprite);
 
         // 回调函数
-        default CreateAction getCreateAction() {
+        default CreateAction getCreateAction(GameSprite gameSprite) {
             return null;
         }
     }

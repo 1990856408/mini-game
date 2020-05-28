@@ -4,10 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class MiniAnimation {
 
+    // 动画
     private Animation animation;
 
+    // 绘制宽高
     private float w, h;
 
+    // 执行函数
     private MiniAnimationAction action;
 
     public MiniAnimation(Animation animation, float w, float h) {

@@ -1,7 +1,5 @@
 package com.custom.member;
 
-import com.alibaba.fastjson.JSONObject;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,6 +13,7 @@ import com.google.common.collect.Sets;
 import com.mini.animation.MiniAnimation;
 import com.mini.animation.MiniAnimationHelper;
 import com.mini.animation.MiniAnimationHolder;
+import com.mini.animation.MiniAnimationHolderAction;
 import com.mini.assist.AnimationAssist;
 import com.mini.assist.MiniAnimationHolderAssist;
 import com.mini.game.MiniGame;
@@ -38,15 +37,13 @@ public class ChunLi extends Protagonist {
 
     private Map<ChunLiStatus, FixtureDef> fixtureDefMap = new HashMap<>();
 
-    private Set<ChunLiStatus> variableFixtureDefs = Sets.newHashSet(ChunLiStatus.SQUAT, ChunLiStatus.QI_GONG, ChunLiStatus.QI_GONG_BALL);
+    private Set<ChunLiStatus> variableFixtureDefs = Sets.newHashSet(ChunLiStatus.SQUAT, ChunLiStatus.QI_GONG);
 
     private Map<ChunLiStatus, Map<GameSpriteDirection, MiniAnimationHolder>> miniAnimationHolderMap = new HashMap<>();
 
     private MiniAnimationHolder currentMiniAnimationHolder;
 
     private MiniAnimationHelper miniAnimationHelper;
-
-    private JSONObject animationTimes = new JSONObject();
 
     private GameSpriteHolder chunLiQiGongBallHolder;
 
@@ -74,7 +71,6 @@ public class ChunLi extends Protagonist {
         initFixtureBox(ChunLiStatus.SQUAT, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 0.85f);
         initFixtureBox(ChunLiStatus.CRACKED_FEET, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
         initFixtureBox(ChunLiStatus.QI_GONG, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 1.4f, getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
-        initFixtureBox(ChunLiStatus.QI_GONG_BALL, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 1.4f, getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
     }
 
     protected void initFixtureBox(ChunLiStatus st, float boxW, float boxH) {
@@ -102,7 +98,6 @@ public class ChunLi extends Protagonist {
         initAnimationSquat();
         initAnimationCrackedFeet();
         initAnimationQiGong();
-        initAnimationQiGongBall();
     }
 
     private void initAnimationQuiet() {
@@ -176,19 +171,103 @@ public class ChunLi extends Protagonist {
     }
 
     private void initAnimationQiGong() {
-        Texture texture = MiniGame.assetManager.get("members/chunli6.png");
-        insertAnimation(ChunLiStatus.QI_GONG, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 6, 13, MiniGameConfig.getScreenSettingFrameDuration(), 0, null));
-        insertAnimation(ChunLiStatus.QI_GONG, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 6, 13, MiniGameConfig.getScreenSettingFrameDuration(), 1, null));
-    }
+        // 右
+        Texture texture1 = MiniGame.assetManager.get("members/chunli6.png");
+        Animation animation1 = AnimationAssist.createAnimation(texture1, texture1.getWidth() / 3, texture1.getHeight() / 6, 13, MiniGameConfig.getScreenSettingFrameDuration(), 0, null);
+        MiniAnimation miniAnimation1 = new MiniAnimation(animation1, getDrawW(), getDrawH());
 
-    private void initAnimationQiGongBall() {
-        Texture texture = MiniGame.assetManager.get("members/chunli5.png");
-        insertAnimation(ChunLiStatus.QI_GONG_BALL, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 5, 15, MiniGameConfig.getScreenSettingFrameDuration(), 0, null));
-        insertAnimation(ChunLiStatus.QI_GONG_BALL, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 3, texture.getHeight() / 5, 15, MiniGameConfig.getScreenSettingFrameDuration(), 1, null));
+        Texture texture2 = MiniGame.assetManager.get("members/chunli5.png");
+        Animation animation2 = AnimationAssist.createAnimation(texture2, texture2.getWidth() / 3, texture2.getHeight() / 5, 15, MiniGameConfig.getScreenSettingFrameDuration(), 0, null);
+        MiniAnimation miniAnimation2 = new MiniAnimation(animation2, getDrawW(), getDrawH());
+        MiniAnimationHolder miniAnimationHolder = new MiniAnimationHolder(ChunLiStatus.QI_GONG.name() + GameSpriteDirection.R.name());
+        miniAnimationHolder.putMiniAnimation(miniAnimation1);
+        miniAnimationHolder.putMiniAnimation(miniAnimation2);
+        miniAnimationHolder.setAction(new MiniAnimationHolderAction() {
+            @Override
+            public void beOverrideAct(MiniAnimationHolder holder) {
+                holder.resetStatus();
+            }
+
+            @Override
+            public void doFinishAct(MiniAnimationHolder holder) {
+                statusPre = ChunLiStatus.QUIET;
+                action = 0;
+
+                chunLiQiGongBallHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
+                    @Override
+                    public GameSprite getGameSprite() {
+                        return new ChunLiQiGongBall();
+                    }
+
+                    @Override
+                    public float getInitX(GameSprite gameSprite) {
+                        return getDrawX() + getDrawW() + gameSprite.getDrawR();
+                    }
+
+                    @Override
+                    public float getInitY(GameSprite gameSprite) {
+                        return getDrawY() + gameSprite.getDrawR() * 0.5f;
+                    }
+
+                    @Override
+                    public GameSpriteHolder.CreateAction getCreateAction(GameSprite gameSprite) {
+                        return (gs -> {
+                            gs.applyForceToCenter(360, 0);
+                        });
+                    }
+                });
+            }
+        });
+        insertMiniAnimationHolder(ChunLiStatus.QI_GONG, GameSpriteDirection.R, miniAnimationHolder);
+
+        // 左
+        texture1 = MiniGame.assetManager.get("members/chunli6.png");
+        animation1 = AnimationAssist.createAnimation(texture1, texture1.getWidth() / 3, texture1.getHeight() / 6, 13, MiniGameConfig.getScreenSettingFrameDuration(), 1, null);
+        miniAnimation1 = new MiniAnimation(animation1, getDrawW(), getDrawH());
+
+        texture2 = MiniGame.assetManager.get("members/chunli5.png");
+        animation2 = AnimationAssist.createAnimation(texture2, texture2.getWidth() / 3, texture2.getHeight() / 5, 15, MiniGameConfig.getScreenSettingFrameDuration(), 1, null);
+        miniAnimation2 = new MiniAnimation(animation2, getDrawW(), getDrawH());
+        miniAnimationHolder = new MiniAnimationHolder(ChunLiStatus.QI_GONG.name() + GameSpriteDirection.L.name());
+        miniAnimationHolder.putMiniAnimation(miniAnimation1);
+        miniAnimationHolder.putMiniAnimation(miniAnimation2);
+        miniAnimationHolder.setAction(new MiniAnimationHolderAction() {
+            @Override
+            public void beOverrideAct(MiniAnimationHolder holder) {
+                holder.resetStatus();
+            }
+
+            @Override
+            public void doFinishAct(MiniAnimationHolder holder) {
+                statusPre = ChunLiStatus.QUIET;
+                action = 0;
+
+                chunLiQiGongBallHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
+                    @Override
+                    public GameSprite getGameSprite() {
+                        return new ChunLiQiGongBall();
+                    }
+
+                    @Override
+                    public float getInitX(GameSprite gameSprite) {
+                        return getDrawX() - gameSprite.getDrawR();
+                    }
+
+                    @Override
+                    public float getInitY(GameSprite gameSprite) {
+                        return getDrawY() + gameSprite.getDrawR() * 0.5f;
+                    }
+
+                    @Override
+                    public GameSpriteHolder.CreateAction getCreateAction(GameSprite gameSprite) {
+                        return (gs -> {
+                            gs.applyForceToCenter(-360, 0);
+                        });
+                    }
+                });
+            }
+        });
+        insertMiniAnimationHolder(ChunLiStatus.QI_GONG, GameSpriteDirection.L, miniAnimationHolder);
     }
 
     private void insertAnimation(ChunLiStatus chunLiStatus, GameSpriteDirection gameSpriteDirection, Animation animation) {
@@ -260,54 +339,13 @@ public class ChunLi extends Protagonist {
             velocityX = getVelocityX();
         }
 
-        if (status == ChunLiStatus.CRACKED_FEET || status == ChunLiStatus.QI_GONG || status == ChunLiStatus.QI_GONG_BALL) {
-            Float animationTime = animationTimes.getFloat(status.name());
-            animationTime = animationTime == null ? Gdx.graphics.getDeltaTime() : Gdx.graphics.getDeltaTime() + animationTime;
-            if (currentMiniAnimationHolder.getMiniAnimation().getAnimation().isAnimationFinished(animationTime)) {
+        if (status == ChunLiStatus.CRACKED_FEET || status == ChunLiStatus.QI_GONG) {
+            if (currentMiniAnimationHolder.isFinished()) {
                 if (status == ChunLiStatus.CRACKED_FEET) {
                     statusPre = ChunLiStatus.QUIET;
                     action = 0;
                 }
-                if (status == ChunLiStatus.QI_GONG) {
-                    statusPre = ChunLiStatus.QI_GONG_BALL;
-                }
-                if (status == ChunLiStatus.QI_GONG_BALL) {
-                    statusPre = ChunLiStatus.QUIET;
-                    action = 0;
-                    chunLiQiGongBallHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
-
-                        private GameSprite gameSprite;
-
-                        @Override
-                        public GameSprite getGameSprite() {
-                            gameSprite = new ChunLiQiGongBall();
-                            return gameSprite;
-                        }
-
-                        @Override
-                        public float getInitX() {
-                            if (direction == GameSpriteDirection.L) {
-                                return getDrawX() - gameSprite.getDrawR();
-                            }
-                            return getDrawX() + getDrawW() + gameSprite.getDrawR();
-                        }
-
-                        @Override
-                        public float getInitY() {
-                            return getDrawY() + gameSprite.getDrawR() * 0.5f;
-                        }
-
-                        @Override
-                        public GameSpriteHolder.CreateAction getCreateAction() {
-                            return (gameSprite -> {
-                                gameSprite.applyForceToCenter(360 * (direction == GameSpriteDirection.L ? -1 : 1), 0);
-                            });
-                        }
-                    });
-                }
-                animationTime = 0f;
             }
-            animationTimes.put(status.name(), animationTime);
         }
 
         status = statusPre;

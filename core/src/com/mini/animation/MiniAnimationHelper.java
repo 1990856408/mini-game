@@ -9,6 +9,7 @@ public class MiniAnimationHelper {
 
     private MiniAnimationHolderDrawStrategyFactory strategyFactory = new MiniAnimationHolderDrawStrategyFactory();
 
+    // 当前的动画链
     private MiniAnimationHolder currHolder;
 
     public void draw(Batch batch, float delta, MiniAnimationHolder holder, float x, float y) {
@@ -16,17 +17,17 @@ public class MiniAnimationHelper {
             currHolder = holder;
         } else if (currHolder.isCanOverride()) {
             if (currHolder.getAction() != null) {
-                currHolder.getAction().beOverrideAct();
+                currHolder.getAction().beOverrideAct(currHolder);
             }
             currHolder = holder;
             if (currHolder.getAction() != null) {
-                currHolder.getAction().doOverrideAct();
+                currHolder.getAction().doOverrideAct(currHolder);
             }
         }
 
         batch.begin();
 
-        MiniAnimation miniAnimation = holder.getMiniAnimation();
+        MiniAnimation miniAnimation = currHolder.getMiniAnimation();
         if (miniAnimation == null) {
             return;
         }
@@ -35,26 +36,26 @@ public class MiniAnimationHelper {
         switch (animation.getPlayMode()) {
             case NORMAL:
             case REVERSED:
-                if (holder.isFinished()) {
+                if (currHolder.isFinished()) {
                     break;
                 }
 
-                holder.incDelta(Gdx.graphics.getDeltaTime());
-                delta = holder.getDelta();
+                currHolder.incDelta(Gdx.graphics.getDeltaTime());
+                delta = currHolder.getDelta();
                 if (animation.isAnimationFinished(delta)) {
                     if (miniAnimation.getAction() != null) {
-                        miniAnimation.getAction().doFinishAct();
+                        miniAnimation.getAction().doFinishAct(miniAnimation);
                     }
 
-                    if (holder.isLastIndex()) {
-                        holder.setFinished(true);
-                        strategyFactory.getMiniAnimationHolderDrawStrategy(holder.getMode()).doFinishAct(holder);
-                        if (holder.getAction() != null) {
-                            holder.getAction().doFinishAct();
+                    if (currHolder.isLastIndex()) {
+                        currHolder.setFinished(true);
+                        strategyFactory.getMiniAnimationHolderDrawStrategy(currHolder.getMode()).doFinishAct(currHolder);
+                        if (currHolder.getAction() != null) {
+                            currHolder.getAction().doFinishAct(currHolder);
                         }
                     } else {
-                        holder.nextIndex();
-                        holder.resetDelta();
+                        currHolder.nextIndex();
+                        currHolder.resetDelta();
                     }
                 } else {
                     batch.draw(animation.getKeyFrame(delta), x, y, miniAnimation.getW(), miniAnimation.getH());

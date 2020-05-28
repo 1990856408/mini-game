@@ -277,19 +277,19 @@ public class Protagonist extends GameSprite {
             }
 
             @Override
-            public float getInitX() {
+            public float getInitX(GameSprite gameSprite) {
                 return getPosX() * MiniGameConfig.getScreenSettingViewRate();
             }
 
             @Override
-            public float getInitY() {
+            public float getInitY(GameSprite gameSprite) {
                 return getDrawY() + getDrawH() * 0.75f;
             }
 
             @Override
-            public GameSpriteHolder.CreateAction getCreateAction() {
-                return (gameSprite) -> {
-                    gameSprite.applyForceToCenter(640 * (direction == GameSpriteDirection.L ? -1 : 1), -320);
+            public GameSpriteHolder.CreateAction getCreateAction(GameSprite gameSprite) {
+                return (gs) -> {
+                    gs.applyForceToCenter(640 * (direction == GameSpriteDirection.L ? -1 : 1), -320);
                 };
             }
         });
