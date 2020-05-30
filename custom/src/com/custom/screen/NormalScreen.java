@@ -80,6 +80,15 @@ public class NormalScreen extends BaseScreen {
     }
 
     @Override
+    protected void initStages() {
+        stage = new NormalScreenStage(this);
+        stage.create();
+
+        // 使舞台获得输入焦点
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
     protected void initMap() {
         tileMap = new TmxMapLoader().load("maps/game_screen" + MiniGame.getAttributeInt(CustomGameAttributeNames.CURRENT_LEVEL) + ".tmx");
 
@@ -222,15 +231,6 @@ public class NormalScreen extends BaseScreen {
     }
 
     @Override
-    protected void initStages() {
-        stage = new NormalScreenStage(this);
-        stage.create();
-
-        // 使舞台获得输入焦点
-        Gdx.input.setInputProcessor(stage);
-    }
-
-    @Override
     protected void initCustom() {
         MiniGame.soundPlayer.playMusic("sounds/init.mp3");
     }
@@ -286,9 +286,6 @@ public class NormalScreen extends BaseScreen {
 
     @Override
     protected void handleInputPre() {
-        if (prota.getStatus() == ProtagonistStatus.SQUAT) {
-            prota.setStatusPre(ProtagonistStatus.QUIET);
-        }
     }
 
     @Override
@@ -381,6 +378,12 @@ public class NormalScreen extends BaseScreen {
     }
 
     @Override
+    protected void renderStages() {
+        stage.act();
+        stage.draw();
+    }
+
+    @Override
     protected void renderMap() {
         mapRender.setView(getCamera());
         mapRender.render();
@@ -399,12 +402,6 @@ public class NormalScreen extends BaseScreen {
         if(debug){
             System.out.println(String.format("render members's consume = %d ",System.currentTimeMillis()- now));
         }
-    }
-
-    @Override
-    protected void renderStages() {
-        stage.act();
-        stage.draw();
     }
 
     @Override

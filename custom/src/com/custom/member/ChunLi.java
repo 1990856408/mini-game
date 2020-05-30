@@ -24,6 +24,8 @@ import com.mini.member.MiniUserData;
 import com.mini.member.helper.GameSpriteHelper;
 import com.mini.member.helper.GameSpriteHolder;
 import com.mini.member.status.GameSpriteDirection;
+import com.mini.tool.MiniNonBlockQueue;
+import com.mini.tool.MiniReplacerTool;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +33,7 @@ import java.util.Set;
 
 public class ChunLi extends Protagonist {
 
-    protected ChunLiStatus status, statusPre;
-
-    protected float maximalVelocityX = 2.0f, maximalVelocityY = 0.1f;
+    private float maximalVelocityX = 2.0f, maximalVelocityY = 0.1f;
 
     private Map<ChunLiStatus, FixtureDef> fixtureDefMap = new HashMap<>();
 
@@ -46,6 +46,10 @@ public class ChunLi extends Protagonist {
     private MiniAnimationHelper miniAnimationHelper;
 
     private GameSpriteHolder chunLiQiGongBallHolder;
+
+    private ChunLiStatus status, statusOri;
+    private MiniNonBlockQueue<ChunLiStatus> statusPreQueue = new MiniNonBlockQueue<>();
+    private MiniReplacerTool miniReplacerTool = new MiniReplacerTool<ChunLiStatus>();
 
     @Override
     protected Body createBody(World world, float initX, float initY) {
@@ -63,11 +67,20 @@ public class ChunLi extends Protagonist {
         chunLiQiGongBallHolder = new GameSpriteHolder(world);
     }
 
+    @Deprecated
+    @Override
+    protected void initStatus() {
+        direction = GameSpriteDirection.R;
+
+        status = ChunLiStatus.QUIET;
+    }
+
     @Override
     protected void initFixtures() {
         initFixtureBox(ChunLiStatus.QUIET, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
         initFixtureBox(ChunLiStatus.WALK, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
         initFixtureBox(ChunLiStatus.JUMP, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
+        initFixtureBox(ChunLiStatus.LANDFALL, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
         initFixtureBox(ChunLiStatus.SQUAT, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 0.85f);
         initFixtureBox(ChunLiStatus.CRACKED_FEET, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate(), getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
         initFixtureBox(ChunLiStatus.QI_GONG, getDrawW() * MiniGameConfig.getPhysicalSettingMemberViewRate() * 1.4f, getDrawH() * MiniGameConfig.getPhysicalSettingMemberViewRate());
@@ -78,15 +91,6 @@ public class ChunLi extends Protagonist {
         shape.setAsBox(boxW, boxH);
         FixtureDef fixtureDef = GameSpriteHelper.me.createFixtureDef(shape, category.bits, category.maskBits, false);
         fixtureDefMap.put(st, fixtureDef);
-    }
-
-    @Deprecated
-    @Override
-    protected void initStatus() {
-        direction = GameSpriteDirection.R;
-
-        status = ChunLiStatus.QUIET;
-        statusPre = status;
     }
 
     @Override
@@ -164,10 +168,37 @@ public class ChunLi extends Protagonist {
 
     private void initAnimationCrackedFeet() {
         Texture texture = MiniGame.assetManager.get("members/chunli4.png");
-        insertAnimation(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, MiniGameConfig.getScreenSettingFrameDuration(), 0, null));
-        insertAnimation(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, MiniGameConfig.getScreenSettingFrameDuration(), 1, null));
+        Animation animation = AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, MiniGameConfig.getScreenSettingFrameDuration(), 0, null);
+        MiniAnimation miniAnimation = new MiniAnimation(animation, getDrawW(), getDrawH());
+        MiniAnimationHolder miniAnimationHolder = MiniAnimationHolderAssist.createMiniAnimationHolder(miniAnimation);
+        miniAnimationHolder.setAction(new MiniAnimationHolderAction() {
+            @Override
+            public void beOverrideAct(MiniAnimationHolder holder) {
+                holder.resetStatus();
+            }
+
+            @Override
+            public void doFinishAct(MiniAnimationHolder holder) {
+                statusPreQueue.forceRelease();
+            }
+        });
+        insertMiniAnimationHolder(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.R, miniAnimationHolder);
+
+        animation = AnimationAssist.createAnimation(texture, texture.getWidth() / 2, texture.getHeight() / 4, 8, MiniGameConfig.getScreenSettingFrameDuration(), 1, null);
+        miniAnimation = new MiniAnimation(animation, getDrawW(), getDrawH());
+        miniAnimationHolder = MiniAnimationHolderAssist.createMiniAnimationHolder(miniAnimation);
+        miniAnimationHolder.setAction(new MiniAnimationHolderAction() {
+            @Override
+            public void beOverrideAct(MiniAnimationHolder holder) {
+                holder.resetStatus();
+            }
+
+            @Override
+            public void doFinishAct(MiniAnimationHolder holder) {
+                statusPreQueue.forceRelease();
+            }
+        });
+        insertMiniAnimationHolder(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.L, miniAnimationHolder);
     }
 
     private void initAnimationQiGong() {
@@ -190,9 +221,6 @@ public class ChunLi extends Protagonist {
 
             @Override
             public void doFinishAct(MiniAnimationHolder holder) {
-                statusPre = ChunLiStatus.QUIET;
-                action = 0;
-
                 chunLiQiGongBallHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
                     @Override
                     public GameSprite getGameSprite() {
@@ -216,6 +244,8 @@ public class ChunLi extends Protagonist {
                         });
                     }
                 });
+
+                statusPreQueue.forceRelease();
             }
         });
         insertMiniAnimationHolder(ChunLiStatus.QI_GONG, GameSpriteDirection.R, miniAnimationHolder);
@@ -239,9 +269,6 @@ public class ChunLi extends Protagonist {
 
             @Override
             public void doFinishAct(MiniAnimationHolder holder) {
-                statusPre = ChunLiStatus.QUIET;
-                action = 0;
-
                 chunLiQiGongBallHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
                     @Override
                     public GameSprite getGameSprite() {
@@ -265,6 +292,8 @@ public class ChunLi extends Protagonist {
                         });
                     }
                 });
+
+                statusPreQueue.forceRelease();
             }
         });
         insertMiniAnimationHolder(ChunLiStatus.QI_GONG, GameSpriteDirection.L, miniAnimationHolder);
@@ -295,29 +324,10 @@ public class ChunLi extends Protagonist {
             return;
         }
 
-        updateFixtures();
         updateStatus();
+        updateFixtures();
         updateAnimation();
         updateCustom();
-    }
-
-    @Override
-    public void updateFixtures() {
-        if (status != statusPre) {
-            if (variableFixtureDefs.contains(status) || variableFixtureDefs.contains(statusPre)) {
-                Fixture fixture = body.getFixtureList().first();
-                body.destroyFixture(fixture);
-                fixture = body.createFixture(fixtureDefMap.get(statusPre));
-
-                MiniUserData data = new MiniUserData();
-                data.name = category.name;
-                data.body = body;
-                data.fixture = fixture;
-                data.mine = this;
-
-                fixture.setUserData(data);
-            }
-        }
     }
 
     @Override
@@ -339,30 +349,47 @@ public class ChunLi extends Protagonist {
             velocityX = getVelocityX();
         }
 
-        if (status == ChunLiStatus.CRACKED_FEET || status == ChunLiStatus.QI_GONG) {
-            if (currentMiniAnimationHolder.isFinished()) {
-                if (status == ChunLiStatus.CRACKED_FEET) {
-                    statusPre = ChunLiStatus.QUIET;
-                    action = 0;
-                }
+        // 纠正状态
+        ChunLiStatus statusPre = status;
+        if (velocityX == 0 && velocityY == 0) {
+            statusPre = ChunLiStatus.QUIET;
+        } else if (velocityY == 0) {
+            statusPre = ChunLiStatus.WALK;
+        } else {
+            if (velocityY > 0) {
+                statusPre = ChunLiStatus.JUMP;
+            }
+            if (velocityY < 0) {
+                statusPre = ChunLiStatus.LANDFALL;
             }
         }
+        statusPre = (ChunLiStatus) miniReplacerTool.tryReplace(status, statusPre);
+        setStatusPre(statusPre);
+        statusOri = status;
+        while ((statusPre = statusPreQueue.poll()) != null) {
+            if (status == statusPre) {
+                continue;
+            }
+            status = statusPre;
+            break;
+        }
+    }
 
-        status = statusPre;
+    @Override
+    public void updateFixtures() {
+        if (status != statusOri) {
+            if (variableFixtureDefs.contains(status) || variableFixtureDefs.contains(statusOri)) {
+                Fixture fixture = body.getFixtureList().first();
+                body.destroyFixture(fixture);
+                fixture = body.createFixture(fixtureDefMap.get(status));
 
-        // 纠正状态
-        if (action == 0 && status != ChunLiStatus.SQUAT) {
-            if (velocityX == 0 && velocityY == 0) {
-                status = ChunLiStatus.QUIET;
-            } else if (velocityY == 0) {
-                status = ChunLiStatus.WALK;
-            } else {
-                if (velocityY > 0) {
-                    status = ChunLiStatus.JUMP;
-                }
-                if (velocityY < 0) {
-                    status = ChunLiStatus.LANDFALL;
-                }
+                MiniUserData data = new MiniUserData();
+                data.name = category.name;
+                data.body = body;
+                data.fixture = fixture;
+                data.mine = this;
+
+                fixture.setUserData(data);
             }
         }
     }
@@ -381,13 +408,15 @@ public class ChunLi extends Protagonist {
 
     @Override
     public void createBomb() {
-        statusPre = ChunLiStatus.QI_GONG;
+        setStatusPre(ChunLiStatus.QI_GONG);
+        statusPreQueue.forceLock(this);
         action = 1L << 0;
     }
 
     @Override
     public void createMarioBullet() {
-        statusPre = ChunLiStatus.CRACKED_FEET;
+        setStatusPre(ChunLiStatus.CRACKED_FEET);
+        statusPreQueue.forceLock(this);
         action = 1L << 0;
     }
 
@@ -435,6 +464,6 @@ public class ChunLi extends Protagonist {
     }
 
     public void setStatusPre(ChunLiStatus statusPre) {
-        this.statusPre = statusPre;
+        statusPreQueue.offer(statusPre);
     }
 }

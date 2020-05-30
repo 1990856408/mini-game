@@ -30,7 +30,6 @@ public abstract class BaseScreen implements Screen, Runnable {
 
     @Override
     public void show() {
-        Gdx.input.setCatchBackKey(true);
         init();
     }
 
@@ -119,17 +118,17 @@ public abstract class BaseScreen implements Screen, Runnable {
         updateCustom();
     }
 
+    // 更新舞台
+    @Deprecated
+    protected void updateStages() {
+    }
+
     // 更新地图
     protected void updateMap() {
     }
 
     // 更新成员
     protected void updateMembers() {
-    }
-
-    // 更新舞台
-    @Deprecated
-    protected void updateStages() {
     }
 
     // 更新相机

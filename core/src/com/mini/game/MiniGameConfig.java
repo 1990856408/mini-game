@@ -3,9 +3,9 @@ package com.mini.game;
 import com.alibaba.fastjson.JSONObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.google.common.io.Files;
 import com.mini.constant.MiniGamePhysicalSetting;
 import com.mini.constant.MiniGameScreenSetting;
+import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +39,7 @@ public final class MiniGameConfig {
         }
 
         try {
-            jsonObject = JSONObject.parseObject(String.join("", Files.readLines(handle.file(), StandardCharsets.UTF_8)));
+            jsonObject = JSONObject.parseObject(FileUtils.readFileToString(handle.file(), StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
             return;

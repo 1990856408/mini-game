@@ -2,16 +2,20 @@ package com.mini.tool;
 
 public class MiniReplacerTool<T extends MiniReplacer> {
 
-    T tryReplace(T originator, T target) {
-        if (originator == null) {
+    public T tryReplace(T source, T target) {
+        if (source == null) {
             return target;
         }
         if (target == null) {
-            return originator;
+            return source;
         }
-        if (target.isStatic()) {
+        if (target.getCategory() == source.getCategory()) {
             return target;
         }
-        return (originator.getPriority() - target.getPriority()) >= 0 ? originator : target;
+        if ((target.getCategoryReplace() & source.getCategory()) == source.getCategory()) {
+            return target;
+        }
+
+        return source;
     }
 }

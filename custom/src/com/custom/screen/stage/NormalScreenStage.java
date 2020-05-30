@@ -1,6 +1,7 @@
 package com.custom.screen.stage;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.custom.member.status.ProtagonistStatus;
 import com.custom.screen.NormalScreen;
 import com.mini.game.MiniGame;
 import com.mini.screen.stage.BaseStage;
@@ -23,7 +25,6 @@ public class NormalScreenStage extends BaseStage {
     private ActorGestureListener buttonListener;
     private ProgressBar barHP, barMP;
     private Label labelScoreVolume;
-
 
     public NormalScreenStage(NormalScreen normalScreen) {
         super(new StretchViewport(normalScreen.getViewW(), normalScreen.getViewH()), normalScreen.getBatch());
@@ -181,5 +182,13 @@ public class NormalScreenStage extends BaseStage {
     @Override
     public int getViewH() {
         return normalScreen.getViewH();
+    }
+
+    @Override
+    public boolean keyUp(int keyCode) {
+        if (Input.Keys.S == keyCode) {
+            normalScreen.prota.setStatusPre(ProtagonistStatus.QUIET);
+        }
+        return super.keyUp(keyCode);
     }
 }

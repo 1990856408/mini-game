@@ -11,9 +11,6 @@ import com.custom.member.constant.MemberName;
 import com.custom.member.status.ChunLiStatus;
 import com.custom.member.status.ProtagonistStatus;
 import com.custom.member.weapon.MarioBullet;
-import com.mini.animation.MiniAnimation;
-import com.mini.animation.MiniAnimationHolder;
-import com.mini.animation.MiniAnimationHelper;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
 import com.mini.member.GameSprite;
@@ -27,9 +24,9 @@ import java.util.Map;
 
 public class Protagonist extends GameSprite {
 
-    protected ProtagonistStatus status, statusPre;
+    private ProtagonistStatus status, statusPre;
 
-    protected float maximalVelocityX = 2.0f, maximalVelocityY = 0.1f;
+    private float maximalVelocityX = 2.0f, maximalVelocityY = 0.1f;
 
     private Map<ProtagonistStatus, FixtureDef> fixtureDefMap = new HashMap<>();
 
@@ -85,6 +82,14 @@ public class Protagonist extends GameSprite {
     @Override
     protected void preInit() {
         marioBulletHolder = new GameSpriteHolder(world);
+    }
+
+    @Override
+    protected void initStatus() {
+        direction = GameSpriteDirection.R;
+
+        status = ProtagonistStatus.QUIET;
+        setStatusPre(status);
     }
 
     @Override
@@ -172,20 +177,40 @@ public class Protagonist extends GameSprite {
     }
 
     @Override
-    protected void initStatus() {
-        direction = GameSpriteDirection.R;
-
-        status = ProtagonistStatus.QUIET;
-        statusPre = status;
-    }
-
-    @Override
     protected void update() {
         if (proxy != null) {
             proxy.update();
             return;
         }
         super.update();
+    }
+
+    @Override
+    protected void updateStatus() {
+        super.updateStatus();
+        float velocityX = getVelocityX();
+        float velocityY = getVelocityY();
+        if (velocityX > maximalVelocityX) {
+            body.setLinearVelocity(maximalVelocityX, velocityY);
+            velocityX = getVelocityX();
+        }
+        if (velocityX < -maximalVelocityX) {
+            body.setLinearVelocity(-maximalVelocityX, velocityY);
+            velocityX = getVelocityX();
+        }
+
+        // 下蹲不做判断
+        if (statusPre != ProtagonistStatus.SQUAT) {
+            if (velocityX == 0 && velocityY == 0) {
+                setStatusPre(ProtagonistStatus.QUIET);
+            } else if (velocityX != 0 && velocityY == 0) {
+                setStatusPre(ProtagonistStatus.WALK);
+            } else if (velocityX == 0 && velocityY != 0) {
+                setStatusPre(ProtagonistStatus.JUMP);
+            } else if (velocityX != 0 && velocityY != 0) {
+                setStatusPre(ProtagonistStatus.JUMP);
+            }
+        }
     }
 
     @Override
@@ -208,38 +233,8 @@ public class Protagonist extends GameSprite {
     }
 
     @Override
-    protected void updateStatus() {
-        super.updateStatus();
-
-        float velocityX = getVelocityX();
-        float velocityY = getVelocityY();
-        if (velocityX > maximalVelocityX) {
-            body.setLinearVelocity(maximalVelocityX, velocityY);
-            velocityX = getVelocityX();
-        }
-        if (velocityX < -maximalVelocityX) {
-            body.setLinearVelocity(-maximalVelocityX, velocityY);
-            velocityX = getVelocityX();
-        }
-
-        status = statusPre;
-
-        // 下蹲不做判断
-        if (status != ProtagonistStatus.SQUAT) {
-            if (velocityX == 0 && velocityY == 0) {
-                statusPre = ProtagonistStatus.QUIET;
-            } else if (velocityX != 0 && velocityY == 0) {
-                statusPre = ProtagonistStatus.WALK;
-            } else if (velocityX == 0 && velocityY != 0) {
-                statusPre = ProtagonistStatus.JUMP;
-            } else if (velocityX != 0 && velocityY != 0) {
-                statusPre = ProtagonistStatus.JUMP;
-            }
-        }
-    }
-
-    @Override
     protected void updateAnimation() {
+        status = statusPre;
         currentAnimation = animationMap.get(status).get(direction);
     }
 
@@ -380,16 +375,6 @@ public class Protagonist extends GameSprite {
                 case QUIET:
                     if (proxy instanceof ChunLi) {
                         ((ChunLi) proxy).setStatusPre(ChunLiStatus.QUIET);
-                    }
-                    break;
-                case WALK:
-                    if (proxy instanceof ChunLi) {
-                        ((ChunLi) proxy).setStatusPre(ChunLiStatus.WALK);
-                    }
-                    break;
-                case JUMP:
-                    if (proxy instanceof ChunLi) {
-                        ((ChunLi) proxy).setStatusPre(ChunLiStatus.JUMP);
                     }
                     break;
                 case SQUAT:

@@ -71,6 +71,13 @@ public class Duck extends MonsterSprite {
     }
 
     @Override
+    protected void initStatus() {
+        direction = GameSpriteDirection.R;
+
+        status = DuckStatus.FLY;
+    }
+
+    @Override
     protected void initAnimation() {
         Texture texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
 
@@ -105,13 +112,6 @@ public class Duck extends MonsterSprite {
         directionMap.put(gameSpriteDirection, animation);
 
         animationMap.put(duckStatus, directionMap);
-    }
-
-    @Override
-    protected void initStatus() {
-        direction = GameSpriteDirection.R;
-
-        status = DuckStatus.FLY;
     }
 
     @Override

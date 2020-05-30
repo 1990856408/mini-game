@@ -2,7 +2,7 @@ package com.mini.tool;
 
 public interface MiniReplacer {
 
-    boolean isStatic();
+    long getCategory();
 
-    int getPriority();
+    long getCategoryReplace();
 }
