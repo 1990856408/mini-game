@@ -32,8 +32,23 @@ public final class GameSpriteHolder {
     // 当前已创建的游戏精灵
     private List<GameSprite> gameSprites = Lists.newArrayList();
 
+    // 待移除的游戏精灵
+    private List<GameSprite> gameSpritesRemoved = Lists.newArrayList();
+
+    private GameSpriteHolderExecutor updateExecutor;
+
     public GameSpriteHolder(World world) {
         this.world = world;
+    }
+
+    /**
+     * 移除精灵，由于此接口对外开放，故需要维护线程安全，
+     * 保证在清理${gameSprites}过程中没有新的待移除精灵添加进来
+     *
+     * @param gameSprite
+     */
+    public synchronized void removeGameSprite(GameSprite gameSprite) {
+        gameSpritesRemoved.add(gameSprite);
     }
 
     public void pushCreateTask(CreateTask task) {
@@ -42,6 +57,11 @@ public final class GameSpriteHolder {
 
     public void pushDestroyBodyTask(DestroyBodyTask task) {
         destroyBodyTasks.addLast(task);
+    }
+
+    private synchronized void remove() {
+        gameSprites.removeAll(gameSpritesRemoved);
+        gameSpritesRemoved.clear();
     }
 
     /**
@@ -103,15 +123,35 @@ public final class GameSpriteHolder {
      * @see GameSprite#renderCustom(SpriteBatch, float)
      */
     public void render(SpriteBatch batch, float delta) {
+        // 移除
+        remove();
         // 创建
         create();
 
         // 依次渲染各个精灵
-        gameSprites.forEach(gameSprite -> gameSprite.render(batch, delta));
+        gameSprites.forEach(gameSprite -> {
+            if (updateExecutor != null) {
+                updateExecutor.execute(gameSprite);
+            }
+            gameSprite.render(batch, delta);
+        });
 
         // 销毁刚体
         destroyBody();
     }
+
+    public void setMaxCreateCount(int maxCreateCount) {
+        this.maxCreateCount = maxCreateCount;
+    }
+
+    public void setMaxDestroyBodyCount(int maxDestroyBodyCount) {
+        this.maxDestroyBodyCount = maxDestroyBodyCount;
+    }
+
+    public void setUpdateExecutor(GameSpriteHolderExecutor updateExecutor) {
+        this.updateExecutor = updateExecutor;
+    }
+
 
     /**
      * 创建任务
@@ -130,6 +170,9 @@ public final class GameSpriteHolder {
         }
     }
 
+    /**
+     * 销毁任务
+     */
     public interface DestroyBodyTask {
 
         GameSprite getGameSprite();
@@ -146,6 +189,9 @@ public final class GameSpriteHolder {
         void execute(GameSprite gameSprite);
     }
 
+    /**
+     * 销毁任务，在销毁完成后执行
+     */
     public interface DestroyBodyAction {
         void execute(GameSprite gameSprite);
     }

@@ -16,6 +16,11 @@ public class ApplyVelocityStrategy implements AutomaticActStrategy {
         this.gameSprite = gameSprite;
     }
 
+    public ApplyVelocityStrategy(float velocityX, float velocityY) {
+        this.velocityX = velocityX;
+        this.velocityY = velocityY;
+    }
+
     @Override
     public void execute() {
         switch (gameSprite.getDirection()) {

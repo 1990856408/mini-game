@@ -64,6 +64,13 @@ public abstract class GameSprite implements Runnable {
         }
     }
 
+    // 销毁夹具
+    public final void destroyFixture() {
+        if (body != null && body.getFixtureList().size != 0) {
+            body.destroyFixture(body.getFixtureList().first());
+        }
+    }
+
     // 初始化
     protected void init() {
         preInit();
@@ -121,9 +128,6 @@ public abstract class GameSprite implements Runnable {
 
     // 刷新参数
     protected void updateStatus() {
-        if (isAlive && body.getFixtureList().size == 0) {
-            isAlive = false;
-        }
     }
 
     // 刷新动画

@@ -1,22 +1,17 @@
 package com.custom.member.weapon;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.custom.member.constant.MemberFixtureAttribute;
 import com.custom.member.constant.MemberName;
-import com.mini.game.MiniGameConfig;
-import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.helper.GameSpriteHelper;
+import com.mini.member.special.EffectSprite;
+import com.mini.member.special.EffectSpriteConfig;
 
-public class ChunLiQiGongBall extends GameSprite {
-
-    private ParticleEffect particleEffect;
+public class ChunLiQiGongBall extends EffectSprite {
 
     @Override
     protected Body createBody(World world, float initX, float initY) {
@@ -30,20 +25,6 @@ public class ChunLiQiGongBall extends GameSprite {
     }
 
     @Override
-    protected void initAnimation() {
-        particleEffect = new ParticleEffect();
-        particleEffect.load(Gdx.files.internal("specials/ball.p"), Gdx.files.internal("specials/"));
-    }
-
-    @Override
-    public void renderCustom(SpriteBatch batch, float delta) {
-        batch.begin();
-        particleEffect.setPosition(getDrawX(), getDrawY());
-        particleEffect.draw(batch, Gdx.graphics.getDeltaTime());
-        batch.end();
-    }
-
-    @Override
     public GameSpriteCategory getGameSpriteCategory() {
         if (category != null) {
             return category;
@@ -52,17 +33,12 @@ public class ChunLiQiGongBall extends GameSprite {
     }
 
     @Override
-    public float getDrawX() {
-        return getPosX() * MiniGameConfig.getScreenSettingViewRate();
-    }
-
-    @Override
-    public float getDrawY() {
-        return getPosY() * MiniGameConfig.getScreenSettingViewRate();
-    }
-
-    @Override
     public float getDrawR() {
         return 97;
+    }
+
+    @Override
+    protected EffectSpriteConfig getEffectSpriteConfig() {
+        return new EffectSpriteConfig("specials/ball.p", "specials/");
     }
 }

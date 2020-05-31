@@ -332,11 +332,6 @@ public class ChunLi extends Protagonist {
 
     @Override
     protected void updateStatus() {
-        // 生命值更新
-        if (isAlive && body.getFixtureList().size == 0) {
-            isAlive = false;
-        }
-
         // 矫正速度
         float velocityX = getVelocityX();
         float velocityY = getVelocityY();

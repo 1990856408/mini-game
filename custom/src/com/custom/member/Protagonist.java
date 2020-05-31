@@ -82,6 +82,13 @@ public class Protagonist extends GameSprite {
     @Override
     protected void preInit() {
         marioBulletHolder = new GameSpriteHolder(world);
+        marioBulletHolder.setUpdateExecutor(gameSprite -> {
+            if (!gameSprite.isAlive) {
+                gameSprite.destroyFixture();
+                marioBulletHolder.pushDestroyBodyTask(() -> gameSprite);
+                marioBulletHolder.removeGameSprite(gameSprite);
+            }
+        });
     }
 
     @Override
@@ -187,7 +194,6 @@ public class Protagonist extends GameSprite {
 
     @Override
     protected void updateStatus() {
-        super.updateStatus();
         float velocityX = getVelocityX();
         float velocityY = getVelocityY();
         if (velocityX > maximalVelocityX) {

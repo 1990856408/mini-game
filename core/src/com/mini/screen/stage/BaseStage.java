@@ -72,6 +72,7 @@ public abstract class BaseStage extends Stage implements Runnable {
         return super.keyUp(keyCode);
     }
 
+
     /**
      * 定义键盘动作
      */
