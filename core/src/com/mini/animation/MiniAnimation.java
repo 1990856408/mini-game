@@ -2,6 +2,9 @@ package com.mini.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 
+/**
+ * 迷你动画实现
+ */
 public class MiniAnimation {
 
     // 动画

@@ -5,11 +5,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.mini.animation.strategy.MiniAnimationHolderDrawStrategyFactory;
 
+/**
+ * 迷你动画辅助器~渲染
+ */
 public class MiniAnimationHelper {
 
     private MiniAnimationHolderDrawStrategyFactory strategyFactory = new MiniAnimationHolderDrawStrategyFactory();
 
-    // 当前的动画链
+    // 当前的迷你动画持有者
     private MiniAnimationHolder currHolder;
 
     public void draw(Batch batch, float delta, MiniAnimationHolder holder, float x, float y) {

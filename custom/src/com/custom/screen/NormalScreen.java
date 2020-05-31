@@ -1,6 +1,7 @@
 package com.custom.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapLayer;
@@ -20,14 +21,18 @@ import com.custom.member.constant.MemberName;
 import com.custom.member.monster.Diamond;
 import com.custom.member.monster.Duck;
 import com.custom.member.status.ProtagonistStatus;
+import com.custom.member.weapon.MarioBullet;
 import com.custom.screen.stage.NormalScreenStage;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
+import com.mini.handler.BaseContactHandler;
+import com.mini.handler.MiniContactReactionBuilder;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.MiniUserData;
 import com.mini.member.status.GameSpriteDirection;
 import com.mini.screen.BaseScreen;
+import com.mini.screen.stage.BaseStage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +59,7 @@ public class NormalScreen extends BaseScreen {
     // 物理世界相机
     private OrthographicCamera box2DCamera;
     // 自定义的物理世界监听器
-    private NormalScreenContactListener contactListener;
+    private BaseContactHandler contactHandler;
     // 地图
     private TiledMap tileMap;
     // 地图单元大小
@@ -75,14 +80,29 @@ public class NormalScreen extends BaseScreen {
         box2DRender = new Box2DDebugRenderer();
         box2DCamera = new OrthographicCamera();
         box2DCamera.setToOrtho(false, MiniGameConfig.getPhysicalSettingViewW(), MiniGameConfig.getPhysicalSettingViewH());
-        contactListener = new NormalScreenContactListener();
-        world.setContactListener(contactListener);
+        contactHandler = new BaseContactHandler() {
+        };
+        MiniContactReactionBuilder builder = new MiniContactReactionBuilder();
+        builder.load(MarioBullet.class);
+        contactHandler.configMiniContactReactions(builder.build());
+        world.setContactListener(contactHandler);
     }
 
     @Override
     protected void initStages() {
         stage = new NormalScreenStage(this);
         stage.create();
+        stage.setKeyAct(Input.Keys.S, new BaseStage.KeyAct() {
+            @Override
+            public void keyDown() {
+
+            }
+
+            @Override
+            public void keyUp() {
+                prota.setStatusPre(ProtagonistStatus.QUIET);
+            }
+        });
 
         // 使舞台获得输入焦点
         Gdx.input.setInputProcessor(stage);
@@ -232,7 +252,7 @@ public class NormalScreen extends BaseScreen {
 
     @Override
     protected void initCustom() {
-        MiniGame.soundPlayer.playMusic("sounds/init.mp3");
+//        MiniGame.soundPlayer.playMusic("sounds/init.mp3");
     }
 
     @Override
@@ -290,8 +310,6 @@ public class NormalScreen extends BaseScreen {
 
     @Override
     protected void updateMembers() {
-        contactListener.update();
-
         // 夹具处理
 //        List<Vector<GameSprite>> gameSpritesArray = Arrays.asList(ducks, diamonds);
 //        for (Vector<GameSprite> gameSprites : gameSpritesArray) {
@@ -399,8 +417,8 @@ public class NormalScreen extends BaseScreen {
             gameSprites.forEach(gameSprite -> gameSprite.render(getBatch(), getDelta()));
         }
 
-        if(debug){
-            System.out.println(String.format("render members's consume = %d ",System.currentTimeMillis()- now));
+        if (debug) {
+            System.out.println(String.format("render members's consume = %d ", System.currentTimeMillis() - now));
         }
     }
 

@@ -11,20 +11,20 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 游戏配置 TODO
+ * 游戏配置
  */
 public final class MiniGameConfig {
 
-    public static String ScreenSetting = "screenSetting";
-    public static String PhysicalSetting = "physicalSetting";
+    public static final String ScreenSetting = "screenSetting";
+    public static final String PhysicalSetting = "physicalSetting";
 
-    public static String ViewRate = "viewRate";
-    public static String ViewW = "viewW";
-    public static String ViewH = "viewH";
-    public static String FrameDuration = "frameDuration";
-    public static String MemberViewRate = "memberViewRate";
-    public static String Gravity = "gravity";
-    public static String TimeStep = "timeStep";
+    public static final String ViewRate = "viewRate";
+    public static final String ViewW = "viewW";
+    public static final String ViewH = "viewH";
+    public static final String FrameDuration = "frameDuration";
+    public static final String MemberViewRate = "memberViewRate";
+    public static final String Gravity = "gravity";
+    public static final String TimeStep = "timeStep";
 
     private static JSONObject jsonObject;
 

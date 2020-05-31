@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 丰富的动画持有者，将{@link MiniAnimation}组成一条链，
+ * 迷你动画持有者~链模式
+ * 丰富的动画持有者，将{@link MiniAnimation}串成一条链，
  * 通过{@link MiniAnimationHelper}渲染，可对链中的各个元素以及整条链做增强处理，
  * 配合替换器{@link com.mini.tool.MiniReplacerTool}的使用来保证属性、刚体、夹具、动画的一致性
  */

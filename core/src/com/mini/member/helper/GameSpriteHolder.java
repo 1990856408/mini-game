@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 游戏精灵持有者
  * <p>
- * 为了解决在渲染期间创建物理世界刚体线程不安全的问题，但本身不维护线程安全
+ * 为了解决在渲染期间创建、销毁物理世界刚体线程不安全的问题，但本身不维护线程安全
  */
 public final class GameSpriteHolder {
 
@@ -21,6 +21,7 @@ public final class GameSpriteHolder {
     // 创建任务
     private LinkedList<CreateTask> createTasks = new LinkedList<>();
 
+    // 销毁任务
     private LinkedList<DestroyBodyTask> destroyBodyTasks = new LinkedList<>();
 
     // 每次可创建时的最大创建数，避免创建任务大量堆积时的游戏卡顿问题
@@ -39,10 +40,13 @@ public final class GameSpriteHolder {
         createTasks.addLast(task);
     }
 
-    public void pushDestroyBodyTask(DestroyBodyTask destroyBodyTask) {
-
+    public void pushDestroyBodyTask(DestroyBodyTask task) {
+        destroyBodyTasks.addLast(task);
     }
 
+    /**
+     * 创建即消费${createTasks}中的task，创建的元素将添加至${gameSprites}
+     */
     private void create() {
         if (world.isLocked()) {
             return;
@@ -99,8 +103,13 @@ public final class GameSpriteHolder {
      * @see GameSprite#renderCustom(SpriteBatch, float)
      */
     public void render(SpriteBatch batch, float delta) {
+        // 创建
         create();
+
+        // 依次渲染各个精灵
         gameSprites.forEach(gameSprite -> gameSprite.render(batch, delta));
+
+        // 销毁刚体
         destroyBody();
     }
 

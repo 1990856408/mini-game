@@ -361,16 +361,11 @@ public class Protagonist extends GameSprite {
         }
     }
 
-    public ProtagonistStatus getStatus() {
-        return status;
-    }
-
     public void setStatusPre(ProtagonistStatus statusPre) {
         // 同代理一起变更
         this.statusPre = statusPre;
 
         if (proxy != null) {
-            // TODO 优化
             switch (statusPre) {
                 case QUIET:
                     if (proxy instanceof ChunLi) {
@@ -388,21 +383,18 @@ public class Protagonist extends GameSprite {
         }
     }
 
-    // TODO
+    // 切换
     public void cut() {
         if (proxy == null) {
             mintMark(this, chunLi);
             proxy = chunLi;
-            MiniGame.soundPlayer.stopMusic();
-            MiniGame.soundPlayer.playMusic("sounds/chunli.mp3");
         } else {
             mintMark(chunLi, this);
             proxy = null;
-            MiniGame.soundPlayer.stopMusic();
-            MiniGame.soundPlayer.playMusic("sounds/init.mp3");
         }
     }
 
+    // 属性刻印
     public void mintMark(GameSprite source, GameSprite origin) {
         origin.setPosition(source.getPosX(), source.getPosY());
         origin.setDirection(source.getDirection());

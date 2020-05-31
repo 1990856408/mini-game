@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mini.member.status.GameSpriteDirection;
+import com.mini.member.status.GameSpriteStatus;
 
 /**
  * 游戏精灵
@@ -24,6 +25,8 @@ public abstract class GameSprite implements Runnable {
     protected float initPosX, initPosY;
     // 成员的朝向
     protected GameSpriteDirection direction;
+    // 健康值
+    protected GameSpriteHealth health;
     // 成员的动作
     protected long action;
     // 成员的增益
@@ -144,9 +147,16 @@ public abstract class GameSprite implements Runnable {
     public void run() {
     }
 
+    protected GameSpriteStatus getGameSpriteStatus() {
+        return null;
+    }
+
     // 向刚体中心施加一个力
     public void applyForceToCenter(float forceX, float forceY) {
-        body.applyForceToCenter(forceX, forceY, true);
+        GameSpriteStatus gameSpriteStatus = getGameSpriteStatus();
+        if (gameSpriteStatus == null || gameSpriteStatus.canApplyForceToCenter()) {
+            body.applyForceToCenter(forceX, forceY, true);
+        }
     }
 
     // 给刚体一个速度
@@ -217,6 +227,13 @@ public abstract class GameSprite implements Runnable {
     }
 
     public void setDirection(GameSpriteDirection direction) {
-        this.direction = direction;
+        GameSpriteStatus status = getGameSpriteStatus();
+        if (status == null || status.canRedirect()) {
+            this.direction = direction;
+        }
+    }
+
+    public GameSpriteHealth getHealth() {
+        return health;
     }
 }

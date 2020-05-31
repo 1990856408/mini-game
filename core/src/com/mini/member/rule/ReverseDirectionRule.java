@@ -4,6 +4,9 @@ import com.mini.member.AutomaticActRule;
 import com.mini.member.GameSprite;
 import com.mini.member.status.GameSpriteDirection;
 
+/**
+ * 反向规则
+ */
 public class ReverseDirectionRule implements AutomaticActRule {
 
     private Float minScopeX, maxScopeX, minScopeY, maxScopeY;

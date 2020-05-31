@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.common.collect.Lists;
 import com.mini.constant.MiniGameSourcePath;
 import com.mini.screen.BaseScreen;
-import com.mini.tool.CustomThreadFactory;
+import com.mini.tool.MiniThreadFactory;
 import com.mini.tool.SoundPlayer;
 
 import java.io.File;
@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 public abstract class MiniGame extends Game {
 
     // 线程执行器
-    public static ExecutorService executorService = Executors.newCachedThreadPool(new CustomThreadFactory());
+    public static ExecutorService executorService = Executors.newCachedThreadPool(new MiniThreadFactory());
     // 随机生成器
     public static Random random = new Random();
     // 音乐播放器

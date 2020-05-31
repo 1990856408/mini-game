@@ -93,6 +93,7 @@ public abstract class BaseScreen implements Screen, Runnable {
     }
 
     // 捕获输入前
+    @Deprecated
     protected void handleInputPre() {
 
     }

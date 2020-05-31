@@ -11,9 +11,14 @@ import com.google.common.collect.Lists;
 import com.mini.assist.AnimationAssist;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
-import com.mini.member.MiniUserData;
+import com.mini.handler.MiniContactReaction;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
+import com.mini.member.GameSpriteHealth;
+import com.mini.member.MiniUserData;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MarioBullet extends GameSprite {
 
@@ -51,11 +56,23 @@ public class MarioBullet extends GameSprite {
     }
 
     @Override
+    protected void initStatus() {
+        health = new GameSpriteHealth(3, 0);
+    }
+
+    @Override
     protected void initAnimation() {
         Texture texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
         currentAnimation = AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(287, 287, 18, 15)
         ), MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP);
+    }
+
+    @Override
+    protected void updateStatus() {
+        if (isAlive && health.hp.get() <= 0) {
+            isAlive = false;
+        }
     }
 
     @Override
@@ -86,5 +103,22 @@ public class MarioBullet extends GameSprite {
     @Override
     public float getDrawR() {
         return 23;
+    }
+
+    public static String getMiniContactName() {
+        return MemberName.MARIO_BULLET;
+    }
+
+    public static Map<String, MiniContactReaction> getMiniContactReactionMap() {
+        Map<String, MiniContactReaction> miniContactReactionMap = new HashMap<>();
+        miniContactReactionMap.put(MemberName.MAP_FLOOR, new MiniContactReaction() {
+            @Override
+            public void reactBegin(MiniUserData data) {
+                MarioBullet marioBullet = (MarioBullet) data.mine;
+                marioBullet.getHealth().incHP(-1);
+            }
+        });
+
+        return miniContactReactionMap;
     }
 }

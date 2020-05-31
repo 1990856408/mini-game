@@ -43,7 +43,7 @@ public class ChunLi extends Protagonist {
 
     private MiniAnimationHolder currentMiniAnimationHolder;
 
-    private MiniAnimationHelper miniAnimationHelper;
+    private MiniAnimationHelper miniAnimationHelper = new MiniAnimationHelper();
 
     private GameSpriteHolder chunLiQiGongBallHolder;
 
@@ -63,16 +63,15 @@ public class ChunLi extends Protagonist {
 
     @Override
     protected void preInit() {
-        miniAnimationHelper = new MiniAnimationHelper();
         chunLiQiGongBallHolder = new GameSpriteHolder(world);
     }
 
-    @Deprecated
     @Override
     protected void initStatus() {
         direction = GameSpriteDirection.R;
 
         status = ChunLiStatus.QUIET;
+        setStatusPre(status);
     }
 
     @Override
@@ -179,7 +178,7 @@ public class ChunLi extends Protagonist {
 
             @Override
             public void doFinishAct(MiniAnimationHolder holder) {
-                statusPreQueue.forceRelease();
+                statusPreQueue.release(ChunLi.this);
             }
         });
         insertMiniAnimationHolder(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.R, miniAnimationHolder);
@@ -195,7 +194,7 @@ public class ChunLi extends Protagonist {
 
             @Override
             public void doFinishAct(MiniAnimationHolder holder) {
-                statusPreQueue.forceRelease();
+                statusPreQueue.release(ChunLi.this);
             }
         });
         insertMiniAnimationHolder(ChunLiStatus.CRACKED_FEET, GameSpriteDirection.L, miniAnimationHolder);
@@ -245,7 +244,7 @@ public class ChunLi extends Protagonist {
                     }
                 });
 
-                statusPreQueue.forceRelease();
+                statusPreQueue.release(ChunLi.this);
             }
         });
         insertMiniAnimationHolder(ChunLiStatus.QI_GONG, GameSpriteDirection.R, miniAnimationHolder);
@@ -293,12 +292,13 @@ public class ChunLi extends Protagonist {
                     }
                 });
 
-                statusPreQueue.forceRelease();
+                statusPreQueue.release(ChunLi.this);
             }
         });
         insertMiniAnimationHolder(ChunLiStatus.QI_GONG, GameSpriteDirection.L, miniAnimationHolder);
     }
 
+    @Deprecated
     private void insertAnimation(ChunLiStatus chunLiStatus, GameSpriteDirection gameSpriteDirection, Animation animation) {
         insertMiniAnimationHolder(chunLiStatus, gameSpriteDirection, MiniAnimationHolderAssist.createMiniAnimationHolder(new MiniAnimation(animation, getDrawW(), getDrawH())));
     }
@@ -363,7 +363,6 @@ public class ChunLi extends Protagonist {
                 statusPre = ChunLiStatus.LANDFALL;
             }
         }
-        statusPre = (ChunLiStatus) miniReplacerTool.tryReplace(status, statusPre);
         setStatusPre(statusPre);
         statusOri = status;
         while ((statusPre = statusPreQueue.poll()) != null) {
@@ -408,15 +407,13 @@ public class ChunLi extends Protagonist {
 
     @Override
     public void createBomb() {
-        setStatusPre(ChunLiStatus.QI_GONG);
-        statusPreQueue.forceLock(this);
+        setStatusPre(ChunLiStatus.QI_GONG, this);
         action = 1L << 0;
     }
 
     @Override
     public void createMarioBullet() {
-        setStatusPre(ChunLiStatus.CRACKED_FEET);
-        statusPreQueue.forceLock(this);
+        setStatusPre(ChunLiStatus.CRACKED_FEET, this);
         action = 1L << 0;
     }
 
@@ -452,7 +449,9 @@ public class ChunLi extends Protagonist {
 
     @Override
     public void applyForceToCenter(float forceX, float forceY) {
-        body.applyForceToCenter(forceX, forceY, true);
+        if (status == null || status.canApplyForceToCenter()) {
+            body.applyForceToCenter(forceX, forceY, true);
+        }
     }
 
     @Override
@@ -463,7 +462,22 @@ public class ChunLi extends Protagonist {
         return GameSpriteCategory.build(MemberFixtureAttribute.CHUNLI, MemberFixtureAttribute._CHUNLI, MemberName.CHUNLI);
     }
 
+    @Override
+    public void setDirection(GameSpriteDirection direction) {
+        if (status == null || status.canRedirect()) {
+            this.direction = direction;
+        }
+    }
+
     public void setStatusPre(ChunLiStatus statusPre) {
+        statusPre = (ChunLiStatus) miniReplacerTool.tryReplace(status, statusPre);
         statusPreQueue.offer(statusPre);
+    }
+
+    public void setStatusPre(ChunLiStatus statusPre, Object lockHolder) {
+        ChunLiStatus statusAft = (ChunLiStatus) miniReplacerTool.tryReplace(status, statusPre);
+        if (statusAft.equals(statusPre)) {
+            statusPreQueue.offerAndLock(statusPre, lockHolder);
+        }
     }
 }

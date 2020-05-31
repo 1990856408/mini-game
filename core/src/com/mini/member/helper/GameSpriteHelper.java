@@ -81,7 +81,7 @@ public class GameSpriteHelper {
 
         private BodyDef.BodyType bodyType;
 
-        private float gravityScale = 1;
+        private float gravityScale = 1.0f;
 
         private World world;
 
