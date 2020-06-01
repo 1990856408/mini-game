@@ -1,26 +1,41 @@
-## note:
-**项目版本：** jdk1.8；gradle6.3
+## note:  
+
+**项目版本：** jdk1.8；gradle6.3；libgdx1.61；  
 
 **项目地址：**  
+
 - gitee：https://gitee.com/dongXuYing/jiananzhao-game  
 - github：https://github.com/1990856408/mini-game  
 
-**项目文档：**
-- module core: 
-- module custom: 
-- module desktop: 
+**项目结构：**  
 
-**项目作者：**
-- 公众号：以镒称铢（zhaojn\_）
+- core：核心模块，里面都是作者封装的各种基础类和一些工具包；  
+- custom：业务模块，作者为了测试核心模块而实现的一个小游戏，开发者可参考此模块的代码，打包时可移除该模块；  
+- desktop：libgdx自带的桌面模块；  
+
+**项目作者：**  
+
 - 微信：wonderzhnn
 - 邮箱：18035541373@163.com
+- 公众号：以镒称铢（zhaojn\_）
+  ![公众号二维码](https://jiananzhao.oss-cn-hongkong.aliyuncs.com/mini-game/%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)  
 
-**项目说明：**
-libgdx引擎二次开发，定义了完整的生命周期，提供了大量的工具包，让做游戏更简单。
-1. 将原有的Animation封装成MiniAnimation，可配置渲染完毕时的执行函数；MiniAnimationHolder则是更为丰富的MiniAnimation持有者，可做不同的MiniAnimation连续渲染，以及对其中的各元素甚至整条链做增强处理。
-2. 体积碰撞处理器BaseContactHandler，一个基础的工具，可通过MiniContactReactionBuilder扫描各个Class中的碰撞处理函数对GameSprite做碰撞处理。
-3. GameSprite一个通用的2D游戏元素模板，
+**项目说明：** 
+该项目是基于libgdx游戏引擎做二次开发的，目前主要是针对2D横版冒险、格斗类游戏做封装，定义了通用的模板，细化了生命周期，提供了各种常用的工具，让做游戏更加简单。
+
+1. 在这里，你只需要编写不到10行代码就可以起一个游戏；
+2. 在这里，你只需要修改一个json文件即可配置游戏中的各项参数；
+3. 在这里，提供给你强大的动画函数衔接器，对游戏元素的整个渲染过程做增强处理；
+4. 在这里，提供给你实用的体积碰撞处理器，对定义的碰撞函数做扫描收集，使你的代码整洁而不杂乱；
+5. 在这里，提供给你丰富的游戏精灵模板，你只管处理业务而不必纠结函数执行过程；
+6. 在这里，提供给你安全的游戏精灵持有者，让你随时可创建、销毁游戏精灵，而不必担心线程安全问题；
+7. 吹不下去了，该项目clone下来即可运行，详细API文档请关注作者公众号，回复 "MiniGame" 阅读，开发过程中可阅读源码（core），里面都有注释，可参考作者写的例子（custom），也可给作者发邮件或者好友私聊；
+
+是的，libgdx本就是一款跨平台游戏引擎，在这里只是为了方便而将android，ios，html等模块都干掉了，等有时间再添加过来。当然，如果你已经把一款游戏做的很漂亮了，也可联系作者帮你打包，完全没有问题。
 
 **项目展示：**
 
+该游戏是作者5年前做的，可以观察到其中有触摸杆就是为了支持移动端；
 ![马里奥变身春丽，裂脚～气功波](https://jiananzhao.oss-cn-hongkong.aliyuncs.com/mini-game/57D4CECE-85B1-4252-B3F6-655D2BCBCDCA.gif)
+
+持续更新...
