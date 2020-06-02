@@ -6,11 +6,14 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @Author: zhaojn
  * @Date: 2020/5/31 20:21
+ * <p>
+ * 游戏精灵健康值
  */
 public class GameSpriteHealth implements Serializable {
 
     private static final long serialVersionUID = 3631382286100881839L;
 
+    // 生命值、魔法值
     public AtomicLong hp, mp;
 
     public GameSpriteHealth() {

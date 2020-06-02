@@ -6,6 +6,9 @@ import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.MiniUserData;
 
+/**
+ * 游戏精灵辅助器
+ */
 public class GameSpriteHelper {
 
     public static final GameSpriteHelper me = new GameSpriteHelper();
@@ -77,22 +80,31 @@ public class GameSpriteHelper {
 
     public static class BodyConfig {
 
+        // 图形世界的(x,y)坐标
         private float initX, initY;
 
+        // 刚体类型
         private BodyDef.BodyType bodyType;
 
+        // 重力比率
         private float gravityScale = 1.0f;
 
+        // 刚体所在的世界
         private World world;
 
+        // 夹具的图形
         private CircleShape.Type shapeType;
 
+        // 绘制的半径、长，宽
         private float drawR, drawW, drawH;
 
+        // 游戏精灵的属性
         private GameSpriteCategory category;
 
+        // 夹具是否为传感器
         private boolean isSensor;
 
+        // 刚体的宿主
         private GameSprite host;
 
         public BodyConfig setInitX(float initX) {

@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mini.game.MiniGameConfig;
 import com.mini.member.GameSprite;
 
+/**
+ * 特效精灵
+ */
 public abstract class EffectSprite extends GameSprite {
 
     private ParticleEffect particleEffect;

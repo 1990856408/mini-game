@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.List;
 
 /**
- * 动画辅助器
+ * 动画助手
  */
 public final class AnimationAssist {
 

@@ -15,9 +15,23 @@ public class MiniAnimationHelper {
     // 当前的迷你动画持有者
     private MiniAnimationHolder currHolder;
 
+    /**
+     * @param batch  画刷
+     * @param delta  时间间隔
+     * @param holder 迷你动画持有者
+     * @param x      绘制坐标 x
+     * @param y      绘制坐标 y
+     */
     public void draw(Batch batch, float delta, MiniAnimationHolder holder, float x, float y) {
         if (currHolder == null || currHolder.equals(holder)) {
-            currHolder = holder;
+            if (currHolder == null) {
+                currHolder = holder;
+                if (currHolder.getAction() != null) {
+                    currHolder.getAction().doOverrideAct(currHolder);
+                }
+            } else {
+                currHolder = holder;
+            }
         } else if (currHolder.isCanOverride()) {
             if (currHolder.getAction() != null) {
                 currHolder.getAction().beOverrideAct(currHolder);

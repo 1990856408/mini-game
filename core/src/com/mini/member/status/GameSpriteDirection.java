@@ -1,7 +1,7 @@
 package com.mini.member.status;
 
 /**
- * 游戏精灵当前朝向
+ * 游戏精灵的当前朝向
  */
 public enum GameSpriteDirection {
 

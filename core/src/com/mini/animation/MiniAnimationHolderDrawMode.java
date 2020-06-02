@@ -2,7 +2,9 @@ package com.mini.animation;
 
 public enum MiniAnimationHolderDrawMode {
 
+    // 普通模式
     NORMAL(1, "normal"),
+    // 循环模式
     LOOP(2, "loop");
 
     private int type;

@@ -7,8 +7,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+/**
+ * 自定义舞台的基类
+ */
 public abstract class BaseStage extends Stage implements Runnable {
 
+    /**
+     * 键盘事件集合
+     */
     private HashMap<Integer, KeyAct> keyActMap = new LinkedHashMap<>();
 
     public BaseStage(Viewport viewport, Batch batch) {
@@ -40,14 +46,32 @@ public abstract class BaseStage extends Stage implements Runnable {
 
     public abstract int getViewH();
 
+    /**
+     * 配置键盘事件
+     *
+     * @param key    {@link com.badlogic.gdx.Input.Keys}
+     * @param keyAct 事件函数
+     */
     public final void setKeyAct(int key, KeyAct keyAct) {
         keyActMap.put(key, keyAct);
     }
 
+    /**
+     * 配置键盘事件 按下
+     *
+     * @param key
+     * @param keyActDown
+     */
     public final void setKeyActDown(int key, KeyActDown keyActDown) {
         setKeyAct(key, keyActDown);
     }
 
+    /**
+     * 配置键盘事件 弹起
+     *
+     * @param key
+     * @param keyActUp
+     */
     public final void setKeyActUp(int key, KeyActUp keyActUp) {
         setKeyAct(key, keyActUp);
     }

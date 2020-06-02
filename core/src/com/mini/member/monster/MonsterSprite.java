@@ -9,6 +9,7 @@ import com.mini.member.rule.ReverseDirectionRule;
  */
 public abstract class MonsterSprite extends GameSprite implements AutomaticAct {
 
+    // 方向反转规则
     protected ReverseDirectionRule ruleReverseDirection;
 
     @Override

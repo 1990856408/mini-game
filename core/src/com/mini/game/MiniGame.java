@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 游戏起始入口
+ * 游戏起始入口，自定义游戏时继承该类
  */
 public abstract class MiniGame extends Game {
 
@@ -44,7 +44,7 @@ public abstract class MiniGame extends Game {
     // 图形相机
     private OrthographicCamera camera;
 
-    private Screen initScreen, currScreen;
+    private Screen currScreen;
 
     @Override
     public final void create() {
@@ -52,12 +52,11 @@ public abstract class MiniGame extends Game {
         initTools();
         initCustom();
 
-        initScreen = getInitScreen();
-        resetScreen(initScreen);
+        resetScreen(getInitScreen());
     }
 
     /**
-     * 提供一个初始化屏幕，该屏幕不可手动释放
+     * 提供一个初始化屏幕，作为游戏的初始呈现，需要在子类中实现
      *
      * @return
      */
@@ -129,8 +128,9 @@ public abstract class MiniGame extends Game {
     /**
      * 重置屏幕
      *
-     * @param screen
-     * @param function
+     * @param screen 替换的屏幕
+     * @param function 替换屏幕之后的执行函数
+     * @param disposeCurrScreen 是否释放当前屏幕
      */
     public final void resetScreen(Screen screen, MiniGameResetScreenFunction function, boolean disposeCurrScreen) {
         if (disposeCurrScreen && currScreen != null) {
@@ -150,7 +150,7 @@ public abstract class MiniGame extends Game {
 
         batch.dispose();
 
-        initScreen.dispose();
+        currScreen.dispose();
 
         disposeCustom();
     }

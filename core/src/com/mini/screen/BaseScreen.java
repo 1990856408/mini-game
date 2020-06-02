@@ -22,6 +22,7 @@ public abstract class BaseScreen implements Screen, Runnable {
     // 游戏时间
     private float delta;
 
+    // 键盘响应集合
     private HashMap<Integer, KeyAct> keyActMap = new LinkedHashMap<>();
 
     public BaseScreen(MiniGame miniGame) {
@@ -62,14 +63,32 @@ public abstract class BaseScreen implements Screen, Runnable {
     protected void initKeyActs() {
     }
 
+    /**
+     * 配置键盘事件
+     *
+     * @param key    {@link com.badlogic.gdx.Input.Keys}
+     * @param keyAct 事件函数
+     */
     private void setKeyAct(int key, KeyAct keyAct) {
         keyActMap.put(key, keyAct);
     }
 
+    /**
+     * 配置键盘事件 长按
+     *
+     * @param key
+     * @param keyActPress
+     */
     protected final void setKeyActPress(int key, KeyActPress keyActPress) {
         setKeyAct(key, keyActPress);
     }
 
+    /**
+     * 配置键盘事件 按一下
+     *
+     * @param key
+     * @param keyActJust
+     */
     protected final void setKeyActJust(int key, KeyActJust keyActJust) {
         setKeyAct(key, keyActJust);
     }

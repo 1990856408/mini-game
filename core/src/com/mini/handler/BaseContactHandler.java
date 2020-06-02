@@ -80,6 +80,13 @@ public abstract class BaseContactHandler implements ContactListener {
 
     }
 
+    /**
+     * 配置碰撞响应
+     *
+     * @param name
+     * @param name2
+     * @param reaction 响应事件
+     */
     public void configMiniContactReaction(String name, String name2, MiniContactReaction reaction) {
         Map<String, MiniContactReaction> reactionMap = miniContactReactions.get(name);
         if (reactionMap == null) {

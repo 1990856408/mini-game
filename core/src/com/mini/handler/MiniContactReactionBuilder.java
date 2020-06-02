@@ -6,13 +6,34 @@ import java.util.*;
 /**
  * @Author: zhaojn
  * @Date: 2020/5/31 14:47
+ * <p>
+ * 体积碰撞事件建造者
  */
 public class MiniContactReactionBuilder {
 
+    /**
+     * 体积碰撞名称
+     * <p>
+     * 函数：public String getMiniContactName();
+     *
+     * @see MiniContactReactionCapable#getMiniContactName()
+     */
     public static final String MethodGetMiniContactName = "getMiniContactName";
 
+    /**
+     * 体积碰撞函数集合
+     * <p>
+     * 函数：public Map<String, MiniContactReaction> getMiniContactReactionMap();
+     *
+     * @see MiniContactReactionCapable#getMiniContactReactionMap()
+     */
     public static final String MethodGetMiniContactReactionMap = "getMiniContactReactionMap";
 
+    /**
+     * 待扫描的类集合，集合中的元素需实现上述两个函数
+     *
+     * @see MiniContactReactionCapable
+     */
     private Set<Class<?>> miniContactReactionClasses = new LinkedHashSet<>();
 
     public void load(Class<?> c) {
@@ -27,6 +48,11 @@ public class MiniContactReactionBuilder {
         miniContactReactionClasses.addAll(Arrays.asList(cs));
     }
 
+    /**
+     * 构建体积碰撞事件集合
+     *
+     * @return
+     */
     public Map<String, Map<String, MiniContactReaction>> build() {
         Map<String, Map<String, MiniContactReaction>> miniContactReactions = new HashMap<>();
 

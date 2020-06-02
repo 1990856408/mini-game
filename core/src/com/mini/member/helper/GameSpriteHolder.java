@@ -21,12 +21,13 @@ public final class GameSpriteHolder {
     // 创建任务
     private LinkedList<CreateTask> createTasks = new LinkedList<>();
 
-    // 销毁任务
+    // 销毁任务，可销毁其他世界中的刚体
     private LinkedList<DestroyBodyTask> destroyBodyTasks = new LinkedList<>();
 
     // 每次可创建时的最大创建数，避免创建任务大量堆积时的游戏卡顿问题
     private int maxCreateCount = 2;
 
+    // 每次可销毁时的最大销毁数
     private int maxDestroyBodyCount = 2;
 
     // 当前已创建的游戏精灵
@@ -35,6 +36,7 @@ public final class GameSpriteHolder {
     // 待移除的游戏精灵
     private List<GameSprite> gameSpritesRemoved = Lists.newArrayList();
 
+    // 更新执行器，在持有的游戏精灵渲染前执行，可以在此处维护宿主与持有的游戏精灵之间的关系
     private GameSpriteHolderExecutor updateExecutor;
 
     public GameSpriteHolder(World world) {
@@ -51,14 +53,29 @@ public final class GameSpriteHolder {
         gameSpritesRemoved.add(gameSprite);
     }
 
+    /**
+     * 添加一个创建任务
+     *
+     * @param task
+     */
     public void pushCreateTask(CreateTask task) {
         createTasks.addLast(task);
     }
 
+    /**
+     * 添加一个销毁任务
+     *
+     * @param task
+     */
     public void pushDestroyBodyTask(DestroyBodyTask task) {
         destroyBodyTasks.addLast(task);
     }
 
+    /**
+     * 移除操作，移除待移除的游戏精灵
+     *
+     * @see GameSpriteHolder#removeGameSprite(GameSprite)
+     */
     private synchronized void remove() {
         gameSprites.removeAll(gameSpritesRemoved);
         gameSpritesRemoved.clear();
@@ -92,6 +109,9 @@ public final class GameSpriteHolder {
         }
     }
 
+    /**
+     * 销毁刚体
+     */
     private void destroyBody() {
         if (world.isLocked()) {
             return;
@@ -148,6 +168,11 @@ public final class GameSpriteHolder {
         this.maxDestroyBodyCount = maxDestroyBodyCount;
     }
 
+    /**
+     * 配置更新执行器
+     *
+     * @param updateExecutor
+     */
     public void setUpdateExecutor(GameSpriteHolderExecutor updateExecutor) {
         this.updateExecutor = updateExecutor;
     }
