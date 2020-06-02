@@ -18,18 +18,18 @@
 ````json
 {
   "screenSetting": {
-    "viewRate": 100, // 同物理世界的比例
-    "viewW": 720, // 图形世界视距宽
-    "viewH": 540, // 图形世界视距高
-    "frameDuration": 0.0833 // 渲染间隔 1.0f/12.0f
+    "viewRate": 100,
+    "viewW": 720,
+    "viewH": 540,
+    "frameDuration": 0.0833
   },
   "physicalSetting": {
-    "viewRate": 0.01, // 同图形世界的比例
-    "viewW": 7.20, // 物理世界的视距宽
-    "viewH": 5.40, // 物理世界的视距高
-    "memberViewRate": 0.005, // 物理世界中的成员同图形世界的比例
-    "gravity": 9.8, // 物理世界的重力
-    "timeStep": 0.0167 // 物理世界的时间步 1.0f/60.0f
+    "viewRate": 0.01,
+    "viewW": 7.20,
+    "viewH": 5.40,
+    "memberViewRate": 0.005,
+    "gravity": 9.8,
+    "timeStep": 0.0167
   }
 }
 ````
