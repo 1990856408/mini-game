@@ -1,2 +1,16 @@
 {
+  "screenSetting": {
+    "viewRate": 100,
+    "viewW": 720,
+    "viewH": 540,
+    "frameDuration": 0.0833
+  },
+  "physicalSetting": {
+    "viewRate": 0.01,
+    "viewW": 7.20,
+    "viewH": 5.40,
+    "memberViewRate": 0.005,
+    "gravity": 9.8,
+    "timeStep": 0.0167
+  }
 }
