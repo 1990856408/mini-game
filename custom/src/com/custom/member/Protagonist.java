@@ -11,8 +11,10 @@ import com.custom.member.constant.MemberName;
 import com.custom.member.status.ChunLiStatus;
 import com.custom.member.status.ProtagonistStatus;
 import com.custom.member.weapon.MarioBullet;
+import com.custom.member.weapon.NinjaFireball;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
+import com.mini.graph.MiniPosition;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.MiniUserData;
@@ -263,6 +265,75 @@ public class Protagonist extends GameSprite {
             proxy.createBomb();
             return;
         }
+
+        MiniGame.soundPlayer.playMusic("sounds/ninja.mp3");
+        marioBulletHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
+            @Override
+            public GameSprite getGameSprite() {
+                return new NinjaFireball(Protagonist.this, new MiniPosition(0, 0), new MiniPosition(1, 0), 1200);
+            }
+
+            @Override
+            public float getInitX(GameSprite gameSprite) {
+                return getPosX() * MiniGameConfig.getScreenSettingViewRate();
+            }
+
+            @Override
+            public float getInitY(GameSprite gameSprite) {
+                return getDrawY() + getDrawH() * 0.75f;
+            }
+        });
+
+        marioBulletHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
+            @Override
+            public GameSprite getGameSprite() {
+                return new NinjaFireball(Protagonist.this, new MiniPosition(0, 0), new MiniPosition(0, 1), 1200);
+            }
+
+            @Override
+            public float getInitX(GameSprite gameSprite) {
+                return getPosX() * MiniGameConfig.getScreenSettingViewRate();
+            }
+
+            @Override
+            public float getInitY(GameSprite gameSprite) {
+                return getDrawY() + getDrawH() * 0.75f;
+            }
+        });
+
+        marioBulletHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
+            @Override
+            public GameSprite getGameSprite() {
+                return new NinjaFireball(Protagonist.this, new MiniPosition(0, 0), new MiniPosition(-1, 0), 1200);
+            }
+
+            @Override
+            public float getInitX(GameSprite gameSprite) {
+                return getPosX() * MiniGameConfig.getScreenSettingViewRate();
+            }
+
+            @Override
+            public float getInitY(GameSprite gameSprite) {
+                return getDrawY() + getDrawH() * 0.75f;
+            }
+        });
+
+        marioBulletHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
+            @Override
+            public GameSprite getGameSprite() {
+                return new NinjaFireball(Protagonist.this, new MiniPosition(0, 0), new MiniPosition(0, -1), 1200);
+            }
+
+            @Override
+            public float getInitX(GameSprite gameSprite) {
+                return getPosX() * MiniGameConfig.getScreenSettingViewRate();
+            }
+
+            @Override
+            public float getInitY(GameSprite gameSprite) {
+                return getDrawY() + getDrawH() * 0.75f;
+            }
+        });
     }
 
     public void createMarioBullet() {

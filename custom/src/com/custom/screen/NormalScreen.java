@@ -88,6 +88,7 @@ public class NormalScreen extends BaseScreen {
         world.setContactListener(contactHandler);
     }
 
+
     @Override
     protected void initStages() {
         stage = new NormalScreenStage(this);
@@ -252,7 +253,7 @@ public class NormalScreen extends BaseScreen {
 
     @Override
     protected void initCustom() {
-//        MiniGame.soundPlayer.playMusic("sounds/init.mp3");
+
     }
 
     @Override

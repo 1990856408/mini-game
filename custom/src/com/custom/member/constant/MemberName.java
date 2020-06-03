@@ -7,6 +7,8 @@ public interface MemberName {
     String MARIO_BULLET = "MARIO_BULLET";
     String CHUNLI = "CHUNLI";
     String CHUNLI_QI_GONG_BALL = "CHUNLI_QI_GONG_BALL";
+    String NINJA = "NINJA";
+    String NINJA_FIREBALL = "NINJA_FIREBALL";
     String DIAMOND = "DIAMOND";
     String DUCK = "DUCK";
 }

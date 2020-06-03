@@ -8,7 +8,7 @@ import com.mini.screen.BaseScreen;
 public class CustomGame extends MiniGame {
 
     static {
-        MiniGame.setAttribute(CustomGameAttributeNames.CURRENT_LEVEL, 2);
+        MiniGame.setAttribute(CustomGameAttributeNames.CURRENT_LEVEL, 4);
     }
 
     @Override
