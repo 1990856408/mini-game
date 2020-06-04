@@ -9,6 +9,7 @@ public interface MemberFixtureAttribute {
     short CHUNLI_QI_GONG_BALL = CHUNLI;
     short NINJA = PROTA;
     short NINJA_FIREBALL = NINJA;
+    short NINJA_FLAME = NINJA;
     short DIAMOND = 1 << 3;
     short DUCK = 1 << 4;
 
@@ -20,6 +21,7 @@ public interface MemberFixtureAttribute {
     short _CHUNLI_QI_GONG_BALL = _MARIO_BULLET;
     short _NINJA = _PROTA;
     short _NINJA_FIREBALL = _MARIO_BULLET;
+    short _NINJA_FLAME = _MARIO_BULLET;
     short _DIAMOND = PROTA;
     short _DUCK = MAP_FLOOR | PROTA;
 }

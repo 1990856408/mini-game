@@ -71,6 +71,12 @@ public abstract class TrackBase {
 
     protected abstract void computePosition();
 
+    public void setInitTime(long initTime) {
+        this.initTime = initTime;
+    }
+
+
+
     public MiniPosition getPosition() {
         return position;
     }
