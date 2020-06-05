@@ -3,22 +3,36 @@ package com.mini.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackHolder {
+/**
+ * 轨迹持有者
+ */
+public final class TrackHolder {
 
+    // 轨迹数组
     private List<TrackBase> tracks = new ArrayList<>();
 
+    // 渲染数组
     private List<Long> intervals = new ArrayList<>();
 
+    // 当前渲染下标
     private int index;
 
-    protected long initTime;
+    // 初始渲染时间
+    private long initTime;
 
-    protected long currTime;
+    // 当前渲染时间
+    private long currTime;
+
+    private TrackHolderAction trackHolderAction;
 
     public void putTrack(TrackBase track) {
         putTrack(track, track.interval);
     }
 
+    /**
+     * @param track    轨迹
+     * @param interval 轨迹要求的渲染时间
+     */
     public void putTrack(TrackBase track, long interval) {
         tracks.add(track);
         if (tracks.size() < 2) {
@@ -59,7 +73,9 @@ public class TrackHolder {
         } while (index < tracks.size());
 
         if (index >= tracks.size()) {
-            // todo
+            if (trackHolderAction != null) {
+                trackHolderAction.doFinishAct(tracks.get(tracks.size() - 1));
+            }
             return;
         }
 

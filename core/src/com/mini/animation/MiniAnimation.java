@@ -3,7 +3,7 @@ package com.mini.animation;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
 /**
- * 迷你动画，
+ * 迷你动画
  * 可配置{@link MiniAnimationAction}做增强处理
  */
 public class MiniAnimation {

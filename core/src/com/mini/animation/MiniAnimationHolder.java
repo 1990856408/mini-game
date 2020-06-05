@@ -10,7 +10,7 @@ import java.util.List;
  * 配合替换器{@link com.mini.tool.MiniReplacerTool}与非阻塞队列{@link com.mini.tool.MiniNonBlockQueue}
  * 可保证属性、刚体、夹具、动画的一致性
  */
-public class MiniAnimationHolder {
+public final class MiniAnimationHolder {
 
     // 编号，判断两个holder是否相等
     private String code;
