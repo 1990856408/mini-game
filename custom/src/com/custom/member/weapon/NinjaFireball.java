@@ -14,7 +14,7 @@ import com.mini.assist.AnimationAssist;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
 import com.mini.graph.MiniPosition;
-import com.mini.graph.TrackCircle;
+import com.mini.graph.track.TrackCircle;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.helper.GameSpriteHelper;

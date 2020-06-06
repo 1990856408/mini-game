@@ -13,7 +13,7 @@ import java.util.List;
  * <p>
  * 为了解决在渲染期间创建、销毁物理世界刚体线程不安全的问题，但本身不维护线程安全
  */
-public final class GameSpriteHolder {
+public class GameSpriteHolder {
 
     // 创建的游戏精灵所在的世界
     private World world;

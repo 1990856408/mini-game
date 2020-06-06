@@ -13,6 +13,8 @@ import com.google.common.collect.Lists;
 import com.mini.assist.AnimationAssist;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
+import com.mini.graph.MiniPosition;
+import com.mini.graph.TrackHolder;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.helper.GameSpriteHelper;
@@ -23,7 +25,21 @@ import java.util.Map;
 
 public class NinjaFlame extends GameSprite {
 
+    // 父精灵
+    private GameSprite father;
+
+    // 轨迹
+    private TrackHolder trackHolder;
+
+    // 轨迹之前的位置
+    private MiniPosition positionPre;
+
     private Map<GameSpriteDirection, Animation> animationMap = new HashMap<>();
+
+    public NinjaFlame(GameSprite father, TrackHolder trackHolder) {
+        this.father = father;
+        this.trackHolder = trackHolder;
+    }
 
     @Override
     protected Body createBody(World world, float initX, float initY) {
@@ -34,6 +50,16 @@ public class NinjaFlame extends GameSprite {
                 .setHost(this);
 
         return GameSpriteHelper.me.createBody(config);
+    }
+
+    @Override
+    protected void preInit() {
+        positionPre = new MiniPosition();
+    }
+
+    @Override
+    protected void initStatus() {
+        direction = GameSpriteDirection.R;
     }
 
     @Override
@@ -55,6 +81,19 @@ public class NinjaFlame extends GameSprite {
 
     @Override
     protected void updateStatus() {
+        trackHolder.update4Time();
+        MiniPosition position = trackHolder.getPosition();
+        if (position.x > positionPre.x) {
+            direction = GameSpriteDirection.R;
+        }
+        if (position.x < positionPre.x) {
+            direction = GameSpriteDirection.L;
+        }
+
+        setPosition(position.x + father.getPosX(), position.y + father.getPosY() - father.getDrawH() / 2 * MiniGameConfig.getPhysicalSettingViewRate());
+
+        positionPre.x = position.x;
+        positionPre.y = position.y;
     }
 
     @Override
@@ -65,7 +104,7 @@ public class NinjaFlame extends GameSprite {
     @Override
     public void renderCustom(SpriteBatch batch, float delta) {
         batch.begin();
-        batch.draw(getFrameCurrent(delta), getDrawX(), getDrawY(), getDrawR(), getDrawR());
+        batch.draw(getFrameCurrent(delta), getDrawX(), getDrawY(), getDrawW(), getDrawH());
         batch.end();
     }
 

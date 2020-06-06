@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadFactory;
 /**
  * 自定义线程工场
  */
-public final class MiniThreadFactory implements ThreadFactory {
+public class MiniThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {

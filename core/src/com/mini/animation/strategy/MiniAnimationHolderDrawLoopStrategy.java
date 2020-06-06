@@ -3,7 +3,7 @@ package com.mini.animation.strategy;
 import com.mini.animation.MiniAnimationHolder;
 import com.mini.animation.MiniAnimationHolderDrawStrategy;
 
-public final class MiniAnimationHolderDrawLoopStrategy implements MiniAnimationHolderDrawStrategy {
+public class MiniAnimationHolderDrawLoopStrategy implements MiniAnimationHolderDrawStrategy {
 
     public static final MiniAnimationHolderDrawStrategy me = new MiniAnimationHolderDrawLoopStrategy();
 

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 动画助手
  */
-public final class AnimationAssist {
+public class AnimationAssist {
 
     public static Animation createAnimation(Texture texture, List<Bound> bounds, float frameDuration) {
         return createAnimation(texture, bounds, frameDuration, 0, null);

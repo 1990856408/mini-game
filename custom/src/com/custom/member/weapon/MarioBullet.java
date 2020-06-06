@@ -22,6 +22,23 @@ import java.util.Map;
 
 public class MarioBullet extends GameSprite {
 
+    public static String getMiniContactName() {
+        return MemberName.MARIO_BULLET;
+    }
+
+    public static Map<String, MiniContactReaction> getMiniContactReactionMap() {
+        Map<String, MiniContactReaction> miniContactReactionMap = new HashMap<>();
+        miniContactReactionMap.put(MemberName.MAP_FLOOR, new MiniContactReaction() {
+            @Override
+            public void reactBegin(MiniUserData data) {
+                MarioBullet marioBullet = (MarioBullet) data.mine;
+                marioBullet.getHealth().incHP(-1);
+            }
+        });
+
+        return miniContactReactionMap;
+    }
+
     @Override
     protected Body createBody(World world, float initX, float initY) {
         BodyDef bodyDef = new BodyDef();
@@ -103,22 +120,5 @@ public class MarioBullet extends GameSprite {
     @Override
     public float getDrawR() {
         return 23;
-    }
-
-    public static String getMiniContactName() {
-        return MemberName.MARIO_BULLET;
-    }
-
-    public static Map<String, MiniContactReaction> getMiniContactReactionMap() {
-        Map<String, MiniContactReaction> miniContactReactionMap = new HashMap<>();
-        miniContactReactionMap.put(MemberName.MAP_FLOOR, new MiniContactReaction() {
-            @Override
-            public void reactBegin(MiniUserData data) {
-                MarioBullet marioBullet = (MarioBullet) data.mine;
-                marioBullet.getHealth().incHP(-1);
-            }
-        });
-
-        return miniContactReactionMap;
     }
 }

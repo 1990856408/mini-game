@@ -7,7 +7,7 @@ import com.mini.game.MiniGame;
 /**
  * 音效播放器
  */
-public final class SoundPlayer {
+public class SoundPlayer {
 
     private Music music;
 

@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * 迷你动画持有者绘制策略工场
  */
-public final class MiniAnimationHolderDrawStrategyFactory {
+public class MiniAnimationHolderDrawStrategyFactory {
 
     private Map<MiniAnimationHolderDrawMode, MiniAnimationHolderDrawStrategy> drawStrategyMap = new HashMap<>();
 

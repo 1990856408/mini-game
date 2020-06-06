@@ -8,7 +8,7 @@ import com.mini.animation.strategy.MiniAnimationHolderDrawStrategyFactory;
 /**
  * 迷你动画辅助器~渲染
  */
-public final class MiniAnimationHelper {
+public class MiniAnimationHelper {
 
     private MiniAnimationHolderDrawStrategyFactory strategyFactory = new MiniAnimationHolderDrawStrategyFactory();
 

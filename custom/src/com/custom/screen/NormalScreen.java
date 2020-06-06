@@ -290,13 +290,14 @@ public class NormalScreen extends BaseScreen {
             prota.applyForceToCenter(0, 300f);
         });
 
+        setKeyActJust(Keys.N, () -> {
+            prota.createGrenade();
+        });
+
         // 尝试变身春丽
         setKeyActJust(Keys.I, () -> {
-            /*
-             * 如果不在春丽状态，则创建春丽，如果成功的创建了春丽，则播放一个春丽横穿屏幕的效果
-             */
             prota.cut();
-//                    stage.addActor(new ChunWidget().image_widget);
+//            stage.addActor(new ChunWidget().image_widget);
         });
 
         // 暴走

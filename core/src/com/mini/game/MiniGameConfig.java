@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * 游戏配置
  */
-public final class MiniGameConfig {
+public class MiniGameConfig {
 
     public static final String ScreenSetting = "screenSetting";
     public static final String PhysicalSetting = "physicalSetting";

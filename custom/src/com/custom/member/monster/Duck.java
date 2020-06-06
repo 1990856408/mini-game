@@ -12,11 +12,11 @@ import com.google.common.collect.Lists;
 import com.mini.assist.AnimationAssist;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
-import com.mini.member.MiniUserData;
 import com.mini.member.GameSpriteCategory;
-import com.mini.member.strategy.ApplyVelocityStrategy;
+import com.mini.member.MiniUserData;
 import com.mini.member.monster.MonsterSprite;
 import com.mini.member.status.GameSpriteDirection;
+import com.mini.member.strategy.ApplyVelocityStrategy;
 
 import java.util.HashMap;
 import java.util.Map;
