@@ -136,4 +136,8 @@ public class TrackHolder {
         }
         return tracks.get(index).getPosition();
     }
+
+    public boolean isFinished() {
+        return index >= tracks.size();
+    }
 }

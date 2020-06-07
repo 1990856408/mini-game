@@ -78,6 +78,9 @@ public class GameSpriteHelper {
         return fixTureDef;
     }
 
+    /**
+     * 刚体配置
+     */
     public static class BodyConfig {
 
         // 图形世界的(x,y)坐标

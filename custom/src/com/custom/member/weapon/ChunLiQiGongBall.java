@@ -25,6 +25,13 @@ public class ChunLiQiGongBall extends EffectSprite {
     }
 
     @Override
+    protected void updateStatus() {
+        if (isAlive && (Math.abs(getPosX() - initPosX) >= 4.5)) {
+            isAlive = false;
+        }
+    }
+
+    @Override
     public GameSpriteCategory getGameSpriteCategory() {
         if (category != null) {
             return category;

@@ -1,4 +1,4 @@
-package com.mini.store;
+package com.mini.shop.store;
 
 /**
  * @Author: zhaojn

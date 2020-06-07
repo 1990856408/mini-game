@@ -18,11 +18,11 @@ import com.mini.assist.AnimationAssist;
 import com.mini.assist.MiniAnimationHolderAssist;
 import com.mini.game.MiniGame;
 import com.mini.game.MiniGameConfig;
-import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
 import com.mini.member.MiniUserData;
 import com.mini.member.helper.GameSpriteHelper;
 import com.mini.member.helper.GameSpriteHolder;
+import com.mini.member.helper.GameSpriteHolderHelper;
 import com.mini.member.status.GameSpriteDirection;
 import com.mini.tool.MiniNonBlockQueue;
 import com.mini.tool.MiniReplacerTool;
@@ -48,7 +48,9 @@ public class ChunLi extends Protagonist {
     private GameSpriteHolder chunLiQiGongBallHolder;
 
     private ChunLiStatus status, statusOri;
+
     private MiniNonBlockQueue<ChunLiStatus> statusPreQueue = new MiniNonBlockQueue<>();
+
     private MiniReplacerTool miniReplacerTool = new MiniReplacerTool<ChunLiStatus>();
 
     @Override
@@ -64,6 +66,13 @@ public class ChunLi extends Protagonist {
     @Override
     protected void preInit() {
         chunLiQiGongBallHolder = new GameSpriteHolder(world);
+        chunLiQiGongBallHolder.setUpdateExecutor(gameSprite -> {
+            if (!gameSprite.isAlive) {
+                gameSprite.destroyFixture();
+                chunLiQiGongBallHolder.pushDestroyBodyTask(() -> gameSprite);
+                chunLiQiGongBallHolder.removeGameSprite(gameSprite);
+            }
+        });
     }
 
     @Override
@@ -104,11 +113,15 @@ public class ChunLi extends Protagonist {
     }
 
     private void initAnimationQuiet() {
-        Texture texture = MiniGame.assetManager.get("members/chunli8.png");
-        insertAnimation(ChunLiStatus.QUIET, GameSpriteDirection.R,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
-        insertAnimation(ChunLiStatus.QUIET, GameSpriteDirection.L,
-                AnimationAssist.createAnimation(texture, texture.getWidth() / 4, texture.getHeight() / 3, 10, MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
+        Texture texture = MiniGame.assetManager.get("members/chunli7.png");
+        int perW = texture.getWidth() / 4;
+        int perH = texture.getHeight() / 3;
+        insertAnimation(ChunLiStatus.QUIET, GameSpriteDirection.R, AnimationAssist.createAnimation(texture, Lists.newArrayList(
+                new AnimationAssist.Bound(perW * 3, perH * 2, perW, perH)
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 0, Animation.PlayMode.LOOP));
+        insertAnimation(ChunLiStatus.QUIET, GameSpriteDirection.L, AnimationAssist.createAnimation(texture, Lists.newArrayList(
+                new AnimationAssist.Bound(perW * 3, perH * 2, perW, perH)
+        ), MiniGameConfig.getScreenSettingFrameDuration(), 1, Animation.PlayMode.LOOP));
     }
 
     private void initAnimationWalk() {
@@ -220,29 +233,12 @@ public class ChunLi extends Protagonist {
 
             @Override
             public void doFinishAct(MiniAnimationHolder holder) {
-                chunLiQiGongBallHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
-                    @Override
-                    public GameSprite getGameSprite() {
-                        return new ChunLiQiGongBall();
-                    }
-
-                    @Override
-                    public float getInitX(GameSprite gameSprite) {
-                        return getDrawX() + getDrawW() + gameSprite.getDrawR();
-                    }
-
-                    @Override
-                    public float getInitY(GameSprite gameSprite) {
-                        return getDrawY() + gameSprite.getDrawR() * 0.5f;
-                    }
-
-                    @Override
-                    public GameSpriteHolder.CreateAction getCreateAction(GameSprite gameSprite) {
-                        return (gs -> {
-                            gs.applyForceToCenter(360, 0);
-                        });
-                    }
-                });
+                ChunLiQiGongBall chunLiQiGongBall = new ChunLiQiGongBall();
+                chunLiQiGongBallHolder.pushCreateTask(GameSpriteHolderHelper.me.buildCreateTask(
+                        chunLiQiGongBall,
+                        getDrawX() + getDrawW() + chunLiQiGongBall.getDrawR(),
+                        getDrawY() + chunLiQiGongBall.getDrawR() * 0.5f,
+                        gs -> gs.applyForceToCenter(360, 0)));
 
                 statusPreQueue.release(ChunLi.this);
             }
@@ -268,29 +264,12 @@ public class ChunLi extends Protagonist {
 
             @Override
             public void doFinishAct(MiniAnimationHolder holder) {
-                chunLiQiGongBallHolder.pushCreateTask(new GameSpriteHolder.CreateTask() {
-                    @Override
-                    public GameSprite getGameSprite() {
-                        return new ChunLiQiGongBall();
-                    }
-
-                    @Override
-                    public float getInitX(GameSprite gameSprite) {
-                        return getDrawX() - gameSprite.getDrawR();
-                    }
-
-                    @Override
-                    public float getInitY(GameSprite gameSprite) {
-                        return getDrawY() + gameSprite.getDrawR() * 0.5f;
-                    }
-
-                    @Override
-                    public GameSpriteHolder.CreateAction getCreateAction(GameSprite gameSprite) {
-                        return (gs -> {
-                            gs.applyForceToCenter(-360, 0);
-                        });
-                    }
-                });
+                ChunLiQiGongBall chunLiQiGongBall = new ChunLiQiGongBall();
+                chunLiQiGongBallHolder.pushCreateTask(GameSpriteHolderHelper.me.buildCreateTask(
+                        chunLiQiGongBall,
+                        getDrawX() - chunLiQiGongBall.getDrawR(),
+                        getDrawY() + chunLiQiGongBall.getDrawR() * 0.5f,
+                        gs -> gs.applyForceToCenter(-360, 0)));
 
                 statusPreQueue.release(ChunLi.this);
             }

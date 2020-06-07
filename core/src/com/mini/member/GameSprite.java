@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mini.member.helper.GameSpriteHolder;
 import com.mini.member.status.GameSpriteDirection;
 import com.mini.member.status.GameSpriteStatus;
 
@@ -57,7 +58,12 @@ public abstract class GameSprite implements Runnable {
     // 创建刚体
     protected abstract Body createBody(World world, float initX, float initY);
 
-    // 销毁刚体
+    /**
+     * 销毁刚体
+     * 渲染过程中创建的刚体建议在此函数中销毁
+     *
+     * @see GameSpriteHolder#destroyBody()
+     */
     public final void destroyBody() {
         if (world != null && body != null) {
             world.destroyBody(body);
@@ -204,12 +210,12 @@ public abstract class GameSprite implements Runnable {
 
     // 取图形世界绘制宽度
     public float getDrawW() {
-        return 0;
+        return getDrawR() * 2;
     }
 
     // 取图形世界绘制高度
     public float getDrawH() {
-        return 0;
+        return getDrawR() * 2;
     }
 
     // 取图形世界绘制半径
@@ -239,5 +245,13 @@ public abstract class GameSprite implements Runnable {
 
     public GameSpriteHealth getHealth() {
         return health;
+    }
+
+    public long getAction() {
+        return action;
+    }
+
+    public void setAction(long action) {
+        this.action = action;
     }
 }

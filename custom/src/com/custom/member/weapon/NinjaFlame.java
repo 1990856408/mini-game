@@ -28,7 +28,7 @@ public class NinjaFlame extends GameSprite {
     // 父精灵
     private GameSprite father;
 
-    // 轨迹
+    // 混合轨迹
     private TrackHolder trackHolder;
 
     // 轨迹之前的位置
@@ -54,7 +54,8 @@ public class NinjaFlame extends GameSprite {
 
     @Override
     protected void preInit() {
-        positionPre = new MiniPosition();
+        trackHolder.update(0);
+        positionPre = new MiniPosition(trackHolder.getPosition().x, trackHolder.getPosition().y);
     }
 
     @Override
@@ -81,19 +82,36 @@ public class NinjaFlame extends GameSprite {
 
     @Override
     protected void updateStatus() {
-        trackHolder.update4Time();
-        MiniPosition position = trackHolder.getPosition();
-        if (position.x > positionPre.x) {
-            direction = GameSpriteDirection.R;
-        }
-        if (position.x < positionPre.x) {
-            direction = GameSpriteDirection.L;
-        }
+        // 根据混合轨迹运动
+        if ((action & 1 << 0) != 1 << 0) {
+            trackHolder.update4Time();
+            MiniPosition position = trackHolder.getPosition();
+            // 更新方向
+            if (!isPrepared()) {
+                if (position.x > positionPre.x) {
+                    direction = GameSpriteDirection.R;
+                }
+                if (position.x < positionPre.x) {
+                    direction = GameSpriteDirection.L;
+                }
+            } else {
+                direction = father.getDirection();
+            }
 
-        setPosition(position.x + father.getPosX(), position.y + father.getPosY() - father.getDrawH() / 2 * MiniGameConfig.getPhysicalSettingViewRate());
+            if (direction == GameSpriteDirection.R) {
+                setPosition(position.x + father.getPosX() - ((getDrawW() + father.getDrawW()) / 2 * MiniGameConfig.getPhysicalSettingViewRate()), position.y + father.getPosY());
+            }
+            if (direction == GameSpriteDirection.L) {
+                setPosition(position.x + father.getPosX() + ((getDrawW() + father.getDrawW()) / 2 * MiniGameConfig.getPhysicalSettingViewRate()), position.y + father.getPosY());
+            }
 
-        positionPre.x = position.x;
-        positionPre.y = position.y;
+            positionPre.x = position.x;
+            positionPre.y = position.y;
+        } else {
+            if (isAlive && Math.abs(getPosX() - initPosX) >= 7.5) {
+                isAlive = false;
+            }
+        }
     }
 
     @Override
@@ -134,5 +152,15 @@ public class NinjaFlame extends GameSprite {
     @Override
     public float getDrawH() {
         return getDrawW() * 0.35f;
+    }
+
+    public boolean isPrepared() {
+        return trackHolder.isFinished();
+    }
+
+    public void beginAttack() {
+        initPosX = getPosX();
+        initPosY = getPosY();
+        action |= 1 << 0;
     }
 }

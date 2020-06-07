@@ -8,6 +8,7 @@ public enum ChunLiStatus implements MiniReplacer, GameSpriteStatus {
     WALK(1 << 1, 1 << 0 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6, true, true),
     JUMP(1 << 2, 1 << 0 | 1 << 1 | 1 << 3 | 1 << 5, true, true),
     LANDFALL(1 << 3, 1 << 1 | 1 << 2 | 1 << 5, true, true),
+    @Deprecated
     SQUAT(1 << 4, 1 << 0 | 1 << 1, true, true),
     CRACKED_FEET(1 << 5, 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3, false, true),
     QI_GONG(1 << 6, 1 << 0 | 1 << 1, false, false);

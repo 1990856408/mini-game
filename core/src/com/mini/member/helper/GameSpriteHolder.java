@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.google.common.collect.Lists;
 import com.mini.member.GameSprite;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,10 +26,10 @@ public class GameSpriteHolder {
     private LinkedList<DestroyBodyTask> destroyBodyTasks = new LinkedList<>();
 
     // 每次可创建时的最大创建数，避免创建任务大量堆积时的游戏卡顿问题
-    private int maxCreateCount = 2;
+    private int maxCreateCount = 15;
 
     // 每次可销毁时的最大销毁数
-    private int maxDestroyBodyCount = 2;
+    private int maxDestroyBodyCount = maxCreateCount * 3;
 
     // 当前已创建的游戏精灵
     private List<GameSprite> gameSprites = Lists.newArrayList();
@@ -53,6 +54,10 @@ public class GameSpriteHolder {
         gameSpritesRemoved.add(gameSprite);
     }
 
+    public void pushCreateTask(Collection<CreateTask> tasks) {
+        tasks.forEach(this::pushCreateTask);
+    }
+
     /**
      * 添加一个创建任务
      *
@@ -60,6 +65,10 @@ public class GameSpriteHolder {
      */
     public void pushCreateTask(CreateTask task) {
         createTasks.addLast(task);
+    }
+
+    public void pushDestroyBodyTask(Collection<DestroyBodyTask> tasks) {
+        tasks.forEach(this::pushDestroyBodyTask);
     }
 
     /**
@@ -97,8 +106,8 @@ public class GameSpriteHolder {
             }
 
             GameSprite gameSprite = createTask.getGameSprite();
-            gameSprite.create(world, createTask.getInitX(gameSprite), createTask.getInitY(gameSprite));
-            CreateAction createAction = createTask.getCreateAction(gameSprite);
+            gameSprite.create(world, createTask.getInitX(), createTask.getInitY());
+            CreateAction createAction = createTask.getCreateAction();
             if (createAction != null) {
                 createAction.execute(gameSprite);
             }
@@ -185,12 +194,12 @@ public class GameSpriteHolder {
 
         GameSprite getGameSprite();
 
-        float getInitX(GameSprite gameSprite);
+        float getInitX();
 
-        float getInitY(GameSprite gameSprite);
+        float getInitY();
 
         // 回调函数
-        default CreateAction getCreateAction(GameSprite gameSprite) {
+        default CreateAction getCreateAction() {
             return null;
         }
     }

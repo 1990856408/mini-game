@@ -21,7 +21,7 @@ public abstract class TrackBase {
     protected float rate = 0;
 
     // 当前位置
-    protected MiniPosition position;
+    protected MiniPosition position = new MiniPosition();
 
     public TrackBase(long interval) {
         /**
@@ -41,8 +41,6 @@ public abstract class TrackBase {
         this.positionA = positionA;
         this.positionB = positionB;
         this.interval = interval;
-
-        this.position = new MiniPosition(positionA.x, positionA.y);
 
         init();
     }
