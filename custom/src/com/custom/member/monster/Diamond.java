@@ -31,7 +31,7 @@ public class Diamond extends MonsterSprite {
     }
 
     @Override
-    protected void initAnimation() {
+    protected void initAnimations() {
         Texture texture = MiniGame.assetManager.get("members/mario2.png", Texture.class);
         currentAnimation = AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(229, 111, 30, 32),

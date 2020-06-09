@@ -102,7 +102,7 @@ public class ChunLi extends Protagonist {
     }
 
     @Override
-    protected void initAnimation() {
+    protected void initAnimations() {
         initAnimationQuiet();
         initAnimationWalk();
         initAnimationJump();
@@ -305,7 +305,7 @@ public class ChunLi extends Protagonist {
 
         updateStatus();
         updateFixtures();
-        updateAnimation();
+        updateAnimations();
         updateCustom();
     }
 
@@ -368,7 +368,7 @@ public class ChunLi extends Protagonist {
     }
 
     @Override
-    protected void updateAnimation() {
+    protected void updateAnimations() {
         currentMiniAnimationHolder = miniAnimationHolderMap.get(status).get(direction);
     }
 

@@ -122,7 +122,7 @@ public class Protagonist extends GameSprite {
     }
 
     @Override
-    protected void initAnimation() {
+    protected void initAnimations() {
         Texture texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
 
         // 初始化右走动画
@@ -247,7 +247,7 @@ public class Protagonist extends GameSprite {
     }
 
     @Override
-    protected void updateAnimation() {
+    protected void updateAnimations() {
         status = statusPre;
         currentAnimation = animationMap.get(status).get(direction);
     }

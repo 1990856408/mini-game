@@ -64,7 +64,7 @@ public class NinjaFlame extends GameSprite {
     }
 
     @Override
-    protected void initAnimation() {
+    protected void initAnimations() {
         Texture texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
         animationMap.put(GameSpriteDirection.L, AnimationAssist.createAnimation(texture, Lists.newArrayList(
                 new AnimationAssist.Bound(201, 407, 28, 16),
@@ -115,7 +115,7 @@ public class NinjaFlame extends GameSprite {
     }
 
     @Override
-    protected void updateAnimation() {
+    protected void updateAnimations() {
         currentAnimation = animationMap.get(direction);
     }
 

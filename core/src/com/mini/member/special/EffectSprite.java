@@ -14,7 +14,7 @@ public abstract class EffectSprite extends GameSprite {
     private ParticleEffect particleEffect;
 
     @Override
-    protected void initAnimation() {
+    protected void initAnimations() {
         particleEffect = new ParticleEffect();
 
         EffectSpriteConfig effectSpriteConfig = getEffectSpriteConfig();

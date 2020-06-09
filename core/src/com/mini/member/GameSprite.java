@@ -82,7 +82,7 @@ public abstract class GameSprite implements Runnable {
         preInit();
         initStatus();
         initFixtures();
-        initAnimation();
+        initAnimations();
         initCustom();
     }
 
@@ -95,7 +95,7 @@ public abstract class GameSprite implements Runnable {
     }
 
     // 初始化动画
-    protected void initAnimation() {
+    protected void initAnimations() {
     }
 
     // 初始化状态
@@ -119,7 +119,7 @@ public abstract class GameSprite implements Runnable {
 
         updateStatus();
         updateFixtures();
-        updateAnimation();
+        updateAnimations();
         updateCustom();
     }
 
@@ -137,7 +137,7 @@ public abstract class GameSprite implements Runnable {
     }
 
     // 刷新动画
-    protected void updateAnimation() {
+    protected void updateAnimations() {
     }
 
     // 刷新自定义

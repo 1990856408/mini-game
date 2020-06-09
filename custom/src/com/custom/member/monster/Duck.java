@@ -78,7 +78,7 @@ public class Duck extends MonsterSprite {
     }
 
     @Override
-    protected void initAnimation() {
+    protected void initAnimations() {
         Texture texture = MiniGame.assetManager.get("members/mario1.png", Texture.class);
 
         insertAnimation(DuckStatus.QUIET, GameSpriteDirection.L, AnimationAssist.createAnimation(texture, Lists.newArrayList(
@@ -122,7 +122,7 @@ public class Duck extends MonsterSprite {
     }
 
     @Override
-    protected void updateAnimation() {
+    protected void updateAnimations() {
         currentAnimation = animationMap.get(status).get(direction);
     }
 
