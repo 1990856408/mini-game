@@ -21,6 +21,7 @@ import com.mini.graph.TrackHolder;
 import com.mini.graph.track.TrackLine;
 import com.mini.member.GameSprite;
 import com.mini.member.GameSpriteCategory;
+import com.mini.member.GameSpriteHealth;
 import com.mini.member.MiniUserData;
 import com.mini.member.helper.GameSpriteHolder;
 import com.mini.member.helper.GameSpriteHolderHelper;
@@ -102,6 +103,7 @@ public class Protagonist extends GameSprite {
     @Override
     protected void initStatus() {
         direction = GameSpriteDirection.R;
+        health = new GameSpriteHealth(100, 100);
 
         status = ProtagonistStatus.QUIET;
         setStatusPre(status);

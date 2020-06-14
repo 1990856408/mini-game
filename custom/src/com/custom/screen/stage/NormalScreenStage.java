@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -15,13 +14,14 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.custom.screen.NormalScreen;
 import com.mini.game.MiniGame;
 import com.mini.screen.stage.BaseStage;
+import com.mini.screen.stage.BrushHealth;
 
 public class NormalScreenStage extends BaseStage {
 
     private NormalScreen normalScreen;
 
     private ActorGestureListener buttonListener;
-    private ProgressBar barHP, barMP;
+    private BrushHealth brushHP, brushMP;
     private Label labelScoreVolume;
 
     public NormalScreenStage(NormalScreen normalScreen) {
@@ -143,15 +143,13 @@ public class NormalScreenStage extends BaseStage {
         BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal("scripts/inf.fnt"));
         Label.LabelStyle style = new Label.LabelStyle(bitmapFont, bitmapFont.getColor());
 
-        Label labelHP = new Label("HP:", style);
-        labelHP.setSize(labelHP.getText().length * style.font.getSpaceWidth(), style.font.getLineHeight());
-        labelHP.setPosition(0, getViewH() - labelHP.getHeight());
-        addActor(labelHP);
+        brushHP = new BrushHealth(normalScreen.prota.getHealth(), 1);
+        brushHP.setPosition(30, getViewH() - brushHP.getHeight());
+        addActor(brushHP);
 
-        Label labelMP = new Label("MP:", style);
-        labelMP.setSize(labelHP.getText().length * style.font.getSpaceWidth(), style.font.getLineHeight());
-        labelMP.setPosition(0, getViewH() - labelHP.getHeight() - labelMP.getHeight());
-        addActor(labelMP);
+        brushMP = new BrushHealth(normalScreen.prota.getHealth(), 2);
+        brushMP.setPosition(brushHP.getX(), brushHP.getY() - brushMP.getHeight());
+        addActor(brushMP);
 
         Image imageScore = new Image(new TextureRegion(MiniGame.assetManager.get("menus/score.png", Texture.class), 295, 171, 475, 242));
         imageScore.setSize(300, 67);
@@ -166,8 +164,8 @@ public class NormalScreenStage extends BaseStage {
 
     @Override
     protected void update() {
-//        barHP.setValue(normalScreen.prota.currentHP);
-//        barMP.setValue(normalScreen.prota.currentMP);
+        brushHP.update();
+        brushMP.update();
 
         labelScoreVolume.setText(String.format("%06d", normalScreen.curScore));
     }

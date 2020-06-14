@@ -226,14 +226,12 @@ public class NormalScreen extends BaseScreen {
     // 创建钻石
     private void createDiamonds() {
         diamonds = new Vector<>();
-        tileMap.getLayers().get("egg").getObjects().forEach(o -> {
-            if (o.getName() != null && o.getName().equals("egg")) {
-                float initX = o.getProperties().get("x", Float.class);
-                float initY = o.getProperties().get("y", Float.class);
-                Diamond diamond = new Diamond();
-                diamond.create(world, initX, initY);
-                diamonds.add(diamond);
-            }
+        tileMap.getLayers().get("diamond").getObjects().forEach(o -> {
+            float initX = o.getProperties().get("x", Float.class);
+            float initY = o.getProperties().get("y", Float.class);
+            Diamond diamond = new Diamond();
+            diamond.create(world, initX, initY);
+            diamonds.add(diamond);
         });
     }
 
@@ -241,13 +239,11 @@ public class NormalScreen extends BaseScreen {
     private void createDuck() {
         ducks = new Vector<>();
         tileMap.getLayers().get("duck").getObjects().forEach(o -> {
-            if (o.getName() != null && o.getName().equals("duck")) {
-                float initX = o.getProperties().get("x", Float.class);
-                float initY = o.getProperties().get("y", Float.class);
-                Duck duck = new Duck();
-                duck.create(world, initX, initY);
-                ducks.add(duck);
-            }
+            float initX = o.getProperties().get("x", Float.class);
+            float initY = o.getProperties().get("y", Float.class);
+            Duck duck = new Duck();
+            duck.create(world, initX, initY);
+            ducks.add(duck);
         });
     }
 
@@ -384,7 +380,7 @@ public class NormalScreen extends BaseScreen {
         }
 
         if (curScore >= maxScore) {
-            if (MiniGame.getAttributeInt(CustomGameAttributeNames.CURRENT_LEVEL) == 5) {
+            if (MiniGame.getAttributeInt(CustomGameAttributeNames.CURRENT_LEVEL) == 3) {
                 miniGame.resetScreen(new InitialScreen(miniGame), () -> {
                     MiniGame.soundPlayer.stopMusic();
                 });
